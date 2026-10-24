@@ -37,7 +37,9 @@ For each SKU:
 6. **Channel twins**: a trailing "Z" is the same part packed for retail/service (Matthew), and an
    "EC-" prefix is Pentair's e-commerce-exclusive number for the same product (Pentair prints this on
    its pages). If a SKU here is the Z/non-Z or EC-/plain twin of a catalog SKU, give it exactly the
-   twin's derived title, set confidence "review" and write "channel twin of <MPN>" in notes. Add no
+   twin's derived title, set confidence "review" and write "channel twin of <MPN>" in notes. EC-
+   numbers often don't share digits with the dealer number: the twin is then the catalog SKU on the
+   same page whose published row has the same specs (say which specs match in notes). Add no
    marker of your own ("Available Online", "Ecommerce"); Matthew picks one marker for all twins.
    web_check allows the shared title. A twin is never discontinued because of its prefix/suffix.
 7. A row that is not a sellable SKU of this product (a spec line, a dimension row), or a SKU whose

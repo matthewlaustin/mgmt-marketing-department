@@ -14,6 +14,7 @@ and its derived title is unique within the packet and against active catalog tit
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -78,7 +79,8 @@ def check(pass_name: str, packet: str) -> list[str]:
             errors.append(f"{where}: derived title identical to {titles[d][0]}'s")
         titles.setdefault(d, (mpn, r.get("confidence")))
         twin = catalog_titles.get(d)
-        if twin and not is_z_twin(mpn, twin):
+        named = re.findall(r"channel twin of ([A-Za-z0-9\-./]+)", r.get("notes") or "")
+        if twin and not is_z_twin(mpn, twin) and twin not in named:
             errors.append(f"{where}: derived title identical to catalog SKU {twin}'s")
     dismissed = {d.get("mpn") for d in review.get("dismissed", []) if d.get("reason")}
     for mpn in sorted(set(skus) - seen - dismissed):
