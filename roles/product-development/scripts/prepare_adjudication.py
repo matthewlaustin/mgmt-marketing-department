@@ -12,6 +12,7 @@ Existing reviews_final files are never overwritten (adjudicated pages stay adjud
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -81,6 +82,12 @@ def main() -> int:
                     diffs.append({"mpn": mpn, "field": f, "A": va, "B": vb})
         if a.get("page_type") != b.get("page_type"):
             diffs.append({"field": "page_type", "A": a.get("page_type"), "B": b.get("page_type")})
+        flagged = re.compile(r"not recorded|could not be recorded|cannot be recorded|manual (add|record)|needs? (a )?manual|add (it )?by hand", re.I)
+        for rv, label in ((a, "A"), (b, "B")):
+            text = json.dumps(rv, ensure_ascii=False)
+            if flagged.search(text):
+                diffs.append({"field": "notes", "A": f"review {label} notes say something was left unrecorded", "B": ""})
+                break
         if not diffs and validate(a, words_for(page)):
             diffs.append({"field": "validation", "A": "pass A no longer validates (rules/extraction changed)", "B": ""})
         if diffs or page in FORCE_ADJUDICATE:

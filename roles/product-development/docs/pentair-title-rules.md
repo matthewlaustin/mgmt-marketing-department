@@ -86,7 +86,9 @@ Built only from words printed in the catalog, in this order:
    - a parenthetical that is the only sibling difference follows after a comma (`…, Long Thread`);
    - a description that is the noun followed by a comma-separated spec list ("Venturi Jet, 5/16 in.
      nozzle, 1/2 in. socket air …") keeps Pentair's printed order.
-   Colour still goes immediately before the noun, never first in the title.
+   Colour still goes immediately before the noun phrase; it is first in the title only when nothing
+   else precedes the noun ("Gray Quick Disconnect Adapter"). Compound nouns stay together
+   ("Gray Fine Mesh Bag", not "Fine Mesh Gray Bag").
    (`IntelliBrite® Architectural Series Color 12V 50 ft Cord Pool Light`). Only a pack size
    follows the noun (`…, Set of 4`). Dimensions use lowercase "x": `7 in x 14-1/8 in`.
 
