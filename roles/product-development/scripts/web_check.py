@@ -31,6 +31,11 @@ def derived(title: str) -> str:
     return title.split(" - ", 1)[1] if " - " in title else title
 
 
+def is_z_twin(a: str, b: str) -> bool:
+    """A trailing Z is the same part packaged for retail/service (Matthew, 2026-10-24)."""
+    return a.upper() + "Z" == b.upper() or b.upper() + "Z" == a.upper()
+
+
 def check(pass_name: str, packet: str) -> list[str]:
     pk = json.loads((WEB / "packets" / f"{packet}.json").read_text())
     skus = {s["mpn"]: s for g in pk["pages"] for s in g["skus"]}
@@ -69,8 +74,9 @@ def check(pass_name: str, packet: str) -> list[str]:
         if d in titles and not (r.get("confidence") == "review" and titles[d][1] == "review"):
             errors.append(f"{where}: derived title identical to {titles[d][0]}'s")
         titles.setdefault(d, (mpn, r.get("confidence")))
-        if d in catalog_titles:
-            errors.append(f"{where}: derived title identical to catalog SKU {catalog_titles[d]}'s")
+        twin = catalog_titles.get(d)
+        if twin and not is_z_twin(mpn, twin):
+            errors.append(f"{where}: derived title identical to catalog SKU {twin}'s")
     dismissed = {d.get("mpn") for d in review.get("dismissed", []) if d.get("reason")}
     for mpn in sorted(set(skus) - seen - dismissed):
         errors.append(f"{packet} {mpn}: neither recorded nor dismissed with a reason")

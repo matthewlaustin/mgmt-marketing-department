@@ -198,3 +198,8 @@ are for status, replacement and fit; the title comes from the SKU's ordering or 
 One record per MPN. Title source priority: the product's own whole-goods ordering table,
 then an accessories table, then a parts list. Every page it appears on is kept as evidence.
 Conflicting titles between pages are flagged for review.
+
+## Z suffix [decided by Matthew, 2026-10-24]
+A trailing "Z" on a Pentair part number is the same part packaged for retail/service use (e.g. 350093
+and 350093Z). Both numbers are real, active SKUs; neither replaces the other. A pair's titles describe
+the same part; how the two titles are told apart is set in the X/XZ pair rule below once decided.
