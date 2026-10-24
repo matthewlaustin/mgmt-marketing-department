@@ -131,6 +131,9 @@ the "Replacement Parts for Product #…" line. Pentair's "Noun, Qualifier" wordi
 natural order: "O-Ring, Lid" → "Lid O-Ring".
 Examples: `Pentair 357255 - SuperFlo® DOE Pump Lid O-Ring` ("O-Ring, Lid");
 `Pentair 350091Z - SuperFlo® DOE Pump Lid` ("Lid").
+Parts titles include the product noun from the heading, like the SuperFlo® DOE Pump example
+("ETi® 400 Heater Wire Harness"), unless the part name already starts with it ("MasterTemp®
+Heater Top", not "Heater Heater Top"). MasterTemp® and MasterTemp® 125 are one line.
 Parts are always brand Pentair, even on Sta-Rite product pages.
 When several rows on a parts page print the same bare description ("O-Ring"), the assembly they
 belong to may be taken from labels printed on the page's exploded diagram ("Valve & Gauge Assembly
