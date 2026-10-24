@@ -36,7 +36,7 @@ def is_z_twin(a: str, b: str) -> bool:
     """Same product sold through another channel: a trailing Z is the retail/service pack
     (Matthew, 2026-10-24); an "EC-" prefix is Pentair's e-commerce-exclusive number (printed on
     pentair.com: "Products beginning with EC- are exclusive to e-commerce sales")."""
-    a, b = a.upper(), b.upper()
+    a, b = a.upper().replace("_", " "), b.upper().replace("_", " ")  # website "PKG_56" = catalog "PKG 56"
     return (a + "Z" == b or b + "Z" == a or a == "EC-" + b or b == "EC-" + a
             or a == b + "-EC" or b == a + "-EC")
 
@@ -81,7 +81,7 @@ def check(pass_name: str, packet: str) -> list[str]:
         titles.setdefault(d, (mpn, r.get("confidence")))
         twin = catalog_titles.get(d)
         named = re.findall(r"channel twin of ([A-Za-z0-9\-./]+)", r.get("notes") or "")
-        if twin and not is_z_twin(mpn, twin) and twin not in named:
+        if twin and twin != mpn.replace("_", " ") and not is_z_twin(mpn, twin) and twin not in named:
             errors.append(f"{where}: derived title identical to catalog SKU {twin}'s")
     dismissed = {d.get("mpn") for d in review.get("dismissed", []) if d.get("reason")}
     for mpn in sorted(set(skus) - seen - dismissed):
