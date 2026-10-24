@@ -100,6 +100,7 @@ Clean-up:
 - Units: "in." / `"` / `”` → "in"; "ft." / `'` / `′` (feet) → "ft"; keep HP, V, W, GPM as printed.
 - Keep only the name part of a description followed by a sales sentence or note:
   "XF Riser Base - Simplifies installation…" → "XF Riser Base"; "… - includes 2" → drop.
+- "i.d."/"o.d." → "ID"/"OD".
 - "w/" → "with", "w/o" → "without". Packaging words ("display box", "bulk" when a sibling differs only
   by packaging, keep it) are dropped unless they are the only sibling difference.
 - Abbreviations: expand only when the page itself spells the word out nearby (band, heading,
@@ -137,6 +138,9 @@ O-Ring"); mark confidence "review". If nothing printed tells them apart, keep th
 Any SKU (part OR accessory, e.g. seal kits 356196/356197/356198, relay board 356365Z, cables)
 listed under more than one product family anywhere in the catalog also gets no family. Reviewers who
 see such a SKU on their page and know it is shared should apply this; consolidation enforces it.
+Product lines with series treated as ONE line (series = model): System:3® (SM, SD, SMD, SS),
+System:2™ (PLM, PLD, PLDE), FullFloXF® (Q, C, FV, F series), Kreepy Krauly® (Platinum, Legend,
+Legend II, Great White…), Prowler®, Racer®. Canonical spellings: "System:3®", "System:2™".
 A part shared only between MODELS of one product line (Prowler 930/920/910; Racer/Racer LS;
 QuikSkim/QuikSkim Ultra? no — those are different lines) keeps the line name without the model:
 `Pentair 360342 - Prowler® Track`. Shared between different lines → no family.
