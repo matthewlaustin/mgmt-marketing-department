@@ -14,7 +14,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from product_namer.review import normalize_title  # noqa: E402
+from web_check import check  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "data/work/pentair/web"
@@ -31,6 +33,9 @@ def main() -> int:
             continue
         if (WEB / "final" / a_path.name).exists():
             kept += 1
+            continue
+        # a pass still being written (or failing its check) is not compared yet
+        if check("a", a_path.stem) or check("b", a_path.stem):
             continue
         a, b = json.loads(a_path.read_text()), json.loads(b_path.read_text())
         ra = {r["mpn"]: r for r in a.get("records", [])}
