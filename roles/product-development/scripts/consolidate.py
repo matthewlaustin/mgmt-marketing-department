@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import sqlite3
 import sys
 from collections import defaultdict
@@ -38,6 +39,23 @@ PRIORITY = {
     "directory": 9,
     "other": 6,
 }
+# Canonical trademark spellings (directory pp. 4-7), applied to every title and product line. Only marked
+# forms are rewritten, so "System 2 Pumps" (IntelliChem) and "System 2.5 in" are left alone.
+CANONICAL = [
+    (re.compile(r"System[ :]3[®™]|System 3(?= Mod)"), "System:3®"),
+    (re.compile(r"System[ :]2[®™]"), "System:2™"),
+    (re.compile(r"Hi-Flow™"), "HiFlow™"),
+    (re.compile(r"ThermalFlo™"), "ThermalFlo®"),
+    (re.compile(r"IntelliProXF(?![®™])"), "IntelliProXF®"),
+]
+
+
+def canonical(text: str) -> str:
+    for pattern, repl in CANONICAL:
+        text = pattern.sub(repl, text)
+    return text
+
+
 KIND_PRIORITY = {"whole_good": 0, "accessory": 1, "part": 2}
 STATUS_PRIORITY = {"not_for_sale_usa": 0, "discontinued": 1, "active": 2}  # most restrictive wins
 
@@ -138,6 +156,7 @@ def main() -> int:
                         kind=h.get("kind", best["kind"]))
             if h.get("confidence") == "review":
                 notes.append(f"harmonized: {h.get('reason', '')}")
+        best = dict(best, title=canonical(best["title"]), product_line=canonical(best.get("product_line") or ""))
         replaced_by = next((r.get("replaced_by") for r in recs if r.get("replaced_by")), "")
         fits = next((r.get("fits") for r in recs if r.get("fits")), "")
         needs_review = int(bool(notes))
