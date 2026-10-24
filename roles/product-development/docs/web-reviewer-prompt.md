@@ -31,7 +31,9 @@ For each SKU:
    parentheticals, expand only abbreviations spelled out on the page, put specs before the noun and
    colour right before the noun phrase. Add a spec only when it is needed to tell siblings apart.
 4. **Status**: active, unless the row or page says discontinued, replaced or not for sale in the USA
-   (then discontinued / not_for_sale_usa, with the replacement in notes).
+   (then discontinued / not_for_sale_usa, with the replacement in notes). "-INT" (international)
+   and 50 Hz models are not_for_sale_usa (Matthew excludes international items); this wins over a
+   page-level "Discontinued" ribbon. Website numbers like "PKG_56" are the catalog's "PKG 56".
 5. **Confidence**: "review" when the row is thin (a bare code, no noun), ambiguous, or contradicts
    the page; say why in `notes`.
 6. **Channel twins**: a trailing "Z" is the same part packed for retail/service (Matthew), and an
