@@ -27,7 +27,7 @@ Reference example (Matthew, printed page 269, case adjusted per the casing decis
 Pentair is the default brand. Only one brand per SKU.
 1. **Whole goods** take Sta-Rite only when the product family is marked ° (circle) in the
    Whole Goods Directory (PDF pp. 4–5) or the page carries the STA-RITE logo.
-   Sta-Rite families: System:2™, System:3™ (modular media and D.E.), Cristal-Flo™ II,
+   Sta-Rite families: System:2™, System:3® (modular media and D.E.), Cristal-Flo™ II,
    Max-E-Therm®, IntelliPro®, IntelliPro3®, Max-E-ProXF®, SuperMax®, U-3 SwimQuip,
    CSP/5CSP Series, Hair and Lint Strainers. Families marked both (D.E. Separation Tank 100)
    → Pentair.
@@ -160,7 +160,7 @@ parts pages (reason `model_name`), not recorded: they are titled from their own 
 Exception: kits, parts bags and option kits ordered from a band ("Parts bag for 300, 302…" R172064,
 "Optional Drain Kit" R172002) that are not whole goods are recorded on the parts page (kind part/accessory).
 After the run, every dismissed parent number that no page records is listed for follow-up.
-Card/pack counts ("4 per card", "Qty 3" describing a kit's contents) → ", Set of N".
+Card/pack counts ("4 per card") → ", Set of N". Kit contents ("Kit includes 8 screws", "Gasket Kit, 3 Gaskets") → "8-Screw Kit", "3-Gasket Kit".
 "1 per card, bubble pack" is packaging: append ", Bubble Pack" only when it is the sole sibling difference.
 
 ## Pleatco cartridges [decided: short, no fit list]
