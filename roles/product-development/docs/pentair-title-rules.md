@@ -115,6 +115,10 @@ natural order: "O-Ring, Lid" → "Lid O-Ring".
 Examples: `Pentair 357255 - SuperFlo® DOE Pump Lid O-Ring` ("O-Ring, Lid");
 `Pentair 350091Z - SuperFlo® DOE Pump Lid` ("Lid").
 Parts are always brand Pentair, even on Sta-Rite product pages.
+A part number listed under more than one product family (e.g. 230010Z under Low Profile and
+Top Feed; QuikSkim and QuikSkim Ultra parts pages) gets **no family** in its title; keep the
+printed part description only. Kit letters ("Kit (A)", "Kit D") are kept without brackets
+when they are the only difference between sibling kits.
 
 ## Pleatco cartridges [decided: short, no fit list]
 `Pleatco {MPN} - {Line} Filter Cartridge {sq ft} sq ft {diameter} x {length}`, e.g.
