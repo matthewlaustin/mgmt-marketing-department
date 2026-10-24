@@ -95,12 +95,18 @@ def main() -> int:
     con.executescript(SCHEMA)
     exported = []
     for mpn, recs in sorted(by_mpn.items()):
-        recs.sort(key=lambda r: (PRIORITY.get(r["page_type"], 6), KIND_PRIORITY.get(r["kind"], 3), r["pdf_page"]))
+        recs.sort(key=lambda r: (not r.get("title"), PRIORITY.get(r["page_type"], 6),
+                                 KIND_PRIORITY.get(r["kind"], 3), r["pdf_page"]))
         best = recs[0]
         status = min((r.get("status", "active") for r in recs), key=lambda s: STATUS_PRIORITY.get(s, 2))
         notes = [f"p{r['pdf_page']}: {r['notes']}" for r in recs if r.get("confidence") == "review" and r.get("notes")]
+        if not best.get("title"):
+            notes.append("no page gives this SKU a descriptive title")
+        if best["page_type"] == "cross_reference":
+            notes.append("title is provisional (cross-reference page only)")
         for field in ("brand", "title"):
-            values = {r["pdf_page"]: r.get(field) for r in recs}
+            values = {r["pdf_page"]: r.get(field) for r in recs
+                      if r.get(field) and r["page_type"] not in ("cross_reference", "discontinued_list")}
             if len(set(values.values())) > 1:
                 con.execute("INSERT INTO conflicts VALUES (?,?,?)", (mpn, field, json.dumps(values, ensure_ascii=False)))
                 if field == "brand":

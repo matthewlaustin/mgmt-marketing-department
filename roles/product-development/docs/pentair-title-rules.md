@@ -53,6 +53,10 @@ Built only from words printed in the catalog, in this order:
    ("DIVERTER & CHECK VALVES"), sizes covered by the row, and "(CONT'D)".
    **Accessories get no product-family prefix [decided]** (they are often shared across lines):
    `Pentair 356904Z - Keypad Relocation Kit`.
+   An item in an ordering table that repairs or replaces part of *that* product (rebuild kit,
+   replacement cartridge, motor) is `kind: part` and keeps the family:
+   `Pentair 270119Z - FullFloXF® Check Valve Rebuild Kit`. Add-ons used alongside the product
+   (cables, risers, elbows, keypad kits) are `kind: accessory`, no family.
 2. **What makes this SKU what it is**: the Description column, ignoring words in parentheses
    [decided]. Exception: when the parenthetical is the *only* difference between two sibling SKUs
    on the page (e.g. "short thread" / "long thread"), keep those words without the brackets.
@@ -62,6 +66,9 @@ Built only from words printed in the catalog, in this order:
    cord length etc. only if, without them, two SKUs would get the same title. A page with one
    pump gets no specs. Voltage: as printed plus "V" (`115/208-230V`).
 4. **Product noun** in singular, Title Case: Diverter, Pump, Pool Light, Filter, Heater.
+   **Order: family, then description words and any added specs, then the noun last**
+   (`IntelliBrite® Architectural Series Color 12V 50 ft Cord Pool Light`). Only a pack size
+   follows the noun (`…, Set of 4`). Dimensions use lowercase "x": `7 in x 14-1/8 in`.
 
 Clean-up:
 - Drop assembly quantities and diagram references from parts lists: "(Qty. 2)",
@@ -87,10 +94,17 @@ Parts are always brand Pentair, even on Sta-Rite product pages.
 
 ## Pleatco cartridges [decided: short, no fit list]
 `Pleatco {MPN} - {Line} Filter Cartridge {sq ft} sq ft {diameter} x {length}`, e.g.
-`Pleatco PCC60 - Advanced Filter Cartridge 60 sq ft 7 in x 19-3/4 in` (line: Ultra / Advanced;
+`Pleatco PCC60 - Advanced Filter Cartridge 60 sq ft 7 in x 14-1/8 in` (line: Ultra / Advanced;
 the "PLEATCO" in the heading is not repeated). On the cross-reference pages, page reviews write
-`Pleatco {MPN} - {Line} Filter Cartridge` (plus ", Set of 4" for packs) and put the compatibility
-text in `fits`. The compatibility list goes in the `fits` field, not
+the provisional title `Pleatco {MPN} - {Line} Filter Cartridge` (plus ", Set of 4" for packs) and
+put the compatibility text in `fits`; consolidation takes the final title from the measurement
+page. Packs: per-cartridge sq ft (the single SKU's figure) and ", Set of 4" at the end, e.g.
+`Pleatco PCC60-PAK4 - Advanced Filter Cartridge 60 sq ft 7 in x 14-1/8 in, Set of 4`.
+Ultra rows print "Optimized" instead of sq ft: leave sq ft out
+(`Pleatco ULTRA-A4 - Ultra Filter Cartridge 7 in x 14-1/8 in`). Where two SKUs still share a
+title, append ", Upgrade for {SKU}" from the row's "Upgrade for" text and mark confidence
+"review". The `*` (discontinued) legend printed on pp. 34–37 applies to the whole Pleatco
+section. Suffixes like P4 / -P4 / -IN-4 are NOT assumed to be packs unless the page says so. The compatibility list goes in the `fits` field, not
 the title. Dimensions come from "Filter Cartridges by Measurement" (PDF pp. 38–42) and are
 added at consolidation, because the cross-reference page itself has no distinguishing words.
 
@@ -99,6 +113,11 @@ added at consolidation, because the cross-reference page itself has no distingui
   recorded with status `not_for_sale_usa` and **excluded from the export**.
 - Discontinued (`*` "Indicates discontinued item" and similar) → status `discontinued`,
   replacement SKU in `replaced_by`; **kept in the database, excluded from the export**.
+
+## Pages whose titles are provisional
+On `cross_reference` and `discontinued_list` pages titles may repeat (validator allows it), and on
+`discontinued_list` pages, which print no descriptive words, write `"title": ""`. These pages
+are for status, replacement and fit; the title comes from the SKU's ordering or measurement page.
 
 ## Same SKU on several pages
 One record per MPN. Title source priority: the product's own whole-goods ordering table,

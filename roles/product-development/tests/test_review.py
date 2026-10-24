@@ -93,3 +93,19 @@ def test_fused_token_accepted_but_not_partial_invention():
     assert validate(review, words) == []
     review["records"][0]["replaced_by"] = "ULTRA-A5-PAK"
     assert any("replaced_by" in e for e in validate(review, words))
+
+
+def test_discontinued_list_allows_empty_title_but_checks_status():
+    words = ["PA100", "ULTRA-D1"]
+    review = {"page_type": "discontinued_list", "records": [
+        {"mpn": "PA100", "brand": "Pleatco", "title": "", "kind": "part", "status": "discontinued", "replaced_by": "ULTRA-D1"}],
+        "dismissed": [{"token": "ULTRA-D1", "reason": "other", "note": "replacement only"}]}
+    assert validate(review, words) == []
+    review["records"][0]["status"] = "active"
+    assert any("must have status discontinued" in e for e in validate(review, words))
+
+
+def test_uppercase_dimension_x_rejected():
+    review = ok_review()
+    review["records"][0]["title"] = "Pentair 263056 - FullFloXF® Diverter 7 in X 14 in"
+    assert any("lowercase 'x'" in e for e in validate(review, WORDS))

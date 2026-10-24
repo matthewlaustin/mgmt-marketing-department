@@ -50,6 +50,7 @@ BANNED_IN_TITLE = [
     (re.compile(r"\s{2,}"), "double space"),
     (re.compile(r"[.,;:\-]$"), "trailing punctuation"),
     (re.compile(r"\b(in|ft)\.(\s|$)"), "unit with period (use 'in', 'ft')"),
+    (re.compile(r"\d(\s?in)?\s+X\s+\d"), "dimension separator must be lowercase 'x'"),
 ]
 
 
@@ -125,6 +126,8 @@ def validate(review: dict, words: list[str]) -> list[str]:
     all_tokens, candidates = page_tokens(words)
     seen: set[str] = set()
     titles_seen: dict[str, str] = {}
+    page_type = review.get("page_type", "other")
+    provisional = page_type in ("cross_reference", "discontinued_list")
     for i, rec in enumerate(review.get("records", [])):
         where = f"record {i} ({rec.get('mpn')})"
         mpn = rec.get("mpn", "")
@@ -139,7 +142,14 @@ def validate(review: dict, words: list[str]) -> list[str]:
         brand = rec.get("brand")
         if brand not in BRANDS:
             errors.append(f"{where}: brand {brand!r} not in {sorted(BRANDS)}")
+        replaced_by = rec.get("replaced_by")
+        if replaced_by and not on_page(replaced_by, all_tokens):
+            errors.append(f"{where}: replaced_by {replaced_by!r} not on page")
         title = rec.get("title", "")
+        if page_type == "discontinued_list" and not title:
+            if rec.get("status") != "discontinued":
+                errors.append(f"{where}: records on a discontinued list must have status discontinued")
+            continue
         prefix = f"{brand} {mpn} - "
         if not title.startswith(prefix):
             errors.append(f"{where}: title must start with {prefix!r}")
@@ -154,16 +164,13 @@ def validate(review: dict, words: list[str]) -> list[str]:
         if derived and derived[:1].isalpha() and derived.split()[0].isupper() and len(derived.split()[0]) > 4 \
                 and not re.search(r"\d", derived.split()[0]):
             errors.append(f"{where}: product family in all caps; use Pentair's mixed-case trademark spelling")
-        if derived in titles_seen:
+        if derived in titles_seen and not provisional:
             errors.append(f"{where}: derived title identical to {titles_seen[derived]}'s; add the distinguishing spec")
         titles_seen.setdefault(derived, mpn)
         if rec.get("status", "active") not in STATUSES:
             errors.append(f"{where}: bad status {rec.get('status')!r}")
         if rec.get("kind") not in KINDS:
             errors.append(f"{where}: bad kind {rec.get('kind')!r}")
-        replaced_by = rec.get("replaced_by")
-        if replaced_by and not on_page(replaced_by, all_tokens):
-            errors.append(f"{where}: replaced_by {replaced_by!r} not on page")
 
     dismissed = {}
     for d in review.get("dismissed", []):
