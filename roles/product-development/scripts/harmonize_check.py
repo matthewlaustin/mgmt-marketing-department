@@ -74,7 +74,7 @@ def catalog_duplicates() -> list[str]:
     by_derived: dict[str, list[str]] = {}
     for m, t in titles.items():
         by_derived.setdefault(derived(t), []).append(m)
-    return [f"derived title {t!r} shared by {', '.join(sorted(ms))}" for t, ms in sorted(by_derived.items())
+    return [(set(ms), f"derived title {t!r} shared by {', '.join(sorted(ms))}") for t, ms in sorted(by_derived.items())
             if len(ms) > 1 and not set(ms) <= flagged]
 
 
@@ -83,11 +83,11 @@ def main() -> int:
     names = sorted(p.stem for p in (HARM / "packets").glob("h*.json")) if arg == "all" else [arg]
     errors = [e for n in names for e in check_packet(n)]
     if arg == "all":
-        errors += catalog_duplicates()
+        errors += [msg for _ms, msg in catalog_duplicates()]
     else:
         mine = {d["mpn"] for d in json.loads((HARM / "out" / f"{arg}.json").read_text()).get("decisions", [])} \
             if (HARM / "out" / f"{arg}.json").exists() else set()
-        errors += [e for e in catalog_duplicates() if any(m in e for m in mine)]
+        errors += [msg for ms, msg in catalog_duplicates() if ms & mine]
     for e in errors:
         print(e)
     print("OK" if not errors else f"{len(errors)} problem(s)")
