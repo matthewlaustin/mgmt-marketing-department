@@ -41,7 +41,7 @@ DISMISS_REASONS = {
 STATUSES = {"active", "discontinued", "not_for_sale_usa"}
 KINDS = {"whole_good", "accessory", "part", "service"}
 # Pentair trademarks / product codes that are genuinely written in capitals
-UPPERCASE_OK = {"CSP/CCSP", "CSP", "CCSP", "AVSC", "THS", "WAVE", "CPR", "PDR2", "CPVC", "ABS", "PVC",
+UPPERCASE_OK = {"CSP/CCSP", "CSP", "CCSP", "CSPH/CCSPH", "CSPH", "CCSPH", "AVSC", "THS", "WAVE", "CPR", "PDR2", "CPVC", "ABS", "PVC",
                 "NEMA-12", "NEMA-4X", "LED", "GFCI", "ASME", "TEFC", "ODP", "DOE", "SVRS", "VSF", "VST"}
 BRANDS = {"Pentair", "Sta-Rite", "Pleatco"}
 
