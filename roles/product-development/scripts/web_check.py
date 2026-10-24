@@ -37,7 +37,8 @@ def is_z_twin(a: str, b: str) -> bool:
     (Matthew, 2026-10-24); an "EC-" prefix is Pentair's e-commerce-exclusive number (printed on
     pentair.com: "Products beginning with EC- are exclusive to e-commerce sales")."""
     a, b = a.upper(), b.upper()
-    return a + "Z" == b or b + "Z" == a or a == "EC-" + b or b == "EC-" + a
+    return (a + "Z" == b or b + "Z" == a or a == "EC-" + b or b == "EC-" + a
+            or a == b + "-EC" or b == a + "-EC")
 
 
 def check(pass_name: str, packet: str) -> list[str]:
