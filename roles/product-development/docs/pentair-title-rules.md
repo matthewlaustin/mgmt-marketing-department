@@ -104,7 +104,8 @@ Clean-up:
   sibling row): "Comp" → "Complete" when the band prints COMPLETE; BLK → Black, WHT → White.
   Ambiguous ones (GRY: Gray or Dark Gray?) stay as printed with confidence "review".
 - Obvious catalog typos ("Cryatal", "Restictor", "Syle") are corrected when the correct spelling
-  is printed anywhere on the same page (another row, band or caption); note it in `notes`.
+  is printed anywhere on the same page (another row, band or caption) or on an adjacent page of the
+  same product section (e.g. the next cleaner-parts page); note it in `notes`.
 - Keep a printed plural noun when the item is clearly a set but no pack size is printed
   ("Plumbing Labels").
 - Title Case for description words printed in lower case too ("3-way solar drain down valve" →
