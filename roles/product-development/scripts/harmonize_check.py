@@ -5,7 +5,7 @@
 
 A decision file data/work/pentair/harmonize/out/hNN.json is
   {"packet": "hNN", "decisions": [{"mpn", "title", "product_line"?, "kind"?, "confidence", "reason"}]}
-with one decision for every SKU in the packet. Checks: the SKU is in the packet, title shape rules,
+with one decision for every SKU in the packet (audit packets sNN: only the SKUs they change). Checks: the SKU is in the packet, title shape rules,
 a reason for every decision, and that no two active SKUs end up with the same derived title.
 """
 
@@ -55,8 +55,9 @@ def check_packet(name: str) -> list[str]:
             errors.append(f"{where}: every decision needs a reason")
         if d.get("confidence") not in ("high", "review"):
             errors.append(f"{where}: confidence must be 'high' or 'review'")
-    for mpn in sorted(set(skus) - seen):
-        errors.append(f"{name} {mpn}: no decision")
+    if not name.startswith("s"):  # audit packets (sNN) record only the SKUs they change
+        for mpn in sorted(set(skus) - seen):
+            errors.append(f"{name} {mpn}: no decision")
     return errors
 
 
@@ -65,7 +66,7 @@ def catalog_duplicates() -> list[str]:
     con = sqlite3.connect(ROOT / "data/catalog.db")
     titles = {m: t for m, t in con.execute("SELECT mpn, title FROM products WHERE status = 'active' AND title != ''")}
     flagged = set()
-    for path in sorted((HARM / "out").glob("h*.json")):
+    for path in sorted((HARM / "out").glob("*.json")):  # hNN first, then sNN audits override
         for d in json.loads(path.read_text()).get("decisions", []):
             if d["mpn"] in titles:
                 titles[d["mpn"]] = d["title"]
@@ -80,7 +81,7 @@ def catalog_duplicates() -> list[str]:
 
 def main() -> int:
     arg = sys.argv[1] if len(sys.argv) > 1 else "all"
-    names = sorted(p.stem for p in (HARM / "packets").glob("h*.json")) if arg == "all" else [arg]
+    names = sorted(p.stem for p in (HARM / "out").glob("*.json")) if arg == "all" else [arg]
     errors = [e for n in names for e in check_packet(n)]
     if arg == "all":
         errors += [msg for _ms, msg in catalog_duplicates()]

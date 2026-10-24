@@ -104,7 +104,7 @@ CREATE TABLE conflicts (
 def load_harmonized() -> dict[str, dict]:
     """Cross-page title decisions from the harmonization pass (data/work/pentair/harmonize/out/*.json)."""
     out: dict[str, dict] = {}
-    for path in sorted((WORK / "harmonize/out").glob("*.json")):
+    for path in sorted((WORK / "harmonize/out").glob("*.json")):  # hNN, then sNN audit decisions win
         for d in json.loads(path.read_text()).get("decisions", []):
             out[d["mpn"].upper()] = d
     return out
