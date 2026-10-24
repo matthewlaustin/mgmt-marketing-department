@@ -89,6 +89,9 @@ Clean-up:
 - Units: "in." / `"` / `”` → "in"; "ft." / `'` / `′` (feet) → "ft"; keep HP, V, W, GPM as printed.
 - Keep only the name part of a description followed by a sales sentence or note:
   "XF Riser Base - Simplifies installation…" → "XF Riser Base"; "… - includes 2" → drop.
+- Abbreviations: expand only when the page itself spells the word out nearby (band, heading,
+  sibling row): "Comp" → "Complete" when the band prints COMPLETE; BLK → Black, WHT → White.
+  Ambiguous ones (GRY: Gray or Dark Gray?) stay as printed with confidence "review".
 - Obvious catalog typos ("Cryatal") are corrected only when the correct spelling is printed for
   the same item elsewhere on the page; note it.
 - Title Case for description words printed in lower case too ("3-way solar drain down valve" →
