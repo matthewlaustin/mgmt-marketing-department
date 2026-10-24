@@ -1,0 +1,141 @@
+<title>Pentair Title Training</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+/*CSS*/
+<style>
+.evidence { display: grid; gap: 6px; }
+.evidence .scan { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.evidence img { display: block; max-width: none; width: 100%; min-width: 320px; height: auto; }
+.evidence a, .weblink { font-size: 13px; color: var(--accent); }
+.webrow { font-family: var(--mono); font-size: 13px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; overflow-wrap: anywhere; }
+.titles { display: grid; gap: 8px; }
+.trow { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.trow .lab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.trow .val { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.trow.draft .val { background: var(--accent-soft); border-radius: 6px; padding: 4px 8px; }
+.trow .fields { font-family: var(--body); font-size: 13px; color: var(--muted); }
+.group { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
+.mpnh { font-family: var(--mono); font-size: 20px; font-weight: 500; }
+input[type=text] { font: inherit; font-family: var(--mono); font-size: 14px; width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 8px; }
+.rule ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pool Geek · Pentair titles · Training</div>
+    <h1>How would you title these?</h1>
+    <p class="lede">27 real Pentair SKUs, one or two of each kind I name. Each shows the catalog row (tap “Full page” for the whole page), today's title, and my draft under your new rule. Tap “Draft is right”, or type what you would have used. Notes are for anything that belongs in another field.</p>
+  </header>
+
+  <div class="rule">
+    <h3>The rule I'm drafting from</h3>
+    <ul>
+      <li>The title is what Pentair calls the item, plus its own specs: size, colour, HP, voltage, pack count.</li>
+      <li>Product line, fit lists, model numbers, build dates, competitor brands and use (“for gunite niche”) go in their own fields. Several different parts may share one title.</li>
+      <li>My assumption: a part keeps a plain word for what it goes on (“Pump”, “Cleaner”, “Skimmer”) when Pentair prints it on the page.</li>
+    </ul>
+  </div>
+
+  <section aria-labelledby="items-h">
+    <header>
+      <h2 id="items-h">Samples</h2>
+      <p class="progress" id="progress">Answers save as you go.</p>
+    </header>
+    <div id="db-notice" class="notice" hidden>Your answers can't be saved from this view (you may be signed out). Reply in chat instead.</div>
+    <div class="pairs" id="items"></div>
+  </section>
+
+  <footer>Rows are cropped from the Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition); the Dyna-Jet row is from pentair.com.</footer>
+</div>
+
+<script>
+const ITEMS = /*ITEMS*/;
+const $ = (id) => document.getElementById(id);
+const answers = {};
+let db = null;
+
+function row(cls, label, text, fields) {
+  const r = document.createElement("div"); r.className = "trow " + cls;
+  const l = document.createElement("div"); l.className = "lab"; l.textContent = label;
+  const v = document.createElement("div"); v.className = "val"; v.textContent = text;
+  r.append(l, v);
+  if (fields) { const f = document.createElement("div"); f.className = "fields"; f.textContent = fields; v.append(document.createElement("br"), f); }
+  return r;
+}
+
+function card(d) {
+  const el = document.createElement("div"); el.className = "q"; el.id = "q-" + d.id;
+  const g = document.createElement("div"); g.className = "group"; g.textContent = d.group;
+  const h = document.createElement("div"); h.className = "mpnh"; h.textContent = d.mpn;
+  el.append(g, h);
+  const ev = document.createElement("div"); ev.className = "evidence";
+  if (d.crop) {
+    const sc = document.createElement("div"); sc.className = "scan";
+    const i = document.createElement("img"); i.src = d.crop; i.alt = "Catalog row for " + d.mpn + " on page " + d.pno; i.loading = "lazy";
+    sc.append(i);
+    const a = document.createElement("a"); a.href = d.page; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Full page " + d.pno;
+    ev.append(sc, a);
+  } else {
+    const w = document.createElement("div"); w.className = "webrow"; w.textContent = d.web;
+    const a = document.createElement("a"); a.className = "weblink"; a.href = d.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "pentair.com page";
+    ev.append(w, a);
+  }
+  el.append(ev);
+  const t = document.createElement("div"); t.className = "titles";
+  t.append(row("now", "Today", "Pentair " + d.mpn + " - " + d.now), row("draft", "Draft", "Pentair " + d.mpn + " - " + d.draft, d.fields));
+  el.append(t);
+  const choices = document.createElement("div"); choices.className = "choices";
+  const ok = document.createElement("button"); ok.type = "button"; ok.className = "choice"; ok.textContent = "Draft is right"; ok.setAttribute("aria-pressed", "false");
+  ok.addEventListener("click", () => save(d.id, { verdict: "draft", title: "" }));
+  choices.append(ok);
+  const inp = document.createElement("input"); inp.type = "text"; inp.id = "title-" + d.id; inp.placeholder = "Your title (without the Pentair " + d.mpn + " - prefix)"; inp.setAttribute("aria-label", "Your title for " + d.mpn);
+  let t1; inp.addEventListener("input", () => { clearTimeout(t1); t1 = setTimeout(() => save(d.id, { verdict: inp.value.trim() ? "mine" : "", title: inp.value }), 900); });
+  const note = document.createElement("textarea"); note.id = "note-" + d.id; note.placeholder = "Notes: other fields, why"; note.setAttribute("aria-label", "Notes for " + d.mpn);
+  let t2; note.addEventListener("input", () => { clearTimeout(t2); t2 = setTimeout(() => save(d.id, { note: note.value }), 900); });
+  const st = document.createElement("p"); st.className = "saved"; st.id = "st-" + d.id;
+  el.append(choices, inp, note, st);
+  return el;
+}
+
+function paint(id) {
+  const a = answers[id] || {};
+  const c = $("q-" + id); if (!c) return;
+  c.classList.toggle("answered", !!(a.verdict || a.note));
+  c.querySelector(".choice").setAttribute("aria-pressed", String(a.verdict === "draft"));
+  const inp = $("title-" + id); if (inp && document.activeElement !== inp && typeof a.title === "string") inp.value = a.title;
+  const n = $("note-" + id); if (n && document.activeElement !== n && typeof a.note === "string") n.value = a.note;
+  const done = ITEMS.filter((x) => answers[x.id] && (answers[x.id].verdict || answers[x.id].note)).length;
+  $("progress").innerHTML = "<strong>" + done + "</strong> of " + ITEMS.length + " answered";
+}
+
+const writing = {};
+async function save(id, patch) {
+  const st = $("st-" + id);
+  answers[id] = Object.assign({}, answers[id], patch, { mpn: ITEMS.find((x) => x.id === id).mpn, updatedAt: new Date().toISOString() });
+  paint(id);
+  if (!db) { st.textContent = "Not saved: this view can't store answers."; st.className = "saved err"; return; }
+  if (writing[id]) { writing[id].pending = true; return; }
+  writing[id] = { pending: false };
+  st.textContent = "Saving…"; st.className = "saved";
+  try {
+    do { writing[id].pending = false; await db.doc("answers/" + id).set(answers[id]); } while (writing[id].pending);
+    st.textContent = "Saved"; st.className = "saved ok";
+  } catch (e) {
+    st.textContent = e && e.code === "not_granted" ? "You can view this page but not answer here." : "Couldn't save. Try again in a moment.";
+    st.className = "saved err";
+  } finally { delete writing[id]; }
+}
+
+ITEMS.forEach((d) => $("items").append(card(d)));
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { $("db-notice").hidden = false; return; }
+  db.collection("answers").onSnapshot((snap) => {
+    snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); });
+    ITEMS.forEach((x) => paint(x.id));
+  }, () => { $("db-notice").hidden = false; });
+})();
+</script>
