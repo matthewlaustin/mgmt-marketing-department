@@ -125,6 +125,9 @@ natural order: "O-Ring, Lid" → "Lid O-Ring".
 Examples: `Pentair 357255 - SuperFlo® DOE Pump Lid O-Ring` ("O-Ring, Lid");
 `Pentair 350091Z - SuperFlo® DOE Pump Lid` ("Lid").
 Parts are always brand Pentair, even on Sta-Rite product pages.
+Any SKU (part OR accessory, e.g. seal kits 356196/356197/356198, relay board 356365Z, cables)
+listed under more than one product family anywhere in the catalog also gets no family. Reviewers who
+see such a SKU on their page and know it is shared should apply this; consolidation enforces it.
 A part number listed under more than one product family (e.g. 230010Z under Low Profile and
 Top Feed; QuikSkim and QuikSkim Ultra parts pages) gets **no family** in its title; keep the
 printed part description only. Kit letters ("Kit (A)", "Kit D") are kept without brackets
