@@ -67,3 +67,17 @@ yours). Write only your review file (scratch files may go in
 
 Report back briefly: SKUs titled, dismissed, at "review" and why, and any rule that was unclear for a
 real case.
+
+## Rulings from earlier packets (apply them)
+
+- Words come from the web row and page; when the web wording differs from a catalog sibling's title
+  (e.g. "Pentair Pool Products®" vs "Pentair Aquatic Systems", "Float Valve" vs "Float Valve
+  Assembly"), use the web wording. Spellings stay as printed (Grey stays Grey, Gray stays Gray).
+  A noun may come from a catalog sibling's band only at "review", saying so in notes.
+- A SKU already recorded in an earlier web final (same MPN in the database with a pentair.com
+  source) is recorded again with the same title; web_check allows it.
+- A website number whose row is word-for-word a catalog SKU's and is not a Z/EC twin (e.g.
+  PA215GF vs P215GFA) is dismissed for Matthew; don't add words to separate them.
+- Website typos with no correct spelling on the page (e.g. "IntelliVavle") stay as printed, at review.
+- Unexplained or misnumbered web footnote markers are ignored; corrupted numbers (e.g. "39508 in.")
+  are left out of the title, at review.
