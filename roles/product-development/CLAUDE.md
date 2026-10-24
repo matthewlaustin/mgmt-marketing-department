@@ -11,3 +11,6 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
   work; the container is wiped when idle. Never push to `main`.
 - Problems that need a person go in `reports/needs-attention.md`; move on to the next brand.
 - Run `python3 -m pytest -q` before each commit that changes code.
+
+## Matthew's preferences (added with his permission)
+- Send reports, results and questions for Matthew as an Artifact page he can review in the Claude desktop or iOS app, with places to answer questions and leave follow-ups in the page (read answers back with ArtifactData). Keep the chat reply short and link the page.
