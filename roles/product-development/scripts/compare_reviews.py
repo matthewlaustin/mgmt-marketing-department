@@ -12,6 +12,9 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from product_namer.review import normalize_title  # noqa: E402
+
 WORK = Path(__file__).resolve().parents[1] / "data/work/pentair"
 FIELDS = ("brand", "title", "kind", "status", "replaced_by")
 
@@ -20,7 +23,8 @@ def load(review_dir: str, page: int) -> dict[str, dict]:
     path = WORK / review_dir / f"p{page:03d}.json"
     if not path.exists():
         return {}
-    return {r["mpn"]: r for r in json.loads(path.read_text()).get("records", [])}
+    return {r["mpn"]: dict(r, title=normalize_title(r.get("title", "")))
+            for r in json.loads(path.read_text()).get("records", [])}
 
 
 def main() -> int:

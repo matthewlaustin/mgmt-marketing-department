@@ -54,6 +54,12 @@ BANNED_IN_TITLE = [
 ]
 
 
+def normalize_title(title: str) -> str:
+    """Typographic clean-up applied to every final title: straight quotes, single spaces."""
+    title = title.replace("\u2018", "'").replace("\u2019", "'").replace("\u201c", '"').replace("\u201d", '"')
+    return re.sub(r"\s+", " ", title).strip()
+
+
 def normalize_token(raw: str) -> str:
     return raw.strip(TRAILING_MARKS).strip()
 

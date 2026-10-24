@@ -19,6 +19,9 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from product_namer.review import normalize_title  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / "data/work/pentair"
 DB = ROOT / "data/catalog.db"
@@ -86,7 +89,7 @@ def main() -> int:
     for path in sorted(review_dir.glob("p*.json")):
         review = json.loads(path.read_text())
         for rec in review.get("records", []):
-            rec = dict(rec, pdf_page=review["page"], printed_page=review.get("printed_page"),
+            rec = dict(rec, title=normalize_title(rec.get("title", "")), pdf_page=review["page"], printed_page=review.get("printed_page"),
                        page_type=review.get("page_type", "other"))
             by_mpn[rec["mpn"]].append(rec)
 

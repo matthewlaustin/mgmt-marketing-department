@@ -80,6 +80,12 @@ Clean-up:
   "XF Riser Base - Simplifies installation…" → "XF Riser Base"; "… - includes 2" → drop.
 - Obvious catalog typos ("Cryatal") are corrected only when the correct spelling is printed for
   the same item elsewhere on the page; note it.
+- Title Case for description words printed in lower case too ("3-way solar drain down valve" →
+  "3-Way Solar Drain Down Valve"); keep units and acronyms as in the rules (in, ft, V, GPM, GFCI).
+- When a row has a Model column and no description, the model goes in the title.
+- Pleatco cartridges, grids and cleaners are `kind: part`.
+- Pleatco Advanced numbers listed in an "Upgrade For" column of the Ultra tables are dismissed
+  with reason `other` ("Pleatco SKU, recorded on its own page"); the Ultra number is the row's SKU.
 - Title Case for words taken from all-caps bands ("DOE COMPLIANT SINGLE-SPEED TEFC" →
   "DOE Compliant Single-Speed TEFC"; keep acronyms upper case).
 - Titles must be unique: no two SKUs may end up with the same derived title.
