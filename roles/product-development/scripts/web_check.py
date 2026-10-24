@@ -32,8 +32,11 @@ def derived(title: str) -> str:
 
 
 def is_z_twin(a: str, b: str) -> bool:
-    """A trailing Z is the same part packaged for retail/service (Matthew, 2026-10-24)."""
-    return a.upper() + "Z" == b.upper() or b.upper() + "Z" == a.upper()
+    """Same product sold through another channel: a trailing Z is the retail/service pack
+    (Matthew, 2026-10-24); an "EC-" prefix is Pentair's e-commerce-exclusive number (printed on
+    pentair.com: "Products beginning with EC- are exclusive to e-commerce sales")."""
+    a, b = a.upper(), b.upper()
+    return a + "Z" == b or b + "Z" == a or a == "EC-" + b or b == "EC-" + a
 
 
 def check(pass_name: str, packet: str) -> list[str]:
