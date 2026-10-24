@@ -134,11 +134,11 @@ def main() -> int:
             )
         if status == "active":
             exported.append(row)
-    # Titles must be unique across the whole catalog, not just within a page.
+    # Derived titles (after "Brand MPN - ") must be unique across the whole catalog, not just within a page.
     dupes = con.execute(
-        "SELECT title, group_concat(mpn) FROM products WHERE title != '' AND status = 'active' "
-        "GROUP BY title HAVING count(*) > 1").fetchall()
-    for title, mpns in dupes:
+        "SELECT substr(title, instr(title, ' - ') + 3) AS derived, group_concat(mpn) FROM products "
+        "WHERE title != '' AND status = 'active' GROUP BY derived HAVING count(*) > 1").fetchall()
+    for _derived, mpns in dupes:
         for mpn in mpns.split(","):
             con.execute("UPDATE products SET needs_review = 1, review_notes = trim(review_notes || ' | ' || ?, ' |') "
                         "WHERE mpn = ?", (f"title shared with {mpns}", mpn))
