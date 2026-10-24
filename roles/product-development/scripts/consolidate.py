@@ -114,6 +114,30 @@ def load_harmonized() -> dict[str, dict]:
     return out
 
 
+def load_owner_decisions() -> dict[str, dict]:
+    """Matthew's answers (data/work/pentair/owner_decisions.json): status, brand and replacement calls."""
+    path = WORK / "owner_decisions.json"
+    if not path.exists():
+        return {}
+    return {d["mpn"]: d for d in json.loads(path.read_text())["decisions"]}
+
+
+def apply_owner_decision(row: dict, d: dict | None) -> None:
+    """Applied last: the owner's call wins over page reviews and harmonization."""
+    if not d:
+        return
+    if d.get("brand") and d["brand"] != row["brand"]:
+        derived = row["title"].split(" - ", 1)[1]
+        row["brand"] = d["brand"]
+        row["title"] = f"{d['brand']} {row['mpn']} - {derived}"
+    if d.get("status"):
+        row["status"] = d["status"]
+    if d.get("replaced_by"):
+        row["replaced_by"] = d["replaced_by"]
+    row["needs_review"] = 0
+    row["review_notes"] = f"decided: {d['reason']}"
+
+
 def main() -> int:
     review_dir = WORK / (sys.argv[1] if len(sys.argv) > 1 else "reviews_final")
     by_mpn: dict[str, list[dict]] = defaultdict(list)
@@ -132,6 +156,7 @@ def main() -> int:
                 rec["notes"] = f"printed as {printed}; " + (rec.get("notes") or "")
             by_mpn[canon].append(rec)
     overrides = load_harmonized()
+    owner = load_owner_decisions()
 
     DB.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(DB)
@@ -174,6 +199,7 @@ def main() -> int:
             "title_pdf_page": best["pdf_page"], "pages": ",".join(str(r["pdf_page"]) for r in recs),
             "needs_review": needs_review, "review_notes": " | ".join(notes), "source": SOURCE,
         }
+        apply_owner_decision(row, owner.get(mpn))
         con.execute(f"INSERT INTO products ({','.join(row)}) VALUES ({','.join('?' * len(row))})", list(row.values()))
         for r in recs:
             con.execute(
