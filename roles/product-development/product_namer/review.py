@@ -71,7 +71,12 @@ def is_candidate(tok: str) -> bool:
     if PRICE.match(tok) or SPEC.match(tok) or YEARS.match(tok) or WORDY.match(tok):
         return False
     if re.fullmatch(r"[\d.,/\-x×]+", tok):  # numbers, ranges, fractions, dimensions
-        return len(re.sub(r"\D", "", tok)) >= 5 and re.fullmatch(r"\d{5,9}[A-Z]{0,3}", tok) is not None
+        if re.fullmatch(r"\d{5,9}", tok):
+            return True
+        # dash-joined part numbers such as 18201-0300 or 27002-0036, but not phone numbers
+        return (re.fullmatch(r"\d{3,6}(-\d{2,6}){1,2}", tok) is not None
+                and len(re.sub(r"\D", "", tok)) >= 7
+                and not re.fullmatch(r"\d{3}-\d{3}-\d{4}", tok))
     has_digit = any(c.isdigit() for c in tok)
     has_alpha = any(c.isalpha() for c in tok)
     return has_digit and has_alpha and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9\-./]*", tok) is not None

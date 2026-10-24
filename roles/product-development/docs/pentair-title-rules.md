@@ -55,6 +55,10 @@ Built only from words printed in the catalog, in this order:
    ("DIVERTER & CHECK VALVES"), sizes covered by the row, and "(CONT'D)".
    **Accessories get no product-family prefix [decided]** (they are often shared across lines):
    `Pentair 356904Z - Keypad Relocation Kit`.
+   If the printed description itself names the product it fits ("ETi 250 Propane Conversion
+   Kit"), keep that name — it is description, not a prefix. For model-specific accessories whose
+   description does not name the product, append "for {Family}" from the page heading
+   (`Propane Gas Conversion Kit for ETi® 400`), so it cannot be confused with other heaters' kits.
    An item in an ordering table that repairs or replaces part of *that* product (rebuild kit,
    replacement cartridge, motor) is `kind: part` and keeps the family:
    `Pentair 270119Z - FullFloXF® Check Valve Rebuild Kit`. Add-ons used alongside the product
@@ -68,7 +72,12 @@ Built only from words printed in the catalog, in this order:
    cord length etc. only if, without them, two SKUs would get the same title. A page with one
    pump gets no specs. Voltage: as printed plus "V" (`115/208-230V`).
 4. **Product noun** in singular, Title Case: Diverter, Pump, Pool Light, Filter, Heater.
-   **Order: family, then description words and any added specs, then the noun last**
+   **Order: family, then description words and any added specs, then the noun last**,
+   with three allowed exceptions that keep Pentair's wording natural:
+   - a printed "with …" or "for …" qualifier may follow the noun
+     (`THS Single Tank Manifold Kit with Butterfly Valves`, `Free Standing Base for Dynamic Filter Series II and III`);
+   - a variant footnote ("* with 2 in. valve") becomes "with 2 in Valve" after the noun;
+   - a parenthetical that is the only sibling difference follows after a comma (`…, Long Thread`).
    (`IntelliBrite® Architectural Series Color 12V 50 ft Cord Pool Light`). Only a pack size
    follows the noun (`…, Set of 4`). Dimensions use lowercase "x": `7 in x 14-1/8 in`.
 
@@ -85,6 +94,10 @@ Clean-up:
 - Title Case for description words printed in lower case too ("3-way solar drain down valve" →
   "3-Way Solar Drain Down Valve"); keep units and acronyms as in the rules (in, ft, V, GPM, GFCI).
 - When a row has a Model column and no description, the model goes in the title.
+- Columns in thousands ("BTU (000's)") give a model size, not a unit: `MasterTemp® 250 … Heater`,
+  never "250 BTU".
+- Codes that are not orderable as printed (templates needing an option letter, e.g. Stark
+  "5S1-30-06" vs "5S3-50A-10") are recorded with confidence "review" and a note.
 - Pleatco cartridges, grids and cleaners are `kind: part`.
 - Pleatco Advanced numbers listed in an "Upgrade For" column of the Ultra tables are dismissed
   with reason `other` ("Pleatco SKU, recorded on its own page"); the Ultra number is the row's SKU.

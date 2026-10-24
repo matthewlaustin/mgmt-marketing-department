@@ -119,3 +119,11 @@ def test_multi_word_mpn():
     review["records"][-1]["mpn"] = "PKG 189Z"
     review["records"][-1]["title"] = "Pentair PKG 189Z - Union x 2 in Slip Adapter, Set of 2"
     assert any("multi-word MPN" in e for e in validate(review, words))
+
+
+def test_dash_digit_part_numbers_are_candidates():
+    assert is_candidate("18201-0300")
+    assert is_candidate("27002-0036")
+    assert not is_candidate("800-831-7133")
+    assert not is_candidate("2003-2012")
+    assert not is_candidate("10-12")
