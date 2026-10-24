@@ -131,6 +131,9 @@ natural order: "O-Ring, Lid" → "Lid O-Ring".
 Examples: `Pentair 357255 - SuperFlo® DOE Pump Lid O-Ring` ("O-Ring, Lid");
 `Pentair 350091Z - SuperFlo® DOE Pump Lid` ("Lid").
 Parts are always brand Pentair, even on Sta-Rite product pages.
+When several rows on a parts page print the same bare description ("O-Ring"), the assembly they
+belong to may be taken from labels printed on the page's exploded diagram ("Valve & Gauge Assembly
+O-Ring"); mark confidence "review". If nothing printed tells them apart, keep the bare title and flag.
 Any SKU (part OR accessory, e.g. seal kits 356196/356197/356198, relay board 356365Z, cables)
 listed under more than one product family anywhere in the catalog also gets no family. Reviewers who
 see such a SKU on their page and know it is shared should apply this; consolidation enforces it.
