@@ -134,6 +134,16 @@ def main() -> int:
             )
         if status == "active":
             exported.append(row)
+    # Titles must be unique across the whole catalog, not just within a page.
+    dupes = con.execute(
+        "SELECT title, group_concat(mpn) FROM products WHERE title != '' AND status = 'active' "
+        "GROUP BY title HAVING count(*) > 1").fetchall()
+    for title, mpns in dupes:
+        for mpn in mpns.split(","):
+            con.execute("UPDATE products SET needs_review = 1, review_notes = trim(review_notes || ' | ' || ?, ' |') "
+                        "WHERE mpn = ?", (f"title shared with {mpns}", mpn))
+    exported = [dict(zip([c[0] for c in con.execute("SELECT * FROM products").description], row))
+                for row in con.execute("SELECT * FROM products WHERE status = 'active' ORDER BY mpn")]
     con.commit()
 
     EXPORT.parent.mkdir(parents=True, exist_ok=True)
@@ -146,7 +156,8 @@ def main() -> int:
 
     counts = dict(con.execute("SELECT status, count(*) FROM products GROUP BY status").fetchall())
     conflicts = con.execute("SELECT count(DISTINCT mpn) FROM conflicts").fetchone()[0]
-    print(f"products: {sum(counts.values())} {counts}; exported {len(exported)}; MPNs with page conflicts: {conflicts}")
+    print(f"products: {sum(counts.values())} {counts}; exported {len(exported)}; MPNs with page conflicts: {conflicts}; "
+          f"duplicate titles: {len(dupes)}")
     con.close()
     return 0
 
