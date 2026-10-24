@@ -86,7 +86,9 @@ def is_candidate(tok: str) -> bool:
 
 
 def page_words(page: pdfplumber.page.Page) -> list[str]:
-    return [w["text"] for w in page.extract_words(keep_blank_chars=False)]
+    # Splitting on font size separates superscript footnote markers from part numbers
+    # ("R171096" + "¹" instead of the fused "R1710961").
+    return [w["text"] for w in page.extract_words(keep_blank_chars=False, extra_attrs=["size"])]
 
 
 def page_tokens(words: list[str]) -> tuple[set[str], set[str]]:

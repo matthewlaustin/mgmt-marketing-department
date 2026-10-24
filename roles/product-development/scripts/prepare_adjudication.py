@@ -16,7 +16,19 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from product_namer.review import normalize_title  # noqa: E402
+import pdfplumber  # noqa: E402
+
+from product_namer.review import normalize_title, page_words, validate  # noqa: E402
+
+PDF = Path(__file__).resolve().parents[1] / "data/raw/pentair/pdf/catalog2025/pentair-catalog-2025-2026-digital-1-compressed.pdf"
+_pdf = None
+
+
+def words_for(page: int) -> list[str]:
+    global _pdf
+    if _pdf is None:
+        _pdf = pdfplumber.open(PDF)
+    return page_words(_pdf.pages[page - 1])
 
 WORK = Path(__file__).resolve().parents[1] / "data/work/pentair"
 FIELDS = ("brand", "kind", "status", "replaced_by", "title")
@@ -69,6 +81,8 @@ def main() -> int:
                     diffs.append({"mpn": mpn, "field": f, "A": va, "B": vb})
         if a.get("page_type") != b.get("page_type"):
             diffs.append({"field": "page_type", "A": a.get("page_type"), "B": b.get("page_type")})
+        if not diffs and validate(a, words_for(page)):
+            diffs.append({"field": "validation", "A": "pass A no longer validates (rules/extraction changed)", "B": ""})
         if diffs or page in FORCE_ADJUDICATE:
             (adj_dir / a_path.name).write_text(json.dumps({"page": page, "differences": diffs}, indent=1, ensure_ascii=False))
             queued += 1
