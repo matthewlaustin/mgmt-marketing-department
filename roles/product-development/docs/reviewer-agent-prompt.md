@@ -1,7 +1,7 @@
 # Reviewer agent prompt (full catalog run)
 
 Launch one agent per batch per pass. `{PASS}` is `reviews` (pass A) or `reviews_b` (pass B);
-`{OTHER}` is the other one. `{PAGES}` comes from `data/work/pentair/batches.json`.
+`{OTHER}` is the other one. `{PAGES}` comes from `data/work/pentair/batches.json`; `{FIRST_PAGE}` is the first page of the batch.
 Progress: `python3 scripts/run_status.py`. After both passes: `compare_reviews.py`, adjudicate
 disagreements, then `consolidate.py`.
 
@@ -26,7 +26,8 @@ data/work/pentair/crops_{PASS}/ and Read the crop. Neighbouring pages (packets/i
 your list) may be viewed for context, e.g. a table continued from the previous page, a legend,
 or the directory (p004–p007) for trademark spelling and Sta-Rite families.
 
-Write only your own review JSONs and crops. Do not open data/work/pentair/{OTHER},
+Keep any helper scripts and scratch files ONLY in data/work/pentair/scratch/{PASS}/p{FIRST_PAGE}/ (create it; never use a shared scratchpad, other passes work in parallel).
+Write only your own review JSONs, crops and that scratch folder. Do not open data/work/pentair/{OTHER},
 data/work/pentair/calibration or data/work/pentair/pilot1: they are independent reviews.
 Never edit scripts, rules or packets. Work until every page in your list validates OK.
 
