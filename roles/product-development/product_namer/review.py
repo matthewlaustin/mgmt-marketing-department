@@ -148,6 +148,27 @@ def phrase_on_page(mpn: str, words: list[str]) -> bool:
     return any(norm[i:i + len(parts)] == parts for i in range(len(norm) - len(parts) + 1))
 
 
+def title_problems(brand: str, mpn: str, title: str, kind: str | None) -> list[str]:
+    """Shape rules every final title must meet, wherever it was decided (page review or harmonization)."""
+    errors = []
+    prefix = f"{brand} {mpn} - "
+    if not title.startswith(prefix):
+        errors.append(f"title must start with {prefix!r}")
+    derived = title[len(prefix):] if title.startswith(prefix) else title
+    if not derived.strip():
+        errors.append("empty derived title")
+    for pattern, message in BANNED_IN_TITLE:
+        if pattern.search(derived):
+            errors.append(f"{message}: {derived!r}")
+    if kind in ("part", "accessory") and brand not in ("Pentair", "Pleatco"):
+        errors.append("parts and accessories are always brand Pentair")
+    first = derived.split()[0] if derived else ""
+    if first and first[:1].isalpha() and first.isupper() and len(first) > 4 \
+            and not re.search(r"\d", first) and first.rstrip("®™") not in UPPERCASE_OK:
+        errors.append("product family in all caps; use Pentair's mixed-case trademark spelling")
+    return errors
+
+
 def validate(review: dict, words: list[str]) -> list[str]:
     """Return a list of problems; empty means the review passes."""
     errors: list[str] = []
@@ -183,21 +204,9 @@ def validate(review: dict, words: list[str]) -> list[str]:
             if rec.get("status") != "discontinued":
                 errors.append(f"{where}: records on a discontinued list must have status discontinued")
             continue
+        errors.extend(f"{where}: {e}" for e in title_problems(brand, mpn, title, rec.get("kind")))
         prefix = f"{brand} {mpn} - "
-        if not title.startswith(prefix):
-            errors.append(f"{where}: title must start with {prefix!r}")
         derived = title[len(prefix):] if title.startswith(prefix) else title
-        if not derived.strip():
-            errors.append(f"{where}: empty derived title")
-        for pattern, message in BANNED_IN_TITLE:
-            if pattern.search(derived):
-                errors.append(f"{where}: {message}: {derived!r}")
-        if rec.get("kind") in ("part", "accessory") and brand not in ("Pentair", "Pleatco"):
-            errors.append(f"{where}: parts and accessories are always brand Pentair")
-        first = derived.split()[0] if derived else ""
-        if first and first[:1].isalpha() and first.isupper() and len(first) > 4 \
-                and not re.search(r"\d", first) and first.rstrip("®™") not in UPPERCASE_OK:
-            errors.append(f"{where}: product family in all caps; use Pentair's mixed-case trademark spelling")
         if derived in titles_seen and not provisional:
             other = titles_seen[derived]
             # identical printed descriptions with nothing to tell them apart: allowed only when both

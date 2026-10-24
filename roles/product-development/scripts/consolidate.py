@@ -83,6 +83,15 @@ CREATE TABLE conflicts (
 """
 
 
+def load_harmonized() -> dict[str, dict]:
+    """Cross-page title decisions from the harmonization pass (data/work/pentair/harmonize/out/*.json)."""
+    out: dict[str, dict] = {}
+    for path in sorted((WORK / "harmonize/out").glob("*.json")):
+        for d in json.loads(path.read_text()).get("decisions", []):
+            out[d["mpn"].upper()] = d
+    return out
+
+
 def main() -> int:
     review_dir = WORK / (sys.argv[1] if len(sys.argv) > 1 else "reviews_final")
     by_mpn: dict[str, list[dict]] = defaultdict(list)
@@ -91,7 +100,16 @@ def main() -> int:
         for rec in review.get("records", []):
             rec = dict(rec, title=normalize_title(rec.get("title", "")), pdf_page=review["page"], printed_page=review.get("printed_page"),
                        page_type=review.get("page_type", "other"))
-            by_mpn[rec["mpn"]].append(rec)
+            # "070387z" and "070387Z" are the same SKU printed in different case: one product, upper-case MPN
+            printed = rec["mpn"]
+            canon = printed.upper()
+            if canon != printed:
+                prefix = f"{rec.get('brand')} {printed} - "
+                if rec["title"].startswith(prefix):
+                    rec["title"] = f"{rec.get('brand')} {canon} - " + rec["title"][len(prefix):]
+                rec["notes"] = f"printed as {printed}; " + (rec.get("notes") or "")
+            by_mpn[canon].append(rec)
+    overrides = load_harmonized()
 
     DB.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(DB)
@@ -114,6 +132,12 @@ def main() -> int:
                 con.execute("INSERT INTO conflicts VALUES (?,?,?)", (mpn, field, json.dumps(values, ensure_ascii=False)))
                 if field == "brand":
                     notes.append(f"brand differs between pages: {values}")
+        h = overrides.get(mpn)
+        if h:
+            best = dict(best, title=h["title"], product_line=h.get("product_line", best.get("product_line", "")),
+                        kind=h.get("kind", best["kind"]))
+            if h.get("confidence") == "review":
+                notes.append(f"harmonized: {h.get('reason', '')}")
         replaced_by = next((r.get("replaced_by") for r in recs if r.get("replaced_by")), "")
         fits = next((r.get("fits") for r in recs if r.get("fits")), "")
         needs_review = int(bool(notes))
