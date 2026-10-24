@@ -154,6 +154,12 @@ printed part description only. A footnoted fit limit ("Used on filters manufactu
 "for Filters Made After 11/98" when it is the only difference between SKUs (confidence review).
 Kit letters ("Kit (A)", "Kit D") are kept without brackets
 when they are the only difference between sibling kits.
+Parent product numbers printed in a parts-page heading, band or "Replacement Parts for Product #…"
+line (e.g. "Product No.: R211084 / Model No.: 186-A / Description: Leaf Trap") are dismissed on
+parts pages (reason `model_name`), not recorded: they are titled from their own whole-goods page.
+After the run, every dismissed parent number that no page records is listed for follow-up.
+Card/pack counts ("4 per card", "Qty 3" describing a kit's contents) → ", Set of N".
+"1 per card, bubble pack" is packaging: append ", Bubble Pack" only when it is the sole sibling difference.
 
 ## Pleatco cartridges [decided: short, no fit list]
 `Pleatco {MPN} - {Line} Filter Cartridge {sq ft} sq ft {diameter} x {length}`, e.g.
