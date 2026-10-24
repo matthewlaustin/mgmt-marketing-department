@@ -83,7 +83,10 @@ Built only from words printed in the catalog, in this order:
    - a printed "with …" or "for …" qualifier may follow the noun
      (`THS Single Tank Manifold Kit with Butterfly Valves`, `Free Standing Base for Dynamic Filter Series II and III`);
    - a variant footnote ("* with 2 in. valve") becomes "with 2 in Valve" after the noun;
-   - a parenthetical that is the only sibling difference follows after a comma (`…, Long Thread`).
+   - a parenthetical that is the only sibling difference follows after a comma (`…, Long Thread`);
+   - a description that is the noun followed by a comma-separated spec list ("Venturi Jet, 5/16 in.
+     nozzle, 1/2 in. socket air …") keeps Pentair's printed order.
+   Colour still goes immediately before the noun, never first in the title.
    (`IntelliBrite® Architectural Series Color 12V 50 ft Cord Pool Light`). Only a pack size
    follows the noun (`…, Set of 4`). Dimensions use lowercase "x": `7 in x 14-1/8 in`.
 
