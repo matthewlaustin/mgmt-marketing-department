@@ -1,6 +1,6 @@
 """Merge validated page reviews into the catalog database and export the sellable SKUs.
 
-  python3 scripts/consolidate.py [review_dir]      # default: reviews
+  python3 scripts/consolidate.py [review_dir]      # default: reviews_final
 
 Writes data/catalog.db (tables: products, evidence, conflicts) and
 data/exports/pentair_skus.csv (status active only: USA, not discontinued).
@@ -84,7 +84,7 @@ CREATE TABLE conflicts (
 
 
 def main() -> int:
-    review_dir = WORK / (sys.argv[1] if len(sys.argv) > 1 else "reviews")
+    review_dir = WORK / (sys.argv[1] if len(sys.argv) > 1 else "reviews_final")
     by_mpn: dict[str, list[dict]] = defaultdict(list)
     for path in sorted(review_dir.glob("p*.json")):
         review = json.loads(path.read_text())
