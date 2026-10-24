@@ -38,6 +38,7 @@ PRIORITY = {
     "discontinued_list": 5,
     "directory": 9,
     "other": 6,
+    "web": 10,  # Phase 2: pentair.com product pages, used only for SKUs the catalog doesn't list
 }
 # Canonical trademark spellings (directory pp. 4-7), applied to every title and product line. Only marked
 # forms are rewritten, so "System 2 Pumps" (IntelliChem) and "System 2.5 in" are left alone.
@@ -114,6 +115,22 @@ def load_harmonized() -> dict[str, dict]:
     return out
 
 
+def load_web_records() -> list[dict]:
+    """Phase 2: final reviews of website-only SKUs (data/work/pentair/web/final/*.json), as evidence rows."""
+    urls = {}
+    for path in (WORK / "web/packets").glob("w*.json"):
+        for g in json.loads(path.read_text())["pages"]:
+            for s in g["skus"]:
+                urls[s["mpn"]] = g["url"]
+    out = []
+    for path in sorted((WORK / "web/final").glob("w*.json")):
+        for r in json.loads(path.read_text()).get("records", []):
+            out.append(dict(r, title=normalize_title(r.get("title", "")), pdf_page=0, printed_page="",
+                            page_type="web", context=urls.get(r["mpn"], ""),
+                            source_url=f"pentair.com product page {urls.get(r['mpn'], '')}"))
+    return out
+
+
 def load_owner_decisions() -> dict[str, dict]:
     """Matthew's answers (data/work/pentair/owner_decisions.json): status, brand and replacement calls."""
     path = WORK / "owner_decisions.json"
@@ -155,6 +172,9 @@ def main() -> int:
                     rec["title"] = f"{rec.get('brand')} {canon} - " + rec["title"][len(prefix):]
                 rec["notes"] = f"printed as {printed}; " + (rec.get("notes") or "")
             by_mpn[canon].append(rec)
+    for rec in load_web_records():
+        if rec["mpn"] not in by_mpn:
+            by_mpn[rec["mpn"]].append(rec)
     overrides = load_harmonized()
     owner = load_owner_decisions()
 
@@ -197,7 +217,8 @@ def main() -> int:
             "status": status, "replaced_by": replaced_by, "product_line": best.get("product_line", ""),
             "parent_product": best.get("parent_product", ""), "fits": fits,
             "title_pdf_page": best["pdf_page"], "pages": ",".join(str(r["pdf_page"]) for r in recs),
-            "needs_review": needs_review, "review_notes": " | ".join(notes), "source": SOURCE,
+            "needs_review": needs_review, "review_notes": " | ".join(notes),
+            "source": best.get("source_url") or SOURCE,
         }
         apply_owner_decision(row, owner.get(mpn))
         con.execute(f"INSERT INTO products ({','.join(row)}) VALUES ({','.join('?' * len(row))})", list(row.values()))
