@@ -47,6 +47,7 @@ CANONICAL = [
     (re.compile(r"Hi-Flow™"), "HiFlow™"),
     (re.compile(r"ThermalFlo™"), "ThermalFlo®"),
     (re.compile(r"IntelliProXF(?![®™])"), "IntelliProXF®"),
+    (re.compile(r"\bS/S\b"), "SS"),  # stainless steel: "SS" is the catalog's majority form
 ]
 
 
