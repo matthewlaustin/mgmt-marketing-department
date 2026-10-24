@@ -127,3 +127,13 @@ def test_dash_digit_part_numbers_are_candidates():
     assert not is_candidate("800-831-7133")
     assert not is_candidate("2003-2012")
     assert not is_candidate("10-12")
+
+
+def test_line_wrapped_mpn():
+    words = WORDS + ["41201-", "Chassis", "0242W"]
+    review = ok_review()
+    review["records"].append(record("41201-0242W", "Pentair 41201-0242W - Chassis with Pad", kind="part"))
+    assert validate(review, words) == []
+    review["records"][-1]["mpn"] = "41201-0243W"
+    review["records"][-1]["title"] = "Pentair 41201-0243W - Chassis with Pad"
+    assert any("not found verbatim" in e for e in validate(review, words))

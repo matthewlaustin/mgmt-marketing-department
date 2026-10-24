@@ -131,6 +131,11 @@ def on_page(sku: str, all_tokens: set[str]) -> bool:
     """Exact token, or fused with the next word in the text layer ("ULTRA-A5-PAK4Pentair")."""
     if sku in all_tokens:
         return True
+    # part number wrapped onto two lines after a hyphen ("41201-" / "0242W")
+    if "-" in sku:
+        head, _, tail = sku.rpartition("-")
+        if head + "-" in all_tokens and tail in all_tokens:
+            return True
     return any(
         t.startswith(sku) and re.match(r"[A-Z][a-z]", t[len(sku):len(sku) + 2] or "") for t in all_tokens
     )
@@ -211,6 +216,11 @@ def validate(review: dict, words: list[str]) -> list[str]:
     overlap = seen & set(dismissed)
     for tok in sorted(overlap):
         errors.append(f"token {tok!r} is both a record and dismissed")
+    # pieces of a line-wrapped MPN ("41201-" + "0242W") are accounted for by its record
+    for m in list(seen):
+        if "-" in m and m not in all_tokens:
+            head, _, tail = m.rpartition("-")
+            seen |= {head + "-", tail}
     # parts of a recorded multi-word MPN ("188Z" of "PKG 188Z") are accounted for by that record
     seen |= {part for m in multi_word for part in m.split(" ")}
     fused_ok = {t for t in candidates if any(t.startswith(k) and re.match(r"[A-Z][a-z]", t[len(k):len(k) + 2] or "")
