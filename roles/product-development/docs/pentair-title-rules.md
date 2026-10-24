@@ -38,6 +38,8 @@ Pentair is the default brand. Only one brand per SKU.
 ## MPN
 - Exactly as printed in the SKU column (Product / Part No. / Item # / "Product Number By …"),
   character for character, including suffix letters (`354545SS`, `6020018Z`).
+- Part numbers printed with a space ("PKG 188Z", "SD 35") are recorded exactly as printed, space
+  included; the validator accepts them when the words appear consecutively on the page.
 - Remove only footnote markers (`*`, `¹`, `†`) and record what they meant.
 - Must exist exactly in the page's text layer. Numbers read only from the image are never accepted.
 - Never take numbers from cross-reference columns (Mfr #, Unicel, Filbur, competitor or OEM

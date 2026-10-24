@@ -109,3 +109,13 @@ def test_uppercase_dimension_x_rejected():
     review = ok_review()
     review["records"][0]["title"] = "Pentair 263056 - FullFloXF® Diverter 7 in X 14 in"
     assert any("lowercase 'x'" in e for e in validate(review, WORDS))
+
+
+def test_multi_word_mpn():
+    words = WORDS + ["PKG", "188Z", "Union", "x", "2", "in."]
+    review = ok_review()
+    review["records"].append(record("PKG 188Z", "Pentair PKG 188Z - Union x 2 in Slip Adapter, Set of 2", kind="part"))
+    assert validate(review, words) == []
+    review["records"][-1]["mpn"] = "PKG 189Z"
+    review["records"][-1]["title"] = "Pentair PKG 189Z - Union x 2 in Slip Adapter, Set of 2"
+    assert any("multi-word MPN" in e for e in validate(review, words))

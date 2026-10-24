@@ -126,10 +126,18 @@ def on_page(sku: str, all_tokens: set[str]) -> bool:
     )
 
 
+def phrase_on_page(mpn: str, words: list[str]) -> bool:
+    """A multi-word MPN printed with spaces ("PKG 188Z") must appear as consecutive words."""
+    parts = mpn.split(" ")
+    norm = [normalize_token(w) for w in words]
+    return any(norm[i:i + len(parts)] == parts for i in range(len(norm) - len(parts) + 1))
+
+
 def validate(review: dict, words: list[str]) -> list[str]:
     """Return a list of problems; empty means the review passes."""
     errors: list[str] = []
     all_tokens, candidates = page_tokens(words)
+    multi_word = {r.get("mpn", "") for r in review.get("records", []) if " " in r.get("mpn", "")}
     seen: set[str] = set()
     titles_seen: dict[str, str] = {}
     page_type = review.get("page_type", "other")
@@ -140,7 +148,10 @@ def validate(review: dict, words: list[str]) -> list[str]:
         if not mpn:
             errors.append(f"{where}: missing mpn")
             continue
-        if not on_page(mpn, all_tokens):
+        if " " in mpn:
+            if not re.fullmatch(r"[A-Z0-9][A-Z0-9\-./]*( [A-Z0-9\-./]+){1,2}", mpn) or not phrase_on_page(mpn, words):
+                errors.append(f"{where}: multi-word MPN not found as consecutive words on the page")
+        elif not on_page(mpn, all_tokens):
             errors.append(f"{where}: MPN not found verbatim in page text layer")
         if mpn in seen:
             errors.append(f"{where}: duplicate MPN on page")
@@ -189,6 +200,8 @@ def validate(review: dict, words: list[str]) -> list[str]:
     overlap = seen & set(dismissed)
     for tok in sorted(overlap):
         errors.append(f"token {tok!r} is both a record and dismissed")
+    # parts of a recorded multi-word MPN ("188Z" of "PKG 188Z") are accounted for by that record
+    seen |= {part for m in multi_word for part in m.split(" ")}
     fused_ok = {t for t in candidates if any(t.startswith(k) and re.match(r"[A-Z][a-z]", t[len(k):len(k) + 2] or "")
                                              for k in seen | set(dismissed))}
     unaccounted = candidates - seen - set(dismissed) - fused_ok
