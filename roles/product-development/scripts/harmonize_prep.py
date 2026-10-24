@@ -1,6 +1,7 @@
 """Build work packets for the harmonization pass (one title per SKU across the whole catalog).
 
-  python3 scripts/harmonize_prep.py          # after consolidate.py
+  python3 scripts/harmonize_prep.py              # after consolidate.py
+  python3 scripts/harmonize_prep.py --leftover    # after all packets: one more packet for duplicates still left
 
 Reads data/catalog.db and writes data/work/pentair/harmonize/packets/hNN.json. A SKU goes into a
 packet when:
@@ -42,6 +43,21 @@ def main() -> int:
     no_line = {m for m, p in products.items()
                if p["status"] == "active" and p["kind"] == "part" and not p["product_line"]}
     wanted = conflicted | no_line | {m for g in dup_groups for m in g}
+    leftover = len(sys.argv) > 1 and sys.argv[1] == "--leftover"
+    if leftover:
+        # duplicates that remain once every decision is applied, including SKUs that were in no packet
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from harmonize_check import catalog_duplicates
+        decided = {}
+        for path in sorted((WORK / "harmonize/out").glob("h*.json")):
+            for d in json.loads(path.read_text()).get("decisions", []):
+                decided[d["mpn"]] = d
+        for m, d in decided.items():
+            if m in products:
+                products[m].update(title=d["title"], product_line=d.get("product_line", products[m]["product_line"]))
+        dup_groups = [sorted(ms) for ms, _msg in catalog_duplicates()]
+        wanted = {m for g in dup_groups for m in g}
+        conflicted, no_line = conflicted & wanted, set()
 
     # units: a duplicate-title group or a single SKU; ordered by first catalog page
     in_group = {m: g for g in dup_groups for m in g}
@@ -65,8 +81,12 @@ def main() -> int:
         headings[pk["page"]] = {k: pk.get(k) for k in ("heading", "subtitle", "side_tab")}
 
     OUT.mkdir(parents=True, exist_ok=True)
-    for old in OUT.glob("h*.json"):
-        old.unlink()
+    first_number = 1
+    if leftover:
+        first_number = len(list(OUT.glob("h*.json"))) + 1
+    else:
+        for old in OUT.glob("h*.json"):
+            old.unlink()
     packets, current = [], []
     for _first, unit in units:
         if current and len(current) + len(unit) > MAX_SKUS:
@@ -75,7 +95,7 @@ def main() -> int:
         current.extend(unit)
     if current:
         packets.append(current)
-    for i, mpns in enumerate(packets, 1):
+    for i, mpns in enumerate(packets, first_number):
         items = []
         for m in mpns:
             p = products[m]
