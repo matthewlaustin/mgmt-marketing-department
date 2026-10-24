@@ -110,18 +110,28 @@ def build_packet(pdf_path: str, page_number: int, png_dir: str) -> dict:
     }
 
 
+def on_page(sku: str, all_tokens: set[str]) -> bool:
+    """Exact token, or fused with the next word in the text layer ("ULTRA-A5-PAK4Pentair")."""
+    if sku in all_tokens:
+        return True
+    return any(
+        t.startswith(sku) and re.match(r"[A-Z][a-z]", t[len(sku):len(sku) + 2] or "") for t in all_tokens
+    )
+
+
 def validate(review: dict, words: list[str]) -> list[str]:
     """Return a list of problems; empty means the review passes."""
     errors: list[str] = []
     all_tokens, candidates = page_tokens(words)
     seen: set[str] = set()
+    titles_seen: dict[str, str] = {}
     for i, rec in enumerate(review.get("records", [])):
         where = f"record {i} ({rec.get('mpn')})"
         mpn = rec.get("mpn", "")
         if not mpn:
             errors.append(f"{where}: missing mpn")
             continue
-        if mpn not in all_tokens:
+        if not on_page(mpn, all_tokens):
             errors.append(f"{where}: MPN not found verbatim in page text layer")
         if mpn in seen:
             errors.append(f"{where}: duplicate MPN on page")
@@ -139,12 +149,20 @@ def validate(review: dict, words: list[str]) -> list[str]:
         for pattern, message in BANNED_IN_TITLE:
             if pattern.search(derived):
                 errors.append(f"{where}: {message}: {derived!r}")
+        if rec.get("kind") in ("part", "accessory") and brand not in ("Pentair", "Pleatco"):
+            errors.append(f"{where}: parts and accessories are always brand Pentair")
+        if derived and derived[:1].isalpha() and derived.split()[0].isupper() and len(derived.split()[0]) > 4 \
+                and not re.search(r"\d", derived.split()[0]):
+            errors.append(f"{where}: product family in all caps; use Pentair's mixed-case trademark spelling")
+        if derived in titles_seen:
+            errors.append(f"{where}: derived title identical to {titles_seen[derived]}'s; add the distinguishing spec")
+        titles_seen.setdefault(derived, mpn)
         if rec.get("status", "active") not in STATUSES:
             errors.append(f"{where}: bad status {rec.get('status')!r}")
         if rec.get("kind") not in KINDS:
             errors.append(f"{where}: bad kind {rec.get('kind')!r}")
         replaced_by = rec.get("replaced_by")
-        if replaced_by and replaced_by not in all_tokens:
+        if replaced_by and not on_page(replaced_by, all_tokens):
             errors.append(f"{where}: replaced_by {replaced_by!r} not on page")
 
     dismissed = {}
@@ -158,7 +176,9 @@ def validate(review: dict, words: list[str]) -> list[str]:
     overlap = seen & set(dismissed)
     for tok in sorted(overlap):
         errors.append(f"token {tok!r} is both a record and dismissed")
-    unaccounted = candidates - seen - set(dismissed)
+    fused_ok = {t for t in candidates if any(t.startswith(k) and re.match(r"[A-Z][a-z]", t[len(k):len(k) + 2] or "")
+                                             for k in seen | set(dismissed))}
+    unaccounted = candidates - seen - set(dismissed) - fused_ok
     for tok in sorted(unaccounted):
         errors.append(f"unaccounted SKU-shaped token {tok!r}: add a record or dismiss it with a reason")
     return errors

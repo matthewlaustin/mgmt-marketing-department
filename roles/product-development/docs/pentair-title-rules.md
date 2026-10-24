@@ -1,10 +1,10 @@
 # Pentair catalog: SKU and title rules
 
 Source: Pentair Pool Product Catalog 2025–2026 (digital edition, updated December 2025),
-`pentair-catalog-2025-2026-digital-1-compressed.pdf`, 540 PDF pages.
-Printed page number = PDF page − 2.
+`pentair-catalog-2025-2026-digital-1-compressed.pdf`, 540 PDF pages
+(sha256 in `data/work/pentair/SOURCE_SHA256`). Printed page number = PDF page − 2.
 
-Status: **DRAFT.** Rules marked *(proposed)* are awaiting Matthew's decision.
+Decisions from Matthew are marked **[decided]**.
 
 ## Title format
 
@@ -12,71 +12,95 @@ Status: **DRAFT.** Rules marked *(proposed)* are awaiting Matthew's decision.
 {Brand} {MPN} - {Derived title}
 ```
 
-Reference example (from Matthew), printed page 269:
-`Pentair 263056 - FULLFLOXF® 3-Way CPVC 2.5 in Diverter`
+Reference example (Matthew, printed page 269, case adjusted per the casing decision):
+`Pentair 263056 - FullFloXF® 3-Way CPVC 2.5 in Diverter`
 
 | Part | Where it comes from on the page |
 |---|---|
-| `Pentair` | brand of the product family (see Brand) |
+| `Pentair` | brand (see Brand) |
 | `263056` | Product column, exactly as printed |
-| `FULLFLOXF®` | page heading, product line name as printed (caps, ® kept) |
-| `3-Way CPVC 2.5 in` | Description column; parenthetical "(3 in. slip outside)" dropped; "in." → "in" |
+| `FullFloXF®` | product family from the page heading, spelled the way Pentair writes the trademark in running text |
+| `3-Way CPVC 2.5 in` | Description column; words in parentheses dropped; "in." → "in" |
 | `Diverter` | black band "2-WAY AND 3-WAY DIVERTER VALVES" → the product noun |
 
-## Brand
-1. Sta-Rite when the product family is marked ° (circle) in the Whole Goods Directory
-   (PDF pp. 4–5) or the page carries the STA-RITE logo. Pentair when marked • (dot).
-2. Pleatco for everything in the Pleatco section (cartridges, grids, cleaners), even though the
-   directory marks it •.
-3. Families marked both • and ° (e.g. D.E. Separation Tank 100): use the logo on the page; if
-   none, flag for review.
-4. *(proposed)* Accessories and replacement parts take the brand of the product family whose
-   page they are on. A SKU that appears under two brands is flagged, not guessed.
+## Brand [decided]
+Pentair is the default brand. Only one brand per SKU.
+1. **Whole goods** take Sta-Rite only when the product family is marked ° (circle) in the
+   Whole Goods Directory (PDF pp. 4–5) or the page carries the STA-RITE logo.
+   Sta-Rite families: System:2™, System:3™ (modular media and D.E.), Cristal-Flo™ II,
+   Max-E-Therm®, IntelliPro®, IntelliPro3®, Max-E-ProXF®, SuperMax®, U-3 SwimQuip,
+   CSP/5CSP Series, Hair and Lint Strainers. Families marked both (D.E. Separation Tank 100)
+   → Pentair.
+2. **Pleatco** for Pleatco products (cartridges, grids, Filter Wash, PureStart).
+3. **Replacement parts and accessories are always Pentair**, whichever page they are on.
+4. Everything else is Pentair.
 
 ## MPN
-- Exactly as printed in the SKU column (Product / Part No. / Item #), character for character,
-  including suffix letters (`354545SS`, `6020018Z`) and suffixes such as `-INT`.
-- Remove only footnote markers (`*`, `¹`, `†`), and record what they meant (e.g. discontinued).
+- Exactly as printed in the SKU column (Product / Part No. / Item # / "Product Number By …"),
+  character for character, including suffix letters (`354545SS`, `6020018Z`).
+- Remove only footnote markers (`*`, `¹`, `†`) and record what they meant.
 - Must exist exactly in the page's text layer. Numbers read only from the image are never accepted.
 - Never take numbers from cross-reference columns (Mfr #, Unicel, Filbur, competitor or OEM
   numbers). Those are other companies' SKUs.
 
 ## Derived title
-Built only from words printed on the page, in this order:
+Built only from words printed in the catalog, in this order:
 
-1. **Product line**: the line name from the page heading, as printed (capitals, ®/™ kept):
-   `FULLFLOXF®`, `SUPERMAX®`, `INTELLIBRITE®`. Leave out generic heading words that the noun
-   repeats ("DIVERTER & CHECK VALVES"), sizes covered by the row, and "(CONT'D)".
-2. **What makes this SKU different from its siblings**: the Description column. When there is no
-   description column, the distinguishing columns (HP, voltage, wattage, size, color, model)
-   and the band text. In grid tables, the column header that the SKU sits under
-   (e.g. cord length "50 ft Cord").
-3. **Product noun** in singular: Diverter, Pump, Pool Light, Filter, Heater, Cartridge.
-   Taken from the band, subtitle or heading.
+1. **Product family**: from the page heading, but spelled the way Pentair writes the trademark in
+   mixed case (body text, photo caption, or directory): `SuperFlo®`, `FullFloXF®`,
+   `IntelliBrite®`, `SuperMax®`, `IntelliFloXF®`. Never the all-caps heading form. Keep ®/™ where
+   Pentair prints them on the name. Leave out generic heading words the noun repeats
+   ("DIVERTER & CHECK VALVES"), sizes covered by the row, and "(CONT'D)".
+   **Accessories get no product-family prefix [decided]** (they are often shared across lines):
+   `Pentair 356904Z - Keypad Relocation Kit`.
+2. **What makes this SKU what it is**: the Description column, ignoring words in parentheses
+   [decided]. Exception: when the parenthetical is the *only* difference between two sibling SKUs
+   on the page (e.g. "short thread" / "long thread"), keep those words without the brackets.
+   When there is no description column, use the band text and the distinguishing columns.
+   In grid tables, include the column header the SKU sits under (e.g. "50 ft Cord").
+3. **Specs only when needed to tell siblings apart [decided]**: add HP, voltage, size, wattage,
+   cord length etc. only if, without them, two SKUs would get the same title. A page with one
+   pump gets no specs. Voltage: as printed plus "V" (`115/208-230V`).
+4. **Product noun** in singular, Title Case: Diverter, Pump, Pool Light, Filter, Heater.
 
 Clean-up:
-- Drop secondary-spec parentheticals: "(3 in. slip outside)".
 - Drop assembly quantities and diagram references from parts lists: "(Qty. 2)",
-  "(Includes Items 24-26)", item numbers. These describe the drawing, not the SKU.
-- Keep pack sizes that define the SKU: "(Set of 4)" → "Set of 4".
-- Units: "in." → "in", "ft." → "ft", "′"/"'" (feet) → "ft"; keep HP, V, W, GPM as printed.
-- Keep only the name part of a description followed by a sales sentence:
-  "XF Riser Base - Simplifies installation…" → "XF Riser Base".
-- No words that are not on the page, apart from unit clean-up and making the noun singular.
+  "(Includes Items 24-26)", item numbers. They describe the drawing, not the SKU.
+- Pack sizes that define the SKU go at the end: "…, Set of 4" (also when only the `-PAK4`
+  suffix and pack-specific cross numbers show it is a 4-pack; mark confidence "review").
+- Units: "in." / `"` / `”` → "in"; "ft." / `'` / `′` (feet) → "ft"; keep HP, V, W, GPM as printed.
+- Keep only the name part of a description followed by a sales sentence or note:
+  "XF Riser Base - Simplifies installation…" → "XF Riser Base"; "… - includes 2" → drop.
+- Obvious catalog typos ("Cryatal") are corrected only when the correct spelling is printed for
+  the same item elsewhere on the page; note it.
+- Title Case for words taken from all-caps bands ("DOE COMPLIANT SINGLE-SPEED TEFC" →
+  "DOE Compliant Single-Speed TEFC"; keep acronyms upper case).
+- Titles must be unique: no two SKUs may end up with the same derived title.
 
-## Replacement parts *(proposed)*
-`{Brand} {MPN} - {LINE} {Model} {Part}`, with the parent product from the page heading and
-"Replacement Parts for Product #…" line. Pentair's "Noun, Qualifier" wording is put in natural
-order: "O-Ring, Lid" → "Lid O-Ring".
-Example: `Pentair 350091Z - SUPERFLO® DOE Pump Lid`.
+## Replacement parts [decided]
+`Pentair {MPN} - {Family} {Model} {Part}`, with the parent product from the page heading and
+the "Replacement Parts for Product #…" line. Pentair's "Noun, Qualifier" wording is put in
+natural order: "O-Ring, Lid" → "Lid O-Ring".
+Examples: `Pentair 357255 - SuperFlo® DOE Pump Lid O-Ring` ("O-Ring, Lid");
+`Pentair 350091Z - SuperFlo® DOE Pump Lid` ("Lid").
+Parts are always brand Pentair, even on Sta-Rite product pages.
 
-## Status flags (stored as fields, not in the title)
-- `discontinued`: `*` "Indicates discontinued item" (Pleatco) and similar notes; keep the
-  replacement SKU (ULTRA Replacement column) in `replaced_by`.
-- `not_for_sale_usa`: band says "NOT FOR SALE IN THE USA".
-- `call_for_price`: not tracked (pricing is out of scope).
+## Pleatco cartridges [decided: short, no fit list]
+`Pleatco {MPN} - {Line} Filter Cartridge {sq ft} sq ft {diameter} x {length}`, e.g.
+`Pleatco PCC60 - Advanced Filter Cartridge 60 sq ft 7 in x 19-3/4 in` (line: Ultra / Advanced;
+the "PLEATCO" in the heading is not repeated). On the cross-reference pages, page reviews write
+`Pleatco {MPN} - {Line} Filter Cartridge` (plus ", Set of 4" for packs) and put the compatibility
+text in `fits`. The compatibility list goes in the `fits` field, not
+the title. Dimensions come from "Filter Cartridges by Measurement" (PDF pp. 38–42) and are
+added at consolidation, because the cross-reference page itself has no distinguishing words.
+
+## Status and scope [decided]
+- USA only: SKUs under a "NOT FOR SALE IN THE USA" band (and `-INT` models on those rows) are
+  recorded with status `not_for_sale_usa` and **excluded from the export**.
+- Discontinued (`*` "Indicates discontinued item" and similar) → status `discontinued`,
+  replacement SKU in `replaced_by`; **kept in the database, excluded from the export**.
 
 ## Same SKU on several pages
 One record per MPN. Title source priority: the product's own whole-goods ordering table,
 then an accessories table, then a parts list. Every page it appears on is kept as evidence.
-Conflicting titles or brands between pages are flagged for review.
+Conflicting titles between pages are flagged for review.

@@ -15,11 +15,11 @@ a misleading title costs more than a flagged one.
 1. Look at the image. Identify every table, its column headers and its bands. Note which
    column holds this company's SKUs (Product / Part No. / Item # / "Product Number By …")
    and which columns are cross-references to other companies.
-2. Brand: apply the rules (STA-RITE logo on page → Sta-Rite; Pleatco section → Pleatco; else
-   Pentair unless the Whole Goods Directory marks the family Sta-Rite °. Sta-Rite families:
-   System:2, System:3, Cristal-Flo II, Max-E-Therm, IntelliPro, IntelliPro3, Max-E-ProXF,
-   SuperMax, U-3 SwimQuip, CSP/5CSP Series, Hair and Lint Strainers; the D.E. Separation
-   Tank 100 is marked both.)
+2. Brand: apply the Brand rules. Pentair is the default; parts and accessories are always
+   Pentair; Sta-Rite only for whole goods of the Sta-Rite families listed in the rules (or with
+   the STA-RITE logo); Pleatco for Pleatco products.
+   Product family names: use Pentair's mixed-case trademark spelling (look for it in the body
+   text, photo captions or the directory pages 4–7), never the all-caps heading.
 3. For each SKU cell, write a record. Copy the MPN from the packet's text tokens (exact
    characters), not from your reading of the image. Build the title per the rules.
 4. Every token in `candidate_tokens` must end up as a record or in `dismissed` with a reason.
@@ -34,7 +34,7 @@ a misleading title costs more than a flagged one.
 {
   "page": 271,
   "printed_page": "269",
-  "page_type": "whole_goods | parts | cross_reference | directory | other",
+  "page_type": "whole_goods | parts | cross_reference | pleatco_measurement | discontinued_list | directory | other",
   "records": [
     {
       "mpn": "263056",
@@ -45,6 +45,7 @@ a misleading title costs more than a flagged one.
       "replaced_by": "",
       "product_line": "FULLFLOXF®",
       "parent_product": "",
+      "fits": "",
       "source_row": "263056 | 3-Way CPVC 2.5 in. (3 in. slip outside) | 1 | 4",
       "context": "heading: FULLFLOXF® DIVERTER & CHECK VALVES 2-1/2 IN. & 3 IN.; band: 2-WAY AND 3-WAY DIVERTER VALVES",
       "confidence": "high | review",
@@ -56,6 +57,23 @@ a misleading title costs more than a flagged one.
   ]
 }
 ```
+`fits` holds compatibility text (Pleatco cross-reference descriptions) that is kept out of the title.
 `source_row` is the row as printed (all cells, ` | ` separated), so a human can audit the title.
 Pages without SKUs (covers, section dividers, engineering data) still get a file with
 `records: []` and any tokens dismissed.
+
+## Page types
+- `whole_goods`: ordering-information pages (equipment, plus its accessories table).
+- `parts`: replacement-parts pages (exploded diagram + parts list).
+- `cross_reference`: tables mapping our SKUs to other makers' numbers (e.g. Pleatco Advanced/Ultra
+  lists, conversion charts). Only our SKU column becomes records.
+- `pleatco_measurement`: "Filter Cartridges by Measurement". Write the full Pleatco title with
+  sq ft and dimensions: `Pleatco PCC60 - Advanced Filter Cartridge 60 sq ft 7 in x 19-3/4 in`
+  (fractions as printed, `7"` → `7 in`, `19 3/4"` → `19-3/4 in`). This is the preferred title
+  source for Pleatco, so be exact.
+- `discontinued_list`: lists of discontinued numbers. Every SKU listed as discontinued gets
+  status `discontinued` and its replacement in `replaced_by`.
+- `directory`, `other`: no sellable rows; usually `records: []`.
+
+Consolidation picks each SKU's title from the best page type, so a SKU seen on many pages
+must still get a correct title on every page.

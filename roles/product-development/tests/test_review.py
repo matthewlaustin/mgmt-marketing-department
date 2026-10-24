@@ -10,9 +10,9 @@ def record(mpn, title, **kw):
 def ok_review():
     return {
         "records": [
-            record("263056", "Pentair 263056 - FULLFLOXF® 3-Way CPVC 2.5 in Diverter"),
-            record("263059", "Pentair 263059 - FULLFLOXF® 2-Way CPVC 2.5 in Diverter"),
-            record("270119Z", "Pentair 270119Z - FULLFLOXF® Check Valve Rebuild Kit", kind="part"),
+            record("263056", "Pentair 263056 - FullFloXF® 3-Way CPVC 2.5 in Diverter"),
+            record("263059", "Pentair 263059 - FullFloXF® 2-Way CPVC 2.5 in Diverter"),
+            record("270119Z", "Pentair 270119Z - FullFloXF® Check Valve Rebuild Kit", kind="part"),
         ],
         "dismissed": [
             {"token": "200174.A", "reason": "document_code"},
@@ -37,7 +37,7 @@ def test_valid_review_passes():
 
 def test_invented_mpn_rejected():
     review = ok_review()
-    review["records"].append(record("263057", "Pentair 263057 - FULLFLOXF® Thing"))
+    review["records"].append(record("263057", "Pentair 263057 - FullFloXF® Thing"))
     assert any("not found verbatim" in e for e in validate(review, WORDS))
 
 
@@ -49,7 +49,7 @@ def test_missed_token_reported():
 
 def test_title_cleanup_enforced():
     review = ok_review()
-    review["records"][0]["title"] = "Pentair 263056 - FULLFLOXF® 3-Way CPVC 2.5 in. (3 in. slip outside) Diverter"
+    review["records"][0]["title"] = "Pentair 263056 - FullFloXF® 3-Way CPVC 2.5 in. (3 in. slip outside) Diverter"
     errors = validate(review, WORDS)
     assert any("parenthesis" in e for e in errors)
     assert any("unit with period" in e for e in errors)
@@ -57,10 +57,39 @@ def test_title_cleanup_enforced():
 
 def test_title_prefix_enforced():
     review = ok_review()
-    review["records"][0]["title"] = "FULLFLOXF® 3-Way CPVC 2.5 in Diverter"
+    review["records"][0]["title"] = "FullFloXF® 3-Way CPVC 2.5 in Diverter"
     assert any("must start with" in e for e in validate(review, WORDS))
 
 
 def test_page_tokens_strip_footnote_marks():
     _, cands = page_tokens(["PCC60*", "ULTRA-A4", "602186,"])
     assert {"PCC60", "ULTRA-A4", "602186"} <= cands
+
+
+def test_all_caps_family_rejected():
+    review = ok_review()
+    review["records"][0]["title"] = "Pentair 263056 - FULLFLOXF® 3-Way CPVC 2.5 in Diverter"
+    assert any("all caps" in e for e in validate(review, WORDS))
+
+
+def test_duplicate_titles_rejected():
+    review = ok_review()
+    review["records"][1]["title"] = "Pentair 263059 - FullFloXF® 3-Way CPVC 2.5 in Diverter"
+    assert any("identical" in e for e in validate(review, WORDS))
+
+
+def test_parts_must_be_pentair():
+    review = ok_review()
+    review["records"][2]["brand"] = "Sta-Rite"
+    review["records"][2]["title"] = "Sta-Rite 270119Z - Check Valve Rebuild Kit"
+    assert any("always brand Pentair" in e for e in validate(review, WORDS))
+
+
+def test_fused_token_accepted_but_not_partial_invention():
+    words = WORDS + ["ULTRA-A5-PAK4Pentair"]
+    review = ok_review()
+    review["records"][0]["replaced_by"] = "ULTRA-A5-PAK4"
+    review["dismissed"].append({"token": "ULTRA-A5-PAK4", "reason": "other", "note": "replacement"})
+    assert validate(review, words) == []
+    review["records"][0]["replaced_by"] = "ULTRA-A5-PAK"
+    assert any("replaced_by" in e for e in validate(review, words))
