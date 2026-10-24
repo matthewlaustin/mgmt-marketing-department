@@ -50,7 +50,8 @@ def check(pass_name: str, packet: str) -> list[str]:
     review = json.loads(path.read_text())
     con = sqlite3.connect(ROOT / "data/catalog.db")
     catalog_titles = {derived(t): m for m, t in con.execute(
-        "SELECT mpn, title FROM products WHERE status = 'active' AND title != ''")}
+        "SELECT mpn, title FROM products WHERE status = 'active' AND title != ''"
+        " AND source NOT LIKE 'pentair.com product page%'")}  # web rows are checked within their packet
     errors, seen, titles = [], set(), {}
     for r in review.get("records", []):
         mpn = r.get("mpn", "")
