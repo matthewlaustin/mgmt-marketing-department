@@ -50,6 +50,9 @@ CANONICAL = [
 ]
 
 
+PLEATCO_LINES = {"Advanced": "Pleatco Advanced™", "Ultra": "Pleatco Ultra™"}
+
+
 def canonical(text: str) -> str:
     for pattern, repl in CANONICAL:
         text = pattern.sub(repl, text)
@@ -156,7 +159,10 @@ def main() -> int:
                         kind=h.get("kind", best["kind"]))
             if h.get("confidence") == "review":
                 notes.append(f"harmonized: {h.get('reason', '')}")
-        best = dict(best, title=canonical(best["title"]), product_line=canonical(best.get("product_line") or ""))
+        line = canonical(best.get("product_line") or "")
+        if best["brand"] == "Pleatco" and line in PLEATCO_LINES:
+            line = PLEATCO_LINES[line]
+        best = dict(best, title=canonical(best["title"]), product_line=line)
         replaced_by = next((r.get("replaced_by") for r in recs if r.get("replaced_by")), "")
         fits = next((r.get("fits") for r in recs if r.get("fits")), "")
         needs_review = int(bool(notes))
