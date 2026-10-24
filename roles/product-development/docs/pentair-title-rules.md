@@ -64,7 +64,13 @@ Built only from words printed in the catalog, in this order:
    `Pentair 270119Z - FullFloXF® Check Valve Rebuild Kit`. Add-ons used alongside the product
    (cables, risers, elbows, keypad kits) are `kind: accessory`, no family.
 2. **What makes this SKU what it is**: the Description column, ignoring words in parentheses
-   [decided]. Exception: when the parenthetical is the *only* difference between two sibling SKUs
+   [decided]. Interpretation (to confirm with Matthew): drop parentheticals that are secondary
+   specs or notes ("(3 in. slip outside)", "(Qty. 2)", "(Old Style)", "(display box)"); KEEP, without
+   brackets, a parenthetical that states what the item is — test type ("No. 3 Acid Demand/Total
+   Alkalinity Solution"), the state on a sign ("California Pool Rules Sign"), a fit limit
+   ("for Pumps Made Before June 2019"). Sizes and specs printed in the Description column are
+   description words and always stay; "specs only when needed" applies to specs added from OTHER
+   columns. Exception: when the parenthetical is the *only* difference between two sibling SKUs
    on the page (e.g. "short thread" / "long thread"), keep those words without the brackets.
    When there is no description column, use the band text and the distinguishing columns.
    In grid tables, include the column header the SKU sits under (e.g. "50 ft Cord").

@@ -27,7 +27,19 @@ def recs(review: dict) -> dict[str, dict]:
     return {r["mpn"]: r for r in review.get("records", [])}
 
 
+def finished_pages() -> set[int]:
+    """Pages whose whole batch has a review in both passes (in-progress batches are skipped)."""
+    batches = json.loads((WORK / "batches.json").read_text())["batches"]
+    done = set()
+    for batch in batches:
+        if all((WORK / d / f"p{n:03d}.json").exists() for d in ("reviews", "reviews_b") for n in batch):
+            done.update(batch)
+    in_batches = {n for b in batches for n in b}
+    return done | {n for n in range(1, 541) if n not in in_batches}  # auto-empty pages
+
+
 def main() -> int:
+    ready = finished_pages()
     final_dir, adj_dir = WORK / "reviews_final", WORK / "adjudicate"
     final_dir.mkdir(exist_ok=True)
     adj_dir.mkdir(exist_ok=True)
@@ -37,6 +49,8 @@ def main() -> int:
         if not b_path.exists():
             continue
         page = int(a_path.stem[1:])
+        if page not in ready:
+            continue
         if (final_dir / a_path.name).exists():
             kept += 1
             continue
