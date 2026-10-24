@@ -144,7 +144,7 @@ listed under more than one product family anywhere in the catalog also gets no f
 see such a SKU on their page and know it is shared should apply this; consolidation enforces it.
 Product lines with series treated as ONE line (series = model): System:3® (SM, SD, SMD, SS),
 System:2™ (PLM, PLD, PLDE), FullFloXF® (Q, C, FV, F series), Kreepy Krauly® (Platinum, Legend,
-Legend II, Great White…), Prowler®, Racer®, Triton® C (TR100C/TR140C and C-3), ETi® heaters (ETi 250 / ETi 400; UltraTemp ETi® is a separate line). Canonical spellings: "System:3®", "System:2™".
+Legend II, Great White…), Prowler®, Racer®, Triton® C (TR100C/TR140C and C-3), ETi® heaters (ETi 250 / ETi 400; UltraTemp ETi® is a separate line). Challenger® pumps (High Flow and High Pressure are models; shared parts → "Challenger® Pump …"). WhisperFlo® and WhisperFlo® XF are separate lines. Canonical spellings: "System:3®", "System:2™".
 A part shared only between MODELS of one product line (Prowler 930/920/910; Racer/Racer LS;
 QuikSkim/QuikSkim Ultra? no — those are different lines) keeps the line name without the model:
 `Pentair 360342 - Prowler® Track`. Shared between different lines → no family.
