@@ -34,7 +34,10 @@ For each SKU:
    (then discontinued / not_for_sale_usa, with the replacement in notes).
 5. **Confidence**: "review" when the row is thin (a bare code, no noun), ambiguous, or contradicts
    the page; say why in `notes`.
-6. A row that is not a sellable SKU of this product (a spec line, a dimension row), or a SKU whose
+6. **Z twins**: a trailing "Z" is the same part packed for retail/service (Matthew). If a SKU here
+   is the Z or non-Z twin of a catalog SKU, describe it the same way as the twin (say so in notes);
+   web_check allows that shared title. The suffix never makes either number discontinued.
+7. A row that is not a sellable SKU of this product (a spec line, a dimension row), or a SKU whose
    rows are too thin to title without guessing, is dismissed with a reason instead.
 
 Write /home/user/product-namer/data/work/pentair/web/{PASS}/{PACKET}.json:
