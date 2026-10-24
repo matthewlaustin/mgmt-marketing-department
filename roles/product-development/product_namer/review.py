@@ -155,6 +155,7 @@ def validate(review: dict, words: list[str]) -> list[str]:
     multi_word = {r.get("mpn", "") for r in review.get("records", []) if " " in r.get("mpn", "")}
     seen: set[str] = set()
     titles_seen: dict[str, str] = {}
+    confidences: dict[str, str] = {}
     page_type = review.get("page_type", "other")
     provisional = page_type in ("cross_reference", "discontinued_list")
     for i, rec in enumerate(review.get("records", [])):
@@ -198,8 +199,14 @@ def validate(review: dict, words: list[str]) -> list[str]:
                 and not re.search(r"\d", first) and first.rstrip("®™") not in UPPERCASE_OK:
             errors.append(f"{where}: product family in all caps; use Pentair's mixed-case trademark spelling")
         if derived in titles_seen and not provisional:
-            errors.append(f"{where}: derived title identical to {titles_seen[derived]}'s; add the distinguishing spec")
+            other = titles_seen[derived]
+            # identical printed descriptions with nothing to tell them apart: allowed only when both
+            # records are flagged for a human, never by inventing words
+            if not (rec.get("confidence") == "review" and confidences.get(other) == "review"):
+                errors.append(f"{where}: derived title identical to {other}'s; add the printed distinguishing spec, "
+                              "or if nothing printed distinguishes them mark both confidence 'review'")
         titles_seen.setdefault(derived, mpn)
+        confidences[mpn] = rec.get("confidence", "high")
         if rec.get("status", "active") not in STATUSES:
             errors.append(f"{where}: bad status {rec.get('status')!r}")
         if rec.get("kind") not in KINDS:

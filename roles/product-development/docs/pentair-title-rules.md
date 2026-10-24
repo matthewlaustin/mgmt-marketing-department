@@ -134,13 +134,14 @@ Examples: `Pentair 357255 - SuperFlo® DOE Pump Lid O-Ring` ("O-Ring, Lid");
 Parts are always brand Pentair, even on Sta-Rite product pages.
 When several rows on a parts page print the same bare description ("O-Ring"), the assembly they
 belong to may be taken from labels printed on the page's exploded diagram ("Valve & Gauge Assembly
-O-Ring"); mark confidence "review". If nothing printed tells them apart, keep the bare title and flag.
+O-Ring"); mark confidence "review". If nothing printed tells them apart, keep the bare title and mark BOTH confidence "review"
+(the validator allows identical titles only then). Never invent distinguishing words.
 Any SKU (part OR accessory, e.g. seal kits 356196/356197/356198, relay board 356365Z, cables)
 listed under more than one product family anywhere in the catalog also gets no family. Reviewers who
 see such a SKU on their page and know it is shared should apply this; consolidation enforces it.
 Product lines with series treated as ONE line (series = model): System:3® (SM, SD, SMD, SS),
 System:2™ (PLM, PLD, PLDE), FullFloXF® (Q, C, FV, F series), Kreepy Krauly® (Platinum, Legend,
-Legend II, Great White…), Prowler®, Racer®, ETi® heaters (ETi 250 / ETi 400; UltraTemp ETi® is a separate line). Canonical spellings: "System:3®", "System:2™".
+Legend II, Great White…), Prowler®, Racer®, Triton® C (TR100C/TR140C and C-3), ETi® heaters (ETi 250 / ETi 400; UltraTemp ETi® is a separate line). Canonical spellings: "System:3®", "System:2™".
 A part shared only between MODELS of one product line (Prowler 930/920/910; Racer/Racer LS;
 QuikSkim/QuikSkim Ultra? no — those are different lines) keeps the line name without the model:
 `Pentair 360342 - Prowler® Track`. Shared between different lines → no family.

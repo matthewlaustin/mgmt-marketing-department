@@ -137,3 +137,12 @@ def test_line_wrapped_mpn():
     review["records"][-1]["mpn"] = "41201-0243W"
     review["records"][-1]["title"] = "Pentair 41201-0243W - Chassis with Pad"
     assert any("not found verbatim" in e for e in validate(review, words))
+
+
+def test_identical_titles_allowed_only_when_both_flagged():
+    review = ok_review()
+    review["records"][1]["title"] = "Pentair 263059 - FullFloXF® 3-Way CPVC 2.5 in Diverter"
+    assert any("identical" in e for e in validate(review, WORDS))
+    review["records"][0]["confidence"] = "review"
+    review["records"][1]["confidence"] = "review"
+    assert not any("identical" in e for e in validate(review, WORDS))
