@@ -125,9 +125,14 @@ def load_web_records() -> list[dict]:
     out = []
     for path in sorted((WORK / "web/final").glob("w*.json")):
         for r in json.loads(path.read_text()).get("records", []):
-            out.append(dict(r, title=normalize_title(r.get("title", "")), pdf_page=0, printed_page="",
-                            page_type="web", context=urls.get(r["mpn"], ""),
-                            source_url=f"pentair.com product page {urls.get(r['mpn'], '')}"))
+            # pentair.com writes "PKG_56" where the catalog prints "PKG 56": use the catalog form
+            web_mpn = r["mpn"]
+            mpn = web_mpn.replace("_", " ")
+            title = normalize_title(r.get("title", "")).replace(f" {web_mpn} - ", f" {mpn} - ", 1)
+            r = dict(r, mpn=mpn, notes=(f"published as {web_mpn}; " if mpn != web_mpn else "") + (r.get("notes") or ""))
+            out.append(dict(r, title=title, pdf_page=0, printed_page="",
+                            page_type="web", context=urls.get(web_mpn, ""),
+                            source_url=f"pentair.com product page {urls.get(web_mpn, '')}"))
     return out
 
 

@@ -43,7 +43,7 @@ def main() -> int:
     no_desc = []
     for url, info in sorted(pages.items()):
         for sku in info.get("skus", []):
-            if sku in catalog or sku.upper() in catalog:
+            if sku in catalog or sku.upper() in catalog or sku.replace("_", " ") in catalog:
                 continue
             if sku in specs:
                 by_page[url].append(sku)
