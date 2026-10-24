@@ -131,6 +131,9 @@ Parts are always brand Pentair, even on Sta-Rite product pages.
 Any SKU (part OR accessory, e.g. seal kits 356196/356197/356198, relay board 356365Z, cables)
 listed under more than one product family anywhere in the catalog also gets no family. Reviewers who
 see such a SKU on their page and know it is shared should apply this; consolidation enforces it.
+A part shared only between MODELS of one product line (Prowler 930/920/910; Racer/Racer LS;
+QuikSkim/QuikSkim Ultra? no — those are different lines) keeps the line name without the model:
+`Pentair 360342 - Prowler® Track`. Shared between different lines → no family.
 A part number listed under more than one product family (e.g. 230010Z under Low Profile and
 Top Feed; QuikSkim and QuikSkim Ultra parts pages) gets **no family** in its title; keep the
 printed part description only. Kit letters ("Kit (A)", "Kit D") are kept without brackets
