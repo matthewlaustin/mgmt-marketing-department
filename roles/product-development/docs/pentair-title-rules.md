@@ -150,6 +150,10 @@ the title. Dimensions come from "Filter Cartridges by Measurement" (PDF pp. 38â€
 added at consolidation, because the cross-reference page itself has no distinguishing words.
 
 ## Status and scope [decided]
+- 50 Hz products ("50 hertz pumps cannot be used in North America") and rows marked Canada-only
+  in a Country column are also `not_for_sale_usa` (confirm with Matthew).
+- Services and warranties (startup service, extended warranty SKUs) are `kind: service`; title
+  "{Family} {Printed description}".
 - USA only: SKUs under a "NOT FOR SALE IN THE USA" band (and `-INT` models on those rows) are
   recorded with status `not_for_sale_usa` and **excluded from the export**.
 - Discontinued (`*` "Indicates discontinued item" and similar) â†’ status `discontinued`,

@@ -39,7 +39,10 @@ DISMISS_REASONS = {
 }
 
 STATUSES = {"active", "discontinued", "not_for_sale_usa"}
-KINDS = {"whole_good", "accessory", "part"}
+KINDS = {"whole_good", "accessory", "part", "service"}
+# Pentair trademarks / product codes that are genuinely written in capitals
+UPPERCASE_OK = {"CSP/CCSP", "CSP", "CCSP", "AVSC", "THS", "WAVE", "CPR", "PDR2", "CPVC", "ABS", "PVC",
+                "NEMA-12", "NEMA-4X", "LED", "GFCI", "ASME", "TEFC", "ODP", "DOE", "SVRS", "VSF", "VST"}
 BRANDS = {"Pentair", "Sta-Rite", "Pleatco"}
 
 BANNED_IN_TITLE = [
@@ -183,8 +186,9 @@ def validate(review: dict, words: list[str]) -> list[str]:
                 errors.append(f"{where}: {message}: {derived!r}")
         if rec.get("kind") in ("part", "accessory") and brand not in ("Pentair", "Pleatco"):
             errors.append(f"{where}: parts and accessories are always brand Pentair")
-        if derived and derived[:1].isalpha() and derived.split()[0].isupper() and len(derived.split()[0]) > 4 \
-                and not re.search(r"\d", derived.split()[0]):
+        first = derived.split()[0] if derived else ""
+        if first and first[:1].isalpha() and first.isupper() and len(first) > 4 \
+                and not re.search(r"\d", first) and first.rstrip("®™") not in UPPERCASE_OK:
             errors.append(f"{where}: product family in all caps; use Pentair's mixed-case trademark spelling")
         if derived in titles_seen and not provisional:
             errors.append(f"{where}: derived title identical to {titles_seen[derived]}'s; add the distinguishing spec")
