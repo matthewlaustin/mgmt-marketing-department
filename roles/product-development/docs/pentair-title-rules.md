@@ -89,6 +89,8 @@ Clean-up:
 - Units: "in." / `"` / `”` → "in"; "ft." / `'` / `′` (feet) → "ft"; keep HP, V, W, GPM as printed.
 - Keep only the name part of a description followed by a sales sentence or note:
   "XF Riser Base - Simplifies installation…" → "XF Riser Base"; "… - includes 2" → drop.
+- "w/" → "with", "w/o" → "without". Packaging words ("display box", "bulk" when a sibling differs only
+  by packaging, keep it) are dropped unless they are the only sibling difference.
 - Abbreviations: expand only when the page itself spells the word out nearby (band, heading,
   sibling row): "Comp" → "Complete" when the band prints COMPLETE; BLK → Black, WHT → White.
   Ambiguous ones (GRY: Gray or Dark Gray?) stay as printed with confidence "review".
