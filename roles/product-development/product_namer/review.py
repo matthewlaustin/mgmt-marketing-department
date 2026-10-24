@@ -27,7 +27,7 @@ PRICE = re.compile(r"^\$?\d{1,3}(,\d{3})*\.\d{2}$")
 YEARS = re.compile(r"^(19|20)\d{2}(-(19|20)?\d{2}|-CURRENT)?$", re.I)
 # "3-Way", "2-Speed", "1st", "2nd": wording, not part numbers
 WORDY = re.compile(r"^(\d{1,2}-[A-Z]?[a-z]+|\d+(st|nd|rd|th))$")
-TRAILING_MARKS = "*¹²³⁴⁵†‡•°,;:()[]"
+TRAILING_MARKS = "*¹²³⁴⁵†‡•°,;:()[]#"
 
 DISMISS_REASONS = {
     "cross_reference",  # another company's part number (Mfr #, Unicel, Filbur, OEM, competitor)
