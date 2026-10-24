@@ -142,7 +142,9 @@ QuikSkim/QuikSkim Ultra? no — those are different lines) keeps the line name w
 `Pentair 360342 - Prowler® Track`. Shared between different lines → no family.
 A part number listed under more than one product family (e.g. 230010Z under Low Profile and
 Top Feed; QuikSkim and QuikSkim Ultra parts pages) gets **no family** in its title; keep the
-printed part description only. Kit letters ("Kit (A)", "Kit D") are kept without brackets
+printed part description only. A footnoted fit limit ("Used on filters manufactured after 11/98") may be appended as
+"for Filters Made After 11/98" when it is the only difference between SKUs (confidence review).
+Kit letters ("Kit (A)", "Kit D") are kept without brackets
 when they are the only difference between sibling kits.
 
 ## Pleatco cartridges [decided: short, no fit list]
