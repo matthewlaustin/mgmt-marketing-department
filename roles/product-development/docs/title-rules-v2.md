@@ -174,3 +174,7 @@ Matthew approved these calls:
   with Thermometer", with no brands. Add the fit brands only where two lids in one list would
   otherwise share a title (L1RW vs L2R).
 - **Tie between a product's own ordering page and its own parts list:** use the ordering page.
+- **HiFlow™** is the canonical spelling (consolidate rewrites "Hi-Flow™"). Kept fit tails carry
+  their trademarks' marks too ("for Triton® & Quad D.E.® Filters").
+- **"No X" descriptors** ("no plumbing", "no fittings") go at the end after a comma:
+  "2 in HiFlow™ Valve, No Plumbing".
