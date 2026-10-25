@@ -14,3 +14,6 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
 
 ## Matthew's preferences (added with his permission)
 - Send reports, results and questions for Matthew as an Artifact page he can review in the Claude desktop or iOS app, with places to answer questions and leave follow-ups in the page (read answers back with ArtifactData). Keep the chat reply short and link the page.
+- Never ask Matthew a series of questions in chat: no question lists in the reply and no multiple-choice
+  prompts in the terminal. Put every question on an Artifact page, test the page before sending it, and
+  reply with a few lines and the link. (Matthew, 2026-10-25)
