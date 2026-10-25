@@ -24,3 +24,4 @@
 - Per-unit count SKUs marked unsure only for the count (b55 5 SKUs, b56 12 SKUs): clear unsure in sweep; one group question on the review page.
 - "thru" → "Through" (abbreviation rule); b58 355317 keeps "thru": fix in sweep.
 - b59 358216 "Drive Cover" vs b57 358215 "RS-485 Almond Drive Cover": check they read consistently after b57 is final.
+- b60 401607Z/401609Z/401612Z "2 HP/2.5 HP Uprated …" → b57 form "2/2.5 HP …" (one-SKU-two-rows call).

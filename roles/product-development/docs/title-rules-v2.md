@@ -311,3 +311,6 @@ Matthew approved these calls:
 - **Typos fixed from an adjacent page of the same product's parts list** are allowed, unsure.
 - **A model list that is the only difference but runs past 4 models:** use the shortest printed list
   that still tells the rows apart, unsure.
+- **One SKU on two chart rows with different specs** ("2hp Standard E", "2.5hp Uprated Standard
+  E"): join the differing spec with a slash in one unit ("2/2.5 HP Standard E 230V Power End"),
+  drop "Uprated", unsure.
