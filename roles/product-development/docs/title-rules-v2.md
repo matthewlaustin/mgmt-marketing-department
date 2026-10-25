@@ -134,3 +134,6 @@ Matthew approved these calls:
     plaster ring example: "Regenerative D.E. Filter Quick Disconnect Kit".
   - If it names other products the part fits, or a condition ("installations without valve"), it
     is dropped.
+- **"Low Profile"** is the name of Pentair's in-floor valve line (the counterpart of Top Feed), not
+  a marketing word. Keep it wherever it names that line: "6 Port Low Profile Retro Kit",
+  "WAVE 6 Port Low Profile 2 in T-Valve". I put it on Matthew's marketing list by mistake; to confirm.
