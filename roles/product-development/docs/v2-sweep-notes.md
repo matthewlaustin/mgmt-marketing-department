@@ -27,3 +27,4 @@
 - b60 401607Z/401609Z/401612Z "2 HP/2.5 HP Uprated …" → b57 form "2/2.5 HP …" (one-SKU-two-rows call).
 - X/XZ pairs whose finals disagree (272541 vs 272541Z, 154493 vs 154493Z, 274494 vs 274494Z, 79108600 vs 79108600Z): list all such pairs in the sweep and ask Matthew whether Z pairs must share a title.
 - O-ring dash sizes always "#2-xxx" (b68 192039Z fixed by hand); check other finals in sweep.
+- DONE (sweep 1, mechanical): phase → 1-Phase/3-Phase (65 titles), Thru → Through, #2-xxx O-ring prefix.
