@@ -251,3 +251,6 @@ Matthew approved these calls:
 - **Compressors** follow Matthew's "Scroll Compressor ZP61" example: model after the noun.
 - **When majority wording would give two SKUs on one list the same title,** use the page wording
   that keeps them apart, unsure.
+- **A bracket mixing models and a date** that is the only difference: models in front, date after
+  the noun ("Model 70 Titanium Heat Exchanger for Units Built After Jan 2017"); an "all models
+  except …" list is left out.
