@@ -246,3 +246,8 @@ Matthew approved these calls:
 - **A bare count in brackets** ("(4)", "(Qty. 5)") is a pack count: "Set of 4".
 - **A non-spec bracket that is the only difference** goes after the noun after a comma:
   "Side Panel, Service Panel".
+- **A bracketed fit or phase that is the only difference** ("(For ZP70 Compressor)", "(3-PHASE
+  MODELS)") goes in front: "ZP70 Hybrid Compressor Harness", "3-Phase Scroll Compressor ZP83".
+- **Compressors** follow Matthew's "Scroll Compressor ZP61" example: model after the noun.
+- **When majority wording would give two SKUs on one list the same title,** use the page wording
+  that keeps them apart, unsure.
