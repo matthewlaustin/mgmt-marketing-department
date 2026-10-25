@@ -29,3 +29,4 @@
 - O-ring dash sizes always "#2-xxx" (b68 192039Z fixed by hand); check other finals in sweep.
 - DONE (sweep 1, mechanical): phase → 1-Phase/3-Phase (65 titles), Thru → Through, #2-xxx O-ring prefix.
 - b31 Bermuda skimmers "PVC White" → word-order call "White PVC" (b78 follows the call).
+- Admiral finals keep "No Equalizer" inline vs "No X" at end after comma call: harmonize.
