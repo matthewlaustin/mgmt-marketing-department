@@ -262,3 +262,7 @@ Matthew approved these calls:
 - **Cross-line tie vs siblings' pattern:** when the SKU sits with the same siblings in several
   lines' tables and the siblings settle one wording (by majority or a fuller page), use that
   wording, so the tables share one pattern.
+- **Counts of a kit's contents** ("(4 each)", O-ring kits "(6)/(8)/(10)") are dropped; "Set of N" is
+  only for the number of items sold. Mark unsure where it isn't clear which it is.
+- **Matthew's approved sibling decides the page:** where he approved a sibling's title from one
+  table (R201536 "194R/195R Replacement Brushes", from p426), the siblings follow that table.
