@@ -180,3 +180,6 @@ Matthew approved these calls:
   "2 in HiFlow™ Valve, No Plumbing".
 - **No printed description at all** (only a diagram label or a bare number): record a gap with
   `"title": "", "gap": true`, and say why. Never title a SKU from a picture or a guess (CLAUDE.md).
+- **Don't add "with"** (or any other word) that Pentair doesn't print. A comma list of included
+  items that can't move in front stays after the noun, after a comma, in printed order:
+  "…, Spacer/Locknut".
