@@ -334,3 +334,7 @@ Matthew approved these calls:
   unsure. A word whose meaning is unclear ("Kratom") stays as printed, unsure.
 - **"May not be purchased separately" / "not sold individually"** SKUs stay titled and unsure; one
   group question for Matthew (keep or exclude).
+- **Installation conditions from a chart row** (install elevation) go after a comma:
+  "Propane Burner Orifice, 4000-6000 ft Install Elevation", unsure.
+- **Bowl type** ("Fire Only", "Water Only", "Fire/Water") is a spec in front, before the colour:
+  "Round Fire Only Bronze Bowl", "Square Water Only Spillway".
