@@ -403,3 +403,5 @@ reaches, with the alternative reading kept in `why`:
 - **Page contradictions** (noun, size, count, colour) are settled by the own list, then majority,
   then the product's ordering page; only six stay unsure, where the wrong pick would change what a
   buyer receives: 170040, EC110, 521057Z, 472734, 358215, 358216.
+- **Gaps** (nothing printed describes the SKU) are titled with just brand and number:
+  "Pentair 152519Z" (Matthew, last-ten page, 2026-10-25).

@@ -56,6 +56,11 @@ def test_v2_gap_and_unsure_are_flagged():
                                 "why": "no description printed"}, notes)
     assert out["title"] == "" and notes == ["title gap: no description printed"]
     notes = []
+    out = consolidate.apply_v2({"brand": "Pentair", "title": "x"},
+                               {"mpn": "152519Z", "brand": "Pentair", "title": "Pentair 152519Z", "gap": True,
+                                "unsure": False, "why": "Matthew: gaps are titled Brand MPN"}, notes)
+    assert out["title"] == "Pentair 152519Z" and notes == []
+    notes = []
     consolidate.apply_v2({"brand": "Pentair", "title": "x"},
                          {"mpn": "1", "brand": "Pentair", "title": "Pentair 1 - Y", "unsure": True, "why": "which noun?"}, notes)
     assert notes == ["title unsure: which noun?"]

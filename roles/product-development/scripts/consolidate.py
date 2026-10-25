@@ -154,8 +154,9 @@ def apply_v2(best: dict, v2: dict | None, notes: list[str]) -> dict:
     if not v2:
         return best
     if v2.get("gap"):
-        notes.append(f"title gap: {v2.get('why', '')}")
-        return dict(best, brand=v2["brand"], title="")
+        if v2.get("unsure"):
+            notes.append(f"title gap: {v2.get('why', '')}")
+        return dict(best, brand=v2["brand"], title=v2.get("title", ""))
     if v2.get("unsure"):
         notes.append(f"title unsure: {v2.get('why', '')}")
     return dict(best, brand=v2["brand"], title=v2["title"])

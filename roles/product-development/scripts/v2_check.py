@@ -4,7 +4,7 @@
 
 Review file data/work/pentair/v2/<PASS>/<BATCH>.json = [{"mpn", "brand", "title", "unsure", "why"}],
 one entry for every SKU in the batch. A SKU that nothing printed describes is a gap:
-{"mpn", "brand", "title": "", "gap": true, "unsure": true, "why"}.
+{"mpn", "brand", "title": "" or "Brand MPN", "gap": true, "unsure": bool, "why"}.
 """
 from __future__ import annotations
 
@@ -70,9 +70,10 @@ def check(pass_name: str, batch: str) -> list[str]:
             errors.append(f"{batch} {mpn}: listed twice")
         seen.add(mpn)
         if r.get("gap"):
-            # nothing printed describes the SKU: recorded as a gap (title ""), never guessed
-            if r.get("title") or not r.get("why"):
-                errors.append(f"{batch} {mpn}: a gap has an empty title and says why")
+            # nothing printed describes the SKU: never guessed. Its title is "" or just "Brand MPN"
+            # (Matthew, 2026-10-25: title gaps "Pentair MPN").
+            if r.get("title") not in ("", f"{r.get('brand', '')} {mpn}") or not r.get("why"):
+                errors.append(f"{batch} {mpn}: a gap's title is empty or just 'Brand MPN', and it says why")
         else:
             errors += [f"{batch} {mpn}: {e}" for e in v2_problems(r.get("brand", ""), mpn, r.get("title", ""))]
         if not isinstance(r.get("unsure"), bool):
