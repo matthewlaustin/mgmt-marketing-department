@@ -6,3 +6,4 @@
 - Low Profile, Commercial, SS, Aux, abbreviations: re-check early finals (b01–b18) against the latest calls.
 - Pleatco: same-dimension pairs across batches need "Upgrade for" (ULTRA-B6 fixed by hand).
 - b48 77707-0203: "Model 300 Flameholder Kit" drops Max-E-Therm's 333 (fit rule). Ask Matthew on the final page.
+- b39 263043/263044 (CVA-24L/Y …, 24V AC) vs b02 final 263045 "CVA24T Valve Actuator": harmonize in sweep.
