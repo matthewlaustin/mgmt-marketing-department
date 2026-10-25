@@ -18,3 +18,4 @@
 - b44 357161Z "Drain Plug" → "Black Drain Plug" to match p431's almond/black pairs (b55 071131Z "Almond Drain Plug").
 - b24 410029 "3 in Union Kit for 3 HP Pumps" keeps a fit tail; its p431 sibling 410028 has none (whole fit-tail rule).
 - b24 356159Z why says "IntelliFlo3 column"; p431 heads are colours only (wording fix).
+- b54 p426: 7 titles add "No." to bare model numbers for one-page style (R201420/421, R201470/472, R201490/492, R201498); ask Matthew whether "No." is added or only kept where printed.
