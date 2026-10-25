@@ -3,7 +3,8 @@
   python3 scripts/v2_check.py PASS BATCH      # PASS: a | b | final; e.g. v2_check.py a b07
 
 Review file data/work/pentair/v2/<PASS>/<BATCH>.json = [{"mpn", "brand", "title", "unsure", "why"}],
-one entry for every SKU in the batch.
+one entry for every SKU in the batch. A SKU that nothing printed describes is a gap:
+{"mpn", "brand", "title": "", "gap": true, "unsure": true, "why"}.
 """
 from __future__ import annotations
 
@@ -68,7 +69,12 @@ def check(pass_name: str, batch: str) -> list[str]:
         if mpn in seen:
             errors.append(f"{batch} {mpn}: listed twice")
         seen.add(mpn)
-        errors += [f"{batch} {mpn}: {e}" for e in v2_problems(r.get("brand", ""), mpn, r.get("title", ""))]
+        if r.get("gap"):
+            # nothing printed describes the SKU: recorded as a gap (title ""), never guessed
+            if r.get("title") or not r.get("why"):
+                errors.append(f"{batch} {mpn}: a gap has an empty title and says why")
+        else:
+            errors += [f"{batch} {mpn}: {e}" for e in v2_problems(r.get("brand", ""), mpn, r.get("title", ""))]
         if not isinstance(r.get("unsure"), bool):
             errors.append(f"{batch} {mpn}: 'unsure' must be true or false")
         if r.get("unsure") and not r.get("why"):

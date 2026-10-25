@@ -178,3 +178,5 @@ Matthew approved these calls:
   their trademarks' marks too ("for Triton® & Quad D.E.® Filters").
 - **"No X" descriptors** ("no plumbing", "no fittings") go at the end after a comma:
   "2 in HiFlow™ Valve, No Plumbing".
+- **No printed description at all** (only a diagram label or a bare number): record a gap with
+  `"title": "", "gap": true`, and say why. Never title a SKU from a picture or a guess (CLAUDE.md).

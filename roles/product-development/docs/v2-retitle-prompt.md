@@ -44,6 +44,8 @@ For each SKU:
 Write /home/user/product-namer/data/work/pentair/v2/{PASS}/{BATCH}.json as a JSON list with one
 entry per SKU, in batch order:
 [{"mpn", "brand", "title" (full "Brand MPN - Title"), "unsure", "why"}]
+A SKU that nothing Pentair printed describes (only a diagram label or a bare number) is a gap:
+{"mpn", "brand", "title": "", "gap": true, "unsure": true, "why"}. Never title it from a picture.
 
 Then run `python3 scripts/v2_check.py {PASS} {BATCH}` from the repo root and fix every problem it
 reports. Work independently: don't open the other pass's folder. You may write scratch files under
