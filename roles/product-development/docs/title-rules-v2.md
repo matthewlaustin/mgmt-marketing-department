@@ -45,7 +45,8 @@ Same as parts.
   28W 100 ft Cord Pool Light".
 - Heater sizes are written "400K BTU": "MasterTemp® 400K BTU Natural Gas Heater".
 - No marketing words. Always remove: High Performance, Variable Speed, Self-Priming, Commercial,
-  DOE Compliant, Low Profile, Heavy Duty. Remove other adjectives that only promote the product.
+  DOE Compliant, Heavy Duty. Remove other adjectives that only promote the product. ("Low Profile"
+  is a valve line name, not marketing; see below.)
 - Drop fit and application tails ("for C, CC and D Series Pumps").
 
 ## Pleatco cartridges
