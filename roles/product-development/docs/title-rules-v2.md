@@ -358,3 +358,5 @@ Matthew approved these calls:
   only where the model printed on the row fixes the spec (MasterTemp 175 → 175K BTU), unsure.
 - **Web-only rows with no noun** take the noun from Pentair's own catalog band or caption for the
   same product group, unsure.
+- **EC- twins of catalog-discontinued SKUs** that pentair.com lists as available stay titled,
+  unsure; one group question for Matthew (keep or exclude).
