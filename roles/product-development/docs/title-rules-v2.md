@@ -153,3 +153,7 @@ Matthew approved these calls:
 - **Model column on whole goods and accessories:** when a row has both a description and a Model
   number, the model goes in front as printed. A bare column value stays bare ("194R/195R …",
   "127 Tube Thermometer"). "No. 801" or "Model 250" are written that way only where the row prints it.
+- **Siblings keep one pattern.** If the majority-wording rule would word sibling SKUs in one table
+  differently (e.g. the three Seal Quick Kits, or the union kits on one list), use the wording of
+  the table they share for all of them.
+- **"Super-Duty"** is treated as a promotional word like Heavy Duty (to confirm).
