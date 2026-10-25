@@ -195,3 +195,7 @@ Matthew approved these calls:
   spelling ("Adapter") unless the brand prints a name that way.
 - **"Bulk pack N" and "(Set of N)":** the number is a pack count, written "Set of N" in front with a
   plural noun. The word "bulk" is dropped.
+- **AC voltage:** "24VAC" is written "24V AC".
+- **Open round-2 questions** (85018000 beige/tan, 523434, 18201-0300/263053 brand, 521057Z,
+  160448/188616, ULTRA-A18, 192115Z, 98211400Z, 150085Z, 470161, 9104800Z) keep their SKUs unsure
+  until Matthew answers.
