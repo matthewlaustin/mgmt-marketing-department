@@ -11,3 +11,4 @@
 - b48 77707-0251 "Natural Gas" vs b49 p393 "Natural" (Model 333NA Natural Air Blower Kit): one pattern per table.
 - b43 150084Z keeps p354 models while 152290Z on the same page drops them: one page, one style.
 - b50 473149 / b51 473778Z contactors must use one pattern.
+- b54 p430 pumps (IntelliFlo/IntelliPro drive history table only): check pentair.com/ordering-page evidence so titles carry the usual spec pattern; tell the b54 adjudicator.
