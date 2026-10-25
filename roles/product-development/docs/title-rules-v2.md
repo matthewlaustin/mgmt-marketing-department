@@ -129,3 +129,8 @@ Matthew approved these calls:
   printed; mark it unsure.
 - **Orderability:** a printed number that the page's own numbering key says needs an option letter
   (Stark™ systems, AQ vessels) is titled normally and marked unsure. One question for Matthew.
+- **A ", for …" phrase after a comma:**
+  - If it names a use or installation type, it moves in front without "for", as in Matthew's
+    plaster ring example: "Regenerative D.E. Filter Quick Disconnect Kit".
+  - If it names other products the part fits, or a condition ("installations without valve"), it
+    is dropped.
