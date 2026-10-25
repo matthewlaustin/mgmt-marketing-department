@@ -219,3 +219,6 @@ Matthew approved these calls:
 - **"Aux"** is spelled out as "Auxiliary", under the abbreviation rule ("8 Auxiliary …").
 - **Printed change dates** that are the only difference stay in printed words at the end:
   "…, Before Change Date 2011".
+- **A parts page carrying the STA-RITE logo** counts as a Sta-Rite line even when the directory
+  doesn't list the family (D Series™, Posi-Clear™ RP, Dynamo®).
+- **A printed list of sizes** is written with slashes: "150/200 sq ft Filter Lid".
