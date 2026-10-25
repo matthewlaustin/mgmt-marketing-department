@@ -142,3 +142,8 @@ Matthew approved these calls:
   For example, 301300 is "Waterco 301300 - MultiCyclone 16 Pro Pre Filter".
 - **SS** is written out as "Stainless Steel" (abbreviation rule), except where it is part of a
   name ("Stark™ SS Series"). "Only" stays when it says what is not included ("Cover Only").
+- **Colour with a named product** (open, for Matthew): models and trademark names lead, and the
+  colour goes right before the item's own noun ("G4V White Internal"). Where the name runs into
+  the noun ("BlueSquare Retro Ratcheting Head Multi Orifice Cap"), the colour leads the whole
+  name, as in the 40-SKU check's 220065: "White BlueSquare Retro Ratcheting Head Multi Orifice Cap".
+  Keep one page consistent.
