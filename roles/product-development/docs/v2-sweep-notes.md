@@ -20,3 +20,4 @@
 - b24 356159Z why says "IntelliFlo3 column"; p431 heads are colours only (wording fix).
 - b54 p426: 7 titles add "No." to bare model numbers for one-page style (R201420/421, R201470/472, R201490/492, R201498); ask Matthew whether "No." is added or only kept where printed.
 - Batches whose context carried the stale "(parts are Pentair)" note: recheck brands in their finals (list: b06 b24 b40 b41 b42 b44 b55 b56 b57 b58 b59 b60 ).
+- Ask Matthew: SKUs printed "not sold individually" (b57 350082) — keep or exclude like discontinued?
