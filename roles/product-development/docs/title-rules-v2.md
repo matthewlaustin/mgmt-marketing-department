@@ -338,3 +338,5 @@ Matthew approved these calls:
   "Propane Burner Orifice, 4000-6000 ft Install Elevation", unsure.
 - **Bowl type** ("Fire Only", "Water Only", "Fire/Water") is a spec in front, before the colour:
   "Round Fire Only Bronze Bowl", "Square Water Only Spillway".
+- **"with X" / "without X" pairs** that are the only difference keep the printed with/without phrase
+  after the noun, no comma ("… Gasket Set with Double Wall" / "… without Double Wall").
