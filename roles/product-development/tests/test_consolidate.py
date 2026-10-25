@@ -37,3 +37,26 @@ def test_owner_decision_rewrites_brand_and_status():
     assert row2["status"] == "discontinued" and row2["replaced_by"] == "350093Z"
     consolidate.apply_owner_decision(row2, None)
     assert row2["status"] == "discontinued"
+
+
+def test_v2_title_replaces_page_title():
+    notes = []
+    best = {"brand": "Pentair", "title": "Pentair 071131Z - Drain Plug, Almond"}
+    v2 = {"mpn": "071131Z", "brand": "Pentair/Sta-Rite", "title": "Pentair/Sta-Rite 071131Z - Almond Drain Plug",
+          "unsure": False, "why": ""}
+    out = consolidate.apply_v2(best, v2, notes)
+    assert out["title"] == "Pentair/Sta-Rite 071131Z - Almond Drain Plug" and out["brand"] == "Pentair/Sta-Rite"
+    assert notes == []
+
+
+def test_v2_gap_and_unsure_are_flagged():
+    notes = []
+    out = consolidate.apply_v2({"brand": "Pentair", "title": "Pentair 152519Z - Old"},
+                               {"mpn": "152519Z", "brand": "Pentair", "title": "", "gap": True, "unsure": True,
+                                "why": "no description printed"}, notes)
+    assert out["title"] == "" and notes == ["title gap: no description printed"]
+    notes = []
+    consolidate.apply_v2({"brand": "Pentair", "title": "x"},
+                         {"mpn": "1", "brand": "Pentair", "title": "Pentair 1 - Y", "unsure": True, "why": "which noun?"}, notes)
+    assert notes == ["title unsure: which noun?"]
+    assert consolidate.apply_v2({"title": "same"}, None, notes) == {"title": "same"}

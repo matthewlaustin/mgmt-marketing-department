@@ -2,6 +2,8 @@
 
   python3 scripts/consolidate.py [review_dir]      # default: reviews_final
 
+Titles come from the v2 retitle (v2/final) where it covers the SKU.
+
 Writes data/catalog.db (tables: products, evidence, conflicts) and
 data/exports/pentair_skus.csv. Discontinued and not-for-USA SKUs are left out of both; their
 numbers are listed in data/work/pentair/excluded_mpns.json.
@@ -138,6 +140,27 @@ def load_web_records() -> list[dict]:
     return out
 
 
+def load_v2_titles() -> dict[str, dict]:
+    """The v2 retitle (data/work/pentair/v2/final/*.json): brand and title under docs/title-rules-v2.md."""
+    out: dict[str, dict] = {}
+    for path in sorted((WORK / "v2/final").glob("b*.json")):
+        for r in json.loads(path.read_text()):
+            out[r["mpn"]] = r
+    return out
+
+
+def apply_v2(best: dict, v2: dict | None, notes: list[str]) -> dict:
+    """v2 titles replace page-review and harmonized titles; gaps and unsure titles are flagged for review."""
+    if not v2:
+        return best
+    if v2.get("gap"):
+        notes.append(f"title gap: {v2.get('why', '')}")
+        return dict(best, brand=v2["brand"], title="")
+    if v2.get("unsure"):
+        notes.append(f"title unsure: {v2.get('why', '')}")
+    return dict(best, brand=v2["brand"], title=v2["title"])
+
+
 def load_owner_decisions() -> dict[str, dict]:
     """Matthew's answers (data/work/pentair/owner_decisions.json): status, brand and replacement calls."""
     path = WORK / "owner_decisions.json"
@@ -150,7 +173,7 @@ def apply_owner_decision(row: dict, d: dict | None) -> None:
     """Applied last: the owner's call wins over page reviews and harmonization."""
     if not d:
         return
-    if d.get("brand") and d["brand"] != row["brand"]:
+    if d.get("brand") and d["brand"] != row["brand"] and " - " in row["title"]:
         derived = row["title"].split(" - ", 1)[1]
         row["brand"] = d["brand"]
         row["title"] = f"{d['brand']} {row['mpn']} - {derived}"
@@ -184,6 +207,7 @@ def main() -> int:
             by_mpn[rec["mpn"]].append(rec)
     overrides = load_harmonized()
     owner = load_owner_decisions()
+    v2_titles = load_v2_titles()
 
     DB.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(DB)
@@ -213,6 +237,7 @@ def main() -> int:
                         kind=h.get("kind", best["kind"]))
             if h.get("confidence") == "review":
                 notes.append(f"harmonized: {h.get('reason', '')}")
+        best = apply_v2(best, v2_titles.get(mpn), notes)
         line = canonical(best.get("product_line") or "")
         if best["brand"] == "Pleatco" and line in PLEATCO_LINES:
             line = PLEATCO_LINES[line]
