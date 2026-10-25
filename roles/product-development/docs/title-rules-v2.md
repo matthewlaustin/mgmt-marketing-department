@@ -270,3 +270,5 @@ Matthew approved these calls:
   many are sold. Drop them and mark unsure unless another page prints the same SKU as a pack
   ("Set of N", "N per card", "bulk pack"). The bare-count call above applies only to accessory
   and ordering rows.
+- **Whole-good specs from pentair.com:** when the catalog row doesn't print a spec the series'
+  ordering table varies by, Pentair's own cached product page may supply it (cite it in `why`).
