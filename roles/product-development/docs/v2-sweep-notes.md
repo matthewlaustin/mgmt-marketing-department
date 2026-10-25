@@ -15,3 +15,6 @@
 - b02 263045 "CVA24T Valve Actuator" vs b39 263043/263044 "CVA-24L 24V AC 90 Degree Rotation Valve Actuator": one pattern for the p331 table (ordering-page vs shared table).
 - Earlier finals with "Set of N" from a parts-list count (b39 'Set of 4 CVA-24 to Compool Valve Mounting Screws' etc., b55): recheck under the per-unit count call.
 - Batch evidence bug: p408/p409 rows carry Watts that the pages don't print (prep may copy p406's column). Check other multi-page tables in v2_prep/packets before loading finals.
+- b44 357161Z "Drain Plug" → "Black Drain Plug" to match p431's almond/black pairs (b55 071131Z "Almond Drain Plug").
+- b24 410029 "3 in Union Kit for 3 HP Pumps" keeps a fit tail; its p431 sibling 410028 has none (whole fit-tail rule).
+- b24 356159Z why says "IntelliFlo3 column"; p431 heads are colours only (wording fix).
