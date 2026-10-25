@@ -203,3 +203,20 @@ Conflicting titles between pages are flagged for review.
 A trailing "Z" on a Pentair part number is the same part packaged for retail/service use (e.g. 350093
 and 350093Z). Both numbers are real, active SKUs; neither replaces the other. A pair's titles describe
 the same part; how the two titles are told apart is set in the X/XZ pair rule below once decided.
+
+## Matthew's title training, round 1 [2026-10-25; supersedes the family/fit rules above where they conflict]
+Source: answers on the title-training page (27 samples). Open points are asked in round 2.
+- Parts: title = the line-item description as printed, cleaned up. No product family, no generic
+  product noun ("Pump", "Cleaner"), no fit list, no heading words: "Diffuser", "Lid", "Shaft Seal",
+  "Center Diverter", "Rear Cover Kit", "Power Supply", "Seal/Gasket Kit" (Parts-Paks™ is only in the band).
+- Add a differentiator only when the same name occurs more than once in the same parts list and
+  something printed tells them apart: "Tank lid, 24 sq. ft. filter" → "24 Sq Ft Filter Tank Lid".
+- Descriptors after a comma go before the noun; bracketed text is dropped: "Plaster ring, for gunite
+  niche, spa" → "Spa Gunite Niche Plaster Ring"; "Compressor, Scroll ZP61 (Model 90 only) FG units built
+  before 1/6/21" → "Scroll Compressor ZP61". A trademark printed in the line item stays ("QuikSkim Ultra Silt Sock").
+- A printed "for …" without a comma stays ("Battery for Indoor Control Panel and Outdoor Control Panel").
+- Whole goods: no marketing words ("High Performance"); every spec that varies in the series' ordering
+  table (IntelliBrite® "… 120V 28W 100 ft Cord Pool Light"); heater size "400K BTU".
+- Pleatco cartridges, including Pentair-numbered packs (179133), are brand Pleatco.
+- Discontinued products get no product data (how far: round 2).
+- Scope: titles only; no new data fields for now.

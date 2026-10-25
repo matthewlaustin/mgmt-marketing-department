@@ -28,23 +28,37 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Pool Geek · Pentair titles · Training</div>
-    <h1>How would you title these?</h1>
-    <p class="lede">27 real Pentair SKUs, one or two of each kind I name. Each shows the catalog row (tap “Show full page” to see the whole catalog page; swipe sideways on a phone), today's title, and my draft under your new rule. Tap “Draft is right”, or type what you would have used. Notes are for anything that belongs in another field.</p>
+    <div class="eyebrow">Pool Geek · Pentair titles · Training round 2</div>
+    <h1>What I learned, and my questions</h1>
+    <p class="lede">I read all 27 of your answers. Below is what I took from them, then the questions I still have. Your answers save as you tap. Your round 1 answers are further down.</p>
   </header>
 
   <div class="rule">
-    <h3>The rule I'm drafting from</h3>
+    <h3>What I took from your answers</h3>
     <ul>
-      <li>The title is what Pentair calls the item, plus its own specs: size, colour, HP, voltage, pack count.</li>
-      <li>Product line, fit lists, model numbers, build dates, competitor brands and use (“for gunite niche”) go in their own fields. Several different parts may share one title.</li>
-      <li>My assumption: a part keeps a plain word for what it goes on (“Pump”, “Cleaner”, “Skimmer”) when Pentair prints it on the page.</li>
+      <li><b>Parts:</b> the title is Pentair's line-item description, cleaned up. Nothing added from the product line, the page heading or a fit list (“Diffuser”, “Lid”, “Shaft Seal”, “Center Diverter”, “Rear Cover Kit”, “Power Supply”).</li>
+      <li>A part gets an extra word only when the same name appears more than once in that parts list and something printed tells them apart (“24 Sq Ft Filter Tank Lid” vs the 36 sq ft lid).</li>
+      <li>Descriptors after a comma move in front of the noun: “Tank lid, 24 sq. ft. filter” → “24 Sq Ft Filter Tank Lid”; “Plaster ring, for gunite niche, spa” → “Spa Gunite Niche Plaster Ring”; “Compressor, Scroll ZP61” → “Scroll Compressor ZP61”. Words in brackets are dropped.</li>
+      <li>Trademarked names stay only when they are printed in the line item itself (“QuikSkim Ultra Silt Sock”); a name that is only in the band or heading is dropped (Parts-Paks™ → “Seal/Gasket Kit”).</li>
+      <li><b>Whole goods:</b> no marketing words (“High Performance”). Include every spec that varies within the series' ordering table (the light's 28W). Heater size reads “400K BTU”.</li>
+      <li>Pleatco cartridges, including Pentair-numbered packs like 179133, are brand Pleatco.</li>
+      <li>Discontinued products get no product data.</li>
+      <li>Two mistakes of mine: the training page printed “Pentair” in front of every number. The database already had Sta-Rite for 343001 and Pleatco for PA40; that was a bug in the page, now fixed below. 179133 and 25021-0021 really were stored as Pentair, and I'll correct those.</li>
+      <li>I've dropped the extra data fields (fits, fit notes, application) and am working on titles only.</li>
     </ul>
   </div>
 
+  <section aria-labelledby="qs-h">
+    <header>
+      <h2 id="qs-h">Questions</h2>
+      <p class="progress" id="qprogress">Answers save when you pick them.</p>
+    </header>
+    <div class="pairs" id="questions"></div>
+  </section>
+
   <section aria-labelledby="items-h">
     <header>
-      <h2 id="items-h">Samples</h2>
+      <h2 id="items-h">Round 1: your answers</h2>
       <p class="progress" id="progress">Answers save as you go.</p>
     </header>
     <div id="db-notice" class="notice" hidden>Your answers can't be saved from this view (you may be signed out). Reply in chat instead.</div>
@@ -56,6 +70,7 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
 
 <script>
 const ITEMS = /*ITEMS*/;
+const QUESTIONS = /*QUESTIONS*/;
 const $ = (id) => document.getElementById(id);
 const answers = {};
 let db = null;
@@ -96,13 +111,13 @@ function card(d) {
   }
   el.append(ev);
   const t = document.createElement("div"); t.className = "titles";
-  t.append(row("now", "Today", "Pentair " + d.mpn + " - " + d.now), row("draft", "Draft", "Pentair " + d.mpn + " - " + d.draft, d.fields));
+  t.append(row("now", "Today", d.brand + " " + d.mpn + " - " + d.now), row("draft", "Draft", d.brand + " " + d.mpn + " - " + d.draft, d.fields));
   el.append(t);
   const choices = document.createElement("div"); choices.className = "choices";
   const ok = document.createElement("button"); ok.type = "button"; ok.className = "choice"; ok.textContent = "Draft is right"; ok.setAttribute("aria-pressed", "false");
   ok.addEventListener("click", () => save(d.id, { verdict: "draft", title: "" }));
   choices.append(ok);
-  const inp = document.createElement("input"); inp.type = "text"; inp.id = "title-" + d.id; inp.placeholder = "Your title (without the Pentair " + d.mpn + " - prefix)"; inp.setAttribute("aria-label", "Your title for " + d.mpn);
+  const inp = document.createElement("input"); inp.type = "text"; inp.id = "title-" + d.id; inp.placeholder = "Your title (without the " + d.brand + " " + d.mpn + " - prefix)"; inp.setAttribute("aria-label", "Your title for " + d.mpn);
   let t1; inp.addEventListener("input", () => { clearTimeout(t1); t1 = setTimeout(() => save(d.id, { verdict: inp.value.trim() ? "mine" : "", title: inp.value }), 900); });
   const note = document.createElement("textarea"); note.id = "note-" + d.id; note.placeholder = "Notes: other fields, why"; note.setAttribute("aria-label", "Notes for " + d.mpn);
   let t2; note.addEventListener("input", () => { clearTimeout(t2); t2 = setTimeout(() => save(d.id, { note: note.value }), 900); });
@@ -140,6 +155,61 @@ async function save(id, patch) {
   } finally { delete writing[id]; }
 }
 
+
+const qanswers = {};
+function qcard(d) {
+  const el = document.createElement("div"); el.className = "q"; el.id = "qq-" + d.id;
+  const h = document.createElement("h3"); h.textContent = d.title; el.append(h);
+  if (d.detail) { const p = document.createElement("p"); p.className = "detail"; p.textContent = d.detail; el.append(p); }
+  if (d.examples) { const t = document.createElement("div"); t.className = "titles"; d.examples.forEach((e) => t.append(row("draft", e[0], e[1]))); el.append(t); }
+  if (d.crops) {
+    const ev = document.createElement("div"); ev.className = "evidence";
+    d.crops.forEach((c) => { const sc = document.createElement("div"); sc.className = "scan"; const i = document.createElement("img"); i.src = c; i.alt = "Catalog row"; i.loading = "lazy"; sc.append(i); ev.append(sc); });
+    el.append(ev);
+  }
+  const ch = document.createElement("div"); ch.className = "choices"; ch.setAttribute("role", "group"); ch.setAttribute("aria-label", d.title);
+  d.choices.forEach((c) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "choice"; b.textContent = c; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => {
+      const cur = qanswers[d.id] || {};
+      if (d.multi) { const set = new Set(cur.choices || []); set.has(c) ? set.delete(c) : set.add(c); qsave(d.id, { choices: [...set] }); }
+      else qsave(d.id, { choice: c });
+    });
+    ch.append(b);
+  });
+  const note = document.createElement("textarea"); note.id = "qn-" + d.id; note.placeholder = d.multi ? "Others, or anything to add" : "Optional note"; note.setAttribute("aria-label", "Note: " + d.title);
+  let tm; note.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(() => qsave(d.id, { note: note.value }), 900); });
+  const st = document.createElement("p"); st.className = "saved"; st.id = "qs-" + d.id;
+  el.append(ch, note, st);
+  return el;
+}
+function qpaint(id) {
+  const a = qanswers[id] || {}; const c = $("qq-" + id); if (!c) return;
+  const picked = new Set(a.choices || (a.choice ? [a.choice] : []));
+  c.classList.toggle("answered", picked.size > 0 || !!a.note);
+  c.querySelectorAll(".choice").forEach((b) => b.setAttribute("aria-pressed", String(picked.has(b.textContent))));
+  const n = $("qn-" + id); if (n && document.activeElement !== n && typeof a.note === "string") n.value = a.note;
+  const done = QUESTIONS.filter((x) => { const v = qanswers[x.id] || {}; return v.choice || (v.choices && v.choices.length) || v.note; }).length;
+  $("qprogress").innerHTML = "<strong>" + done + "</strong> of " + QUESTIONS.length + " answered";
+}
+const qwriting = {};
+async function qsave(id, patch) {
+  const st = $("qs-" + id);
+  qanswers[id] = Object.assign({}, qanswers[id], patch, { updatedAt: new Date().toISOString() });
+  qpaint(id);
+  if (!db) { st.textContent = "Not saved: this view can't store answers."; st.className = "saved err"; return; }
+  if (qwriting[id]) { qwriting[id].pending = true; return; }
+  qwriting[id] = { pending: false };
+  st.textContent = "Saving…"; st.className = "saved";
+  try {
+    do { qwriting[id].pending = false; await db.doc("questions/" + id).set(qanswers[id]); } while (qwriting[id].pending);
+    st.textContent = "Saved"; st.className = "saved ok";
+  } catch (e) {
+    st.textContent = e && e.code === "not_granted" ? "You can view this page but not answer here." : "Couldn't save. Try again in a moment.";
+    st.className = "saved err";
+  } finally { delete qwriting[id]; }
+}
+QUESTIONS.forEach((d) => $("questions").append(qcard(d)));
 ITEMS.forEach((d) => $("items").append(card(d)));
 (async () => {
   try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
@@ -148,5 +218,9 @@ ITEMS.forEach((d) => $("items").append(card(d)));
     snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); });
     ITEMS.forEach((x) => paint(x.id));
   }, () => { $("db-notice").hidden = false; });
+  db.collection("questions").onSnapshot((snap) => {
+    snap.docs.forEach((d) => { qanswers[d.id] = Object.assign({}, d.data()); });
+    QUESTIONS.forEach((x) => qpaint(x.id));
+  }, () => {});
 })();
 </script>
