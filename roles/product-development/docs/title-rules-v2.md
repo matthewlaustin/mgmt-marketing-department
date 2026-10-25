@@ -349,5 +349,5 @@ Matthew approved these calls:
   Upgrade Kit") or not.
 - **Model ranges** ("Model #522635 - 522637") are written "Model 522635-522637"; "Models" →
   "Model".
-- **"Kit includes N screws" as the whole description:** "N-Screw Kit"? No: "Screw Kit" plus the
-  count after a comma ("Screw Kit, 2 Screws"), unsure; the count tells kits apart.
+- **"Kit includes N screws" as the whole description:** "Screw Kit, 2 Screws" (the count after a
+  comma tells the kits apart), unsure.
