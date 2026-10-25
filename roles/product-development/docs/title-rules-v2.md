@@ -360,3 +360,5 @@ Matthew approved these calls:
   same product group, unsure.
 - **EC- twins of catalog-discontinued SKUs** that pentair.com lists as available stay titled,
   unsure; one group question for Matthew (keep or exclude).
+- **An EC- or Z twin whose own row prints nothing** takes its twin's final title, unsure (not a
+  gap); a number with no twin and no description is a gap.
