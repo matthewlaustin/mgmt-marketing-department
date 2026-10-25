@@ -318,3 +318,7 @@ Matthew approved these calls:
   Matthew's "Seal Plate to Housing Gasket": "Volute Suction Gasket".
 - **Printed lists keep their printed order** (no reordering).
 - **Thread and length** are joined with "x" ("3/4-10 x 1-3/4") whatever the printed separator.
+- **A footnote that defines a spec** ("1 = Epoxy coated") works like a bracketed spec: "Epoxy
+  Coated Strainer Body".
+- **"(Pkg. N)" as the only difference** is a fit: in front as printed in the page heading
+  ("Package No. 56 Cover"), unsure.
