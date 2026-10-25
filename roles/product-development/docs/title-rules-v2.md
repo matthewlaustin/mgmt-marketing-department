@@ -112,4 +112,5 @@ Matthew approved these calls:
 - **Pleatco packs:** use the sq ft printed on the pack's row (the pack total when that is what is
   printed): "Set of 4 Advanced Filter Cartridges 224 sq ft 7 in x 17-3/8 in".
 - **Pleatco line names** (Ultra, Advanced) carry no ™, as in Matthew's approved examples.
+- **", Upgrade for X"** names only the first Pleatco number printed in that cell.
 - **Conflicting dimensions between Pleatco pages:** use the measurement page and mark unsure.
