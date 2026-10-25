@@ -124,3 +124,8 @@ Matthew approved these calls:
 - **Ultra cartridges** carry no sq ft, even where another page prints one (approved ULTRA-B10).
 - **Pleatco line names stay** for every Pleatco product: PureStart, Filter Wash™, Advanced, Ultra.
 - **Grid sets** follow the Pleatco grid pattern even when parts lists word them differently.
+- **Model lists** are written with slashes and no spaces: "G4/G4V/G4VHP", "TR100C/TR140C".
+- **A whole good whose row leaves out a family word** that its heading and siblings print stays as
+  printed; mark it unsure.
+- **Orderability:** a printed number that the page's own numbering key says needs an option letter
+  (Stark™ systems, AQ vessels) is titled normally and marked unsure. One question for Matthew.
