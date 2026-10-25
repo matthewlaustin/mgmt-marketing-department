@@ -208,3 +208,8 @@ Matthew approved these calls:
   them apart ("#2-231 O-Ring" from p453). If no page does, they share the title and stay unsure.
 - **A bracketed date that is the only difference** between sibling SKUs stays, in short form,
   after the noun, like the footnote-date call: "Cord-Ring for Filters Made Before 3/97".
+- **Codes vs abbreviations:** product and line codes stay as printed (IT/ET, LC/PC, ICPLUS40).
+  Abbreviated ordinary words are spelled out (OCP → Outdoor Control Panel, where the page prints
+  it).
+- **A trademark the catalog never prints with a mark** (ScreenLogic, QuikSkim, AutoFill) stays bare.
+  Marks are added only where Pentair prints them somewhere.
