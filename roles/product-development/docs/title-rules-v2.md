@@ -387,3 +387,19 @@ All interim calls below are accepted, except where this section changes them.
   `why`.
 - **Marketing words** ("Professional Grade", "Super-Duty") are dropped from parts as well as whole
   goods (the checker already bans them catalog-wide).
+
+## Second pass on the review items [coordinator, 2026-10-25]
+Matthew asked for fewer review items, so the 179 unsure records were settled by rule where a rule
+reaches, with the alternative reading kept in `why`:
+- **Slide Valves** are listed under Pentair in the directory and their pages carry the STA-RITE
+  logo: the parts are **Pentair/Sta-Rite** (both lines), ending the open brand question.
+- **CLP (BioShield®) base numbers** stay, as Matthew answered for the Stark/AQ base numbers.
+- **Pleatco page conflicts:** the measurement page wins, no longer unsure.
+- **179133–179136** share their identical-row twins' titles (ULTRA-Ax-PAK4).
+- **Whole-good fit tails** come off ("AquaTRAM® 90+ Lift with Anchor").
+- **A printed THP stands in for an HP printed N/A** ("1.1 Total HP").
+- **Counts on another page** make a pack ("Set of 2 Union Nuts") when the own row prints none.
+- **Service and warranty SKUs** keep their printed wording.
+- **Page contradictions** (noun, size, count, colour) are settled by the own list, then majority,
+  then the product's ordering page; only six stay unsure, where the wrong pick would change what a
+  buyer receives: 170040, EC110, 521057Z, 472734, 358215, 358216.
