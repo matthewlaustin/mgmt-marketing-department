@@ -220,3 +220,19 @@ Source: answers on the title-training page (27 samples). Open points are asked i
 - Pleatco cartridges, including Pentair-numbered packs (179133), are brand Pleatco.
 - Discontinued products get no product data (how far: round 2).
 - Scope: titles only; no new data fields for now.
+
+## Matthew's title training, round 2 [decided 2026-10-25]
+- Discontinued or not-for-USA (manufacturer site or catalog): ignored. No product data; consolidate
+  leaves them out and lists only their numbers in data/work/pentair/excluded_mpns.json.
+- Model names go in front of the noun: "Model 250 NG to Propane Conversion Kit",
+  "S7M120/S7M400 Modular Media Conversion Kit", "EQK1000 Motor" (model chart column headers:
+  model + header noun). Pack counts may also lead: "Set of 4 Ultra Replacement Cartridges".
+- Brand: parts and accessories follow their product line's brand (Sta-Rite lines → Sta-Rite).
+  A part number used by both Pentair and Sta-Rite lines is titled "Pentair/Sta-Rite {MPN} - …".
+- Pleatco cartridges keep sq ft and dimensions (Matthew reversed his training answer).
+- Marketing words come out of titles: High Performance, Variable Speed, Self-Priming, Commercial,
+  DOE Compliant, Low Profile, Heavy Duty.
+- Whole goods carry every spec column that varies in the series' ordering table.
+- Units: standard lower-case abbreviations ("24 sq ft", "2 in", "100 ft").
+- Duplicate titles across different parts lists are fine; disambiguate only within one parts list.
+- R201536 is "194R/195R Replacement Brushes" (model from the row's model column, in front).

@@ -3,7 +3,8 @@
   python3 scripts/consolidate.py [review_dir]      # default: reviews_final
 
 Writes data/catalog.db (tables: products, evidence, conflicts) and
-data/exports/pentair_skus.csv (status active only: USA, not discontinued).
+data/exports/pentair_skus.csv. Discontinued and not-for-USA SKUs are left out of both; their
+numbers are listed in data/work/pentair/excluded_mpns.json.
 
 One product per MPN. When an MPN appears on several pages, the title comes from the most
 authoritative page type (see PRIORITY); disagreements between pages are recorded in
@@ -27,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORK = ROOT / "data/work/pentair"
 DB = ROOT / "data/catalog.db"
 EXPORT = ROOT / "data/exports/pentair_skus.csv"
+EXCLUDED = WORK / "excluded_mpns.json"  # discontinued / not for USA: number and status only
 SOURCE = "Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition)"
 
 # Lower number wins the title.
@@ -187,6 +189,7 @@ def main() -> int:
     con = sqlite3.connect(DB)
     con.executescript(SCHEMA)
     exported = []
+    excluded: dict[str, str] = {}
     for mpn, recs in sorted(by_mpn.items()):
         recs.sort(key=lambda r: (not r.get("title"), PRIORITY.get(r["page_type"], 6),
                                  KIND_PRIORITY.get(r["kind"], 3), r["pdf_page"]))
@@ -226,6 +229,11 @@ def main() -> int:
             "source": best.get("source_url") or SOURCE,
         }
         apply_owner_decision(row, owner.get(mpn))
+        if row["status"] != "active":
+            # Discontinued and not-for-USA items get no product data (Matthew, 2026-10-25); only the
+            # number is kept, so later runs know it was seen and left out on purpose.
+            excluded[mpn] = row["status"]
+            continue
         con.execute(f"INSERT INTO products ({','.join(row)}) VALUES ({','.join('?' * len(row))})", list(row.values()))
         for r in recs:
             con.execute(
@@ -256,9 +264,11 @@ def main() -> int:
         w.writeheader()
         w.writerows(exported)
 
+    con.executemany("DELETE FROM conflicts WHERE mpn = ?", [(m,) for m in excluded])
+    EXCLUDED.write_text(json.dumps(excluded, indent=0, sort_keys=True))
     counts = dict(con.execute("SELECT status, count(*) FROM products GROUP BY status").fetchall())
     conflicts = con.execute("SELECT count(DISTINCT mpn) FROM conflicts").fetchone()[0]
-    print(f"products: {sum(counts.values())} {counts}; exported {len(exported)}; MPNs with page conflicts: {conflicts}; "
+    print(f"products: {sum(counts.values())} {counts}; left out (discontinued / not for USA): {len(excluded)}; exported {len(exported)}; MPNs with page conflicts: {conflicts}; "
           f"duplicate titles: {len(dupes)}")
     con.close()
     return 0
