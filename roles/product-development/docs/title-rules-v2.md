@@ -259,3 +259,6 @@ Matthew approved these calls:
   the printed words after a comma: "Heat Pump Contactor, Prior to 12/2014".
 - **Cross-line ties never break a settled pattern:** where Matthew approved a pattern ("Scroll
   Compressor ZP61"), use the page wording that keeps it, even across lines.
+- **Cross-line tie vs siblings' pattern:** when the SKU sits with the same siblings in several
+  lines' tables and the siblings settle one wording (by majority or a fuller page), use that
+  wording, so the tables share one pattern.
