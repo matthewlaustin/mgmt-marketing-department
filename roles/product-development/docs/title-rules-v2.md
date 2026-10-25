@@ -314,3 +314,6 @@ Matthew approved these calls:
 - **One SKU on two chart rows with different specs** ("2hp Standard E", "2.5hp Uprated Standard
   E"): join the differing spec with a slash in one unit ("2/2.5 HP Standard E 230V Power End"),
   drop "Uprated", unsure.
+- **Location brackets** ("Gasket (Volute Suction)") go in front like comma descriptors, matching
+  Matthew's "Seal Plate to Housing Gasket": "Volute Suction Gasket".
+- **Printed lists keep their printed order** (no reordering).
