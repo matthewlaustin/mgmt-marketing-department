@@ -213,3 +213,9 @@ Matthew approved these calls:
   it).
 - **A trademark the catalog never prints with a mark** (ScreenLogic, QuikSkim, AutoFill) stays bare.
   Marks are added only where Pentair prints them somewhere.
+- **Brackets that hold a spec of the item itself** (amps, conductor count, size: "(3 Amp)",
+  "(6-Conductor)") stay, without brackets, in front of the noun: "3 Amp Circuit Breaker". Brackets
+  holding notes, fits or contents are still dropped.
+- **"Aux"** is spelled out as "Auxiliary", under the abbreviation rule ("8 Auxiliary …").
+- **Printed change dates** that are the only difference stay in printed words at the end:
+  "…, Before Change Date 2011".
