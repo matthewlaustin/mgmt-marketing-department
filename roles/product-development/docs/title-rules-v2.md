@@ -114,3 +114,5 @@ Matthew approved these calls:
 - **Pleatco line names** (Ultra, Advanced) carry no ™, as in Matthew's approved examples.
 - **", Upgrade for X"** names only the first Pleatco number printed in that cell.
 - **Conflicting dimensions between Pleatco pages:** use the measurement page and mark unsure.
+- **Page ties:** the product line's own page or parts list wins over a shared accessories table
+  (p19 or the shared heater accessories table). Matthew approved this for RCS1 and 475002.
