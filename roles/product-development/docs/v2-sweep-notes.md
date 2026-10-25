@@ -12,3 +12,4 @@
 - b43 150084Z keeps p354 models while 152290Z on the same page drops them: one page, one style.
 - b50 473149 / b51 473778Z contactors must use one pattern.
 - b54 p430 pumps (IntelliFlo/IntelliPro drive history table only): check pentair.com/ordering-page evidence so titles carry the usual spec pattern; tell the b54 adjudicator.
+- b02 263045 "CVA24T Valve Actuator" vs b39 263043/263044 "CVA-24L 24V AC 90 Degree Rotation Valve Actuator": one pattern for the p331 table (ordering-page vs shared table).
