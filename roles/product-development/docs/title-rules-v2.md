@@ -267,8 +267,9 @@ Matthew approved these calls:
 - **Matthew's approved sibling decides the page:** where he approved a sibling's title from one
   table (R201536 "194R/195R Replacement Brushes", from p426), the siblings follow that table.
 - **"(Xn)" / "(n req.)" on an equipment parts list** usually count how many one unit uses, not how
-  many are sold. Drop them and mark unsure unless another page prints the same SKU as a pack
-  ("Set of N", "N per card", "bulk pack"). The bare-count call above applies only to accessory
+  many are sold. Drop them. Only if another page prints the same SKU as a pack ("Set of N", "N per
+  card", "bulk pack") is it a pack (title it so). Don't mark the dropped count unsure: the review
+  page asks Matthew once for the whole group. The bare-count call above applies only to accessory
   and ordering rows.
 - **Whole-good specs from pentair.com:** when the catalog row doesn't print a spec the series'
   ordering table varies by, Pentair's own cached product page may supply it (cite it in `why`).
