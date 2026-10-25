@@ -298,3 +298,8 @@ Matthew approved these calls:
 - **Shape in brackets** ("(Square)", "(Round)") is a spec: "Square Seal Plate O-Ring".
 - **"- Models X, Y, Z" lists inside a part's line item** are fit lists: dropped, unless they are the
   only difference (then in front, per the fit-bracket call).
+- **Model charts, part shared by many models:** list at most 4 models in front. With more, drop the
+  list (it is a fit list) and use the bare column noun; if that clashes with another SKU on the
+  chart, keep the list and mark it unsure. 50 Hz rows never join a model list; a voltage variant
+  ("EQK750 575V") isn't repeated when its base model is listed.
+- **Phase:** write "1-Phase" / "3-Phase" everywhere ("3 Phase", "Three Phase" → "3-Phase").
