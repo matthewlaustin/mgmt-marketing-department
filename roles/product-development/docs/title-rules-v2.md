@@ -329,3 +329,8 @@ Matthew approved these calls:
   wording, and the fuller form wins.
 - **Two pages with different, compatible descriptors** of the same item may be combined in word
   order ("18 Gauge Stainless Steel Washer"), unsure.
+- **Obvious misspellings with no correct spelling nearby** ("Mitrile", "Bunan", "Rebuilt Kit") are
+  corrected when the catalog prints the right word anywhere ("Nitrile", "Buna-N", "Rebuild Kit"),
+  unsure. A word whose meaning is unclear ("Kratom") stays as printed, unsure.
+- **"May not be purchased separately" / "not sold individually"** SKUs stay titled and unsure; one
+  group question for Matthew (keep or exclude).
