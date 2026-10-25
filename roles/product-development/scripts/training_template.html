@@ -18,6 +18,7 @@
 .trow .val { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
 .trow.draft .val { background: var(--accent-soft); border-radius: 6px; padding: 4px 8px; }
 .trow .fields { font-family: var(--body); font-size: 13px; color: var(--muted); }
+.ask { color: var(--ink) !important; background: var(--warn-soft); border-radius: 8px; padding: 8px 12px; }
 .group { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
 .mpnh { font-family: var(--mono); font-size: 20px; font-weight: 500; }
 input[type=text] { font: inherit; font-family: var(--mono); font-size: 14px; width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
@@ -70,6 +71,7 @@ function card(d) {
   const g = document.createElement("div"); g.className = "group"; g.textContent = d.group;
   const h = document.createElement("div"); h.className = "mpnh"; h.textContent = d.mpn;
   el.append(g, h);
+  if (d.ask) { const q = document.createElement("p"); q.className = "detail ask"; q.textContent = d.ask; el.append(q); }
   const ev = document.createElement("div"); ev.className = "evidence";
   if (d.crop) {
     const sc = document.createElement("div"); sc.className = "scan";
@@ -100,7 +102,7 @@ function card(d) {
   choices.append(ok);
   const inp = document.createElement("input"); inp.type = "text"; inp.id = "title-" + d.id; inp.placeholder = "Your title (without the " + d.brand + " " + d.mpn + " - prefix)"; inp.setAttribute("aria-label", "Your title for " + d.mpn);
   let t1; inp.addEventListener("input", () => { clearTimeout(t1); t1 = setTimeout(() => save(d.id, { verdict: inp.value.trim() ? "mine" : "", title: inp.value }), 900); });
-  const note = document.createElement("textarea"); note.id = "note-" + d.id; note.placeholder = "Notes: other fields, why"; note.setAttribute("aria-label", "Notes for " + d.mpn);
+  const note = document.createElement("textarea"); note.id = "note-" + d.id; note.placeholder = "Notes"; note.setAttribute("aria-label", "Notes for " + d.mpn);
   let t2; note.addEventListener("input", () => { clearTimeout(t2); t2 = setTimeout(() => save(d.id, { note: note.value }), 900); });
   const st = document.createElement("p"); st.className = "saved"; st.id = "st-" + d.id;
   el.append(choices, inp, note, st);
