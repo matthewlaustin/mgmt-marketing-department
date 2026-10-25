@@ -360,8 +360,9 @@ Matthew approved these calls:
   same product group, unsure.
 - **EC- twins of catalog-discontinued SKUs** that pentair.com lists as available stay titled,
   unsure; one group question for Matthew (keep or exclude).
-- **An EC- or Z twin whose own row prints nothing** takes its twin's final title, unsure (not a
-  gap); a number with no twin and no description is a gap.
+- **An EC- twin whose own row prints nothing** takes its dealer twin's final title, unsure. A plain
+  number whose row prints nothing is a gap even if a Z twin exists (32 X/XZ pairs are printed as
+  different parts).
 - **A footnote legend that doesn't match the row** (a misnumbered web legend) is ignored; say so in
   `why`.
 - **Marketing words** ("Professional Grade", "Super-Duty") are dropped from parts as well as whole
