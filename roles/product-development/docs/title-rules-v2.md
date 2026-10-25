@@ -230,3 +230,19 @@ Matthew approved these calls:
 - **NG and LP stay as printed.** Matthew approved "Model 250 NG to Propane Conversion Kit".
 - **Ties across two lines' parts lists:** use the wording of the list whose siblings the SKU sits
   with in this batch (one page, one style), and mark it unsure only if the nouns contradict.
+- **A drawing dimension that is the only difference** ("(dim. D = 19-7/8 in.)") goes after the noun
+  after a comma: "Piping Assembly, Dimension D 19-7/8 in". Mark it unsure.
+- **Footnote or asterisk marks with no legend on the page** are dropped; the SKU stays. Say so in
+  `why`. Only a mark the page defines as discontinued removes a SKU.
+- **Board or drawing numbers inside a description** ("#11111") are dropped.
+- **"(KIT)" in brackets** says what is sold, so it stays as "Kit" after the noun: "Burner Kit".
+- **Bracketed colour** is dropped unless it is the only difference (then it goes in front). A
+  bracketed gas type is a spec and goes in front; if that repeats a word, put it after a comma
+  instead ("Gas and Air Orifices, Natural Gas") and mark it unsure.
+- **Trademark spelling:** use the catalog's usual spelling and mark from its running text
+  ("Titan-Tough™"), as with HiFlow™.
+- **Abbreviations no page spells out** ("HP" in "Control/HP Panel") stay as printed, unsure.
+- **"200 Models" / "333 Model"** become "Model 200" / "Model 333" in front, as in the b10 kits.
+- **A bare count in brackets** ("(4)", "(Qty. 5)") is a pack count: "Set of 4".
+- **A non-spec bracket that is the only difference** goes after the noun after a comma:
+  "Side Panel, Service Panel".
