@@ -317,3 +317,4 @@ Matthew approved these calls:
 - **Location brackets** ("Gasket (Volute Suction)") go in front like comma descriptors, matching
   Matthew's "Seal Plate to Housing Gasket": "Volute Suction Gasket".
 - **Printed lists keep their printed order** (no reordering).
+- **Thread and length** are joined with "x" ("3/4-10 x 1-3/4") whatever the printed separator.
