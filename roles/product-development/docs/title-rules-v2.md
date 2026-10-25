@@ -305,3 +305,4 @@ Matthew approved these calls:
 - **Phase:** write "1-Phase" / "3-Phase" everywhere ("3 Phase", "Three Phase" → "3-Phase").
 - **Thread sizes** are written "3/8-16", "5/8-11" (as finals 070429Z/070430Z), whatever the printed
   separator ("3/8 in.-16", "5/8, 11").
+- **Technical codes** (TEFC, VFD, PMSM, ODP) stay as printed, like product codes.
