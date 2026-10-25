@@ -291,3 +291,8 @@ Matthew approved these calls:
   Only".
 - **Titles that differ only in how a number is written** ("1.5 HP" vs "1-1/2 HP") count as the same
   title for telling parts apart.
+- **"Standard E" / "High E"** stay as printed (no page spells them out). "High Eff" → "High
+  Efficiency" only where printed so.
+- **A banned word that is part of a model name** ("Variable Speed" for the IntelliPro® VS): use the
+  catalog's short model name where it prints one ("IntelliPro® VS Power End"), unsure.
+- **Shape in brackets** ("(Square)", "(Round)") is a spec: "Square Seal Plate O-Ring".
