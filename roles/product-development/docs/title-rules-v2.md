@@ -322,3 +322,6 @@ Matthew approved these calls:
   Coated Strainer Body".
 - **"(Pkg. N)" as the only difference** is a fit: in front as printed in the page heading
   ("Package No. 56 Cover"), unsure.
+- **A "list" for telling parts apart** is one printed table; bands inside one table are one list,
+  separate tables on a page are separate lists.
+- **An obvious typo counts as the word it misspells** when counting pages ("Bunan" = "Buna").
