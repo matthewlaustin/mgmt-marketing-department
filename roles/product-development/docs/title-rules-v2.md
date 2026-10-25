@@ -191,3 +191,7 @@ Matthew approved these calls:
   (colour, size), as the b45 adjudication did. Mark it unsure only when the two pages really
   contradict each other (a different noun, colour or size), e.g. EC110 "Turbine Shaft" vs
   "Turbine Cover".
+- **Spelling variants** (Adaptor/Adapter, Grey/Gray within one SKU's pages): use the catalog's usual
+  spelling ("Adapter") unless the brand prints a name that way.
+- **"Bulk pack N" and "(Set of N)":** the number is a pack count, written "Set of N" in front with a
+  plural noun. The word "bulk" is dropped.
