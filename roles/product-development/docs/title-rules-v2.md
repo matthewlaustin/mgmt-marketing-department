@@ -183,3 +183,7 @@ Matthew approved these calls:
 - **Don't add "with"** (or any other word) that Pentair doesn't print. A comma list of included
   items that can't move in front stays after the noun, after a comma, in printed order:
   "…, Spacer/Locknut".
+- **Word order in front of the noun** (settles "colour closest to the noun"): model or name, then
+  size and other specs, then colour, then material, then the noun. Examples: "White Plastic Mender
+  Nut" (not "Plastic White"), "9-7/8 in White Skimmer Lid", "Bermuda™ 2 in Slip Ports White PVC
+  Gunite Skimmer". The final sweep applies this to batches finalized earlier.
