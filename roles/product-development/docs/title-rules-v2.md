@@ -227,3 +227,6 @@ Matthew approved these calls:
   needed, use the model printed on the list where the clash happens.
 - Date footnotes use the short form from the footnote-date call: "… for Filters Made After 11/1/99"
   (not "Filters Manufactured After 11-1-99").
+- **NG and LP stay as printed.** Matthew approved "Model 250 NG to Propane Conversion Kit".
+- **Ties across two lines' parts lists:** use the wording of the list whose siblings the SKU sits
+  with in this batch (one page, one style), and mark it unsure only if the nouns contradict.
