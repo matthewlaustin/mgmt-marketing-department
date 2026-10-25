@@ -170,3 +170,7 @@ Matthew approved these calls:
 - **"5PK" kits:** "Set of 5 IC Cross Guards" (drop "Kit").
 - **One page, one style:** a later title on a page follows that page's already-final siblings
   ("Plus40 and Plus60 Spacer Cell" → "LT15, LT25 and Plus30 Spacer Cell").
+- **Skimmer lids that print only fit brands:** Matthew approved L1 as "9-7/8 in White Skimmer Lid
+  with Thermometer", with no brands. Add the fit brands only where two lids in one list would
+  otherwise share a title (L1RW vs L2R).
+- **Tie between a product's own ordering page and its own parts list:** use the ordering page.
