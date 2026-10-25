@@ -237,6 +237,8 @@ def main() -> int:
                         kind=h.get("kind", best["kind"]))
             if h.get("confidence") == "review":
                 notes.append(f"harmonized: {h.get('reason', '')}")
+        if mpn in v2_titles:
+            notes = []  # the v2 retitle settled the page-review notes; only its own open questions remain
         best = apply_v2(best, v2_titles.get(mpn), notes)
         line = canonical(best.get("product_line") or "")
         if best["brand"] == "Pleatco" and line in PLEATCO_LINES:
@@ -269,13 +271,14 @@ def main() -> int:
             )
         if status == "active":
             exported.append(row)
-    # Derived titles (after "Brand MPN - ") must be unique across the whole catalog, not just within a page.
+    # Shared derived titles are noted, not flagged: Matthew accepted shared titles where nothing printed
+    # tells SKUs apart, and short part titles that repeat across lines (final review, 2026-10-25).
     dupes = con.execute(
         "SELECT substr(title, instr(title, ' - ') + 3) AS derived, group_concat(mpn) FROM products "
         "WHERE title != '' AND status = 'active' GROUP BY derived HAVING count(*) > 1").fetchall()
     for _derived, mpns in dupes:
         for mpn in mpns.split(","):
-            con.execute("UPDATE products SET needs_review = 1, review_notes = trim(review_notes || ' | ' || ?, ' |') "
+            con.execute("UPDATE products SET review_notes = trim(review_notes || ' | ' || ?, ' |') "
                         "WHERE mpn = ?", (f"title shared with {mpns}", mpn))
     exported = [dict(zip([c[0] for c in con.execute("SELECT * FROM products").description], row))
                 for row in con.execute("SELECT * FROM products WHERE status = 'active' ORDER BY mpn")]
