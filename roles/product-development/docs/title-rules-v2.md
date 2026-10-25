@@ -325,3 +325,7 @@ Matthew approved these calls:
 - **A "list" for telling parts apart** is one printed table; bands inside one table are one list,
   separate tables on a page are separate lists.
 - **An obvious typo counts as the word it misspells** when counting pages ("Bunan" = "Buna").
+- **A fuller version of the majority wording** ("Bulkhead Adapter" vs "Adapter") counts as the same
+  wording, and the fuller form wins.
+- **Two pages with different, compatible descriptors** of the same item may be combined in word
+  order ("18 Gauge Stainless Steel Washer"), unsure.
