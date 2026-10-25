@@ -204,3 +204,7 @@ Matthew approved these calls:
   Filters Made After 5/21/05".
 - **One SKU printed twice on one page with different wording:** use the row in the SKU's own table
   (its item number in the parts list) and mark it unsure.
+- **Identical rows in one parts list:** use words another page prints for the same SKU to tell
+  them apart ("#2-231 O-Ring" from p453). If no page does, they share the title and stay unsure.
+- **A bracketed date that is the only difference** between sibling SKUs stays, in short form,
+  after the noun, like the footnote-date call: "Cord-Ring for Filters Made Before 3/97".
