@@ -362,3 +362,5 @@ Matthew approved these calls:
   unsure; one group question for Matthew (keep or exclude).
 - **An EC- or Z twin whose own row prints nothing** takes its twin's final title, unsure (not a
   gap); a number with no twin and no description is a gap.
+- **A footnote legend that doesn't match the row** (a misnumbered web legend) is ignored; say so in
+  `why`.
