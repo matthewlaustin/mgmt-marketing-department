@@ -61,7 +61,7 @@ header = '''  <header>
 '''
 html = ((ROOT / "scripts/training_template.html").read_text().replace("/*CSS*/", css)
         .replace("/*ITEMS*/", json.dumps(items, ensure_ascii=False, indent=0)).replace("/*QUESTIONS*/", "[]")
-        .replace("/*HEADER*/", header).replace("/*ITEMS_HEADING*/", "The 40 titles")
+        .replace("/*FOOTER*/", 'Rows are cropped from the Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition).').replace("/*HEADER*/", header).replace("/*ITEMS_HEADING*/", "The 40 titles")
         .replace("/*LABELS*/", json.dumps(["Old", "New", "New title is right"]))
         .replace("<title>Pentair Title Training</title>", "<title>Pentair Title Check</title>"))
 html = html.replace('d.brand + " " + d.mpn + " - " + d.now', '(d.oldbrand || d.brand) + " " + d.mpn + " - " + d.now')

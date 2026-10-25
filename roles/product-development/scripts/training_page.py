@@ -85,6 +85,6 @@ Q = [
   "detail": "You said to add something only when the same name appears in one parts list (24 vs 36 sq ft tank lid). Many parts share a name across different products (hundreds of “O-Ring”, “Lid”, “Impeller”). Is a duplicate title across different parts lists fine?",
   "choices": ["Yes, only disambiguate within one parts list", "No, disambiguate anywhere in the catalog"]},
 ]
-html = (ROOT / "scripts/training_template.html").read_text().replace("/*CSS*/", css).replace("/*ITEMS*/", json.dumps(items, ensure_ascii=False, indent=0)).replace("/*QUESTIONS*/", json.dumps(Q, ensure_ascii=False, indent=0)).replace("/*HEADER*/", (ROOT / "scripts/training_header_r2.html").read_text()).replace("/*ITEMS_HEADING*/", "Round 1: your answers").replace("/*LABELS*/", json.dumps(["Today", "Draft", "Draft is right"]))
+html = (ROOT / "scripts/training_template.html").read_text().replace("/*CSS*/", css).replace("/*ITEMS*/", json.dumps(items, ensure_ascii=False, indent=0)).replace("/*QUESTIONS*/", json.dumps(Q, ensure_ascii=False, indent=0)).replace("/*FOOTER*/", 'Rows are cropped from the Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition); the Dyna-Jet row is from pentair.com.').replace("/*HEADER*/", (ROOT / "scripts/training_header_r2.html").read_text()).replace("/*ITEMS_HEADING*/", "Round 1: your answers").replace("/*LABELS*/", json.dumps(["Today", "Draft", "Draft is right"]))
 (ROOT / "reports/title-training.html").write_text(html)
 print(len(items), "items")

@@ -23,6 +23,7 @@
 .mpnh { font-family: var(--mono); font-size: 20px; font-weight: 500; }
 input[type=text] { font: inherit; font-family: var(--mono); font-size: 14px; width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
 input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
 .rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 8px; }
 .rule ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--muted); }
 </style>
@@ -37,7 +38,7 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
     <div class="pairs" id="questions"></div>
   </section>
 
-  <section aria-labelledby="items-h">
+  <section aria-labelledby="items-h" id="items-section">
     <header>
       <h2 id="items-h">/*ITEMS_HEADING*/</h2>
       <p class="progress" id="progress">Answers save as you go.</p>
@@ -46,7 +47,7 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
     <div class="pairs" id="items"></div>
   </section>
 
-  <footer>Rows are cropped from the Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition); the Dyna-Jet row is from pentair.com.</footer>
+  <footer>/*FOOTER*/</footer>
 </div>
 
 <script>
@@ -194,6 +195,7 @@ async function qsave(id, patch) {
 }
 QUESTIONS.forEach((d) => $("questions").append(qcard(d)));
 if (!QUESTIONS.length) $("qs-section").hidden = true;
+if (!ITEMS.length) $("items-section").hidden = true;
 ITEMS.forEach((d) => $("items").append(card(d)));
 (async () => {
   try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
