@@ -116,3 +116,11 @@ Matthew approved these calls:
 - **Conflicting dimensions between Pleatco pages:** use the measurement page and mark unsure.
 - **Page ties:** the product line's own page or parts list wins over a shared accessories table
   (p19 or the shared heater accessories table). Matthew approved this for RCS1 and 475002.
+- **Whole-good spec columns:** add the columns a buyer picks a model by (size or area, HP,
+  voltage, watts, cord length, gas type, colour, ASME/HD) when the model name doesn't already carry
+  them. Leave out performance and shipping columns (flow, turnover, WEF, amps, weight, chlorine
+  output), as in the approved IntelliFlo3® title. Don't repeat a size the model name already
+  states: "Clean & Clear® CC 100 Filter", not "CC 100 100 sq ft".
+- **Ultra cartridges** carry no sq ft, even where another page prints one (approved ULTRA-B10).
+- **Pleatco line names stay** for every Pleatco product: PureStart, Filter Wash™, Advanced, Ultra.
+- **Grid sets** follow the Pleatco grid pattern even when parts lists word them differently.
