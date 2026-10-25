@@ -90,3 +90,18 @@ Matthew approved these calls:
   suffix ("410020z") is written upper case.
 - **Repeated words:** "Kit-THS3461, single tank manifold, with butterfly valve kit" →
   "THS3461 Single Tank Manifold with Butterfly Valve Kit".
+
+## Settled by the pilot [2026-10-25]
+- **Ordering-table bundles** (IntelliCenter® systems): use Pentair's description wording. Add an
+  "Includes" item only when it is what tells two rows apart. Example: "IntelliCenter® System with
+  i5P Personality Kit and IntelliChlor® ICPLUS40 Cell". Leave out columns that follow from the kit
+  (the SCG transformer, valves).
+- **Whole-good fit tails are dropped**, even when Pentair's name includes them:
+  "Kreepy Krauly® 'Lil Shark™ Automatic Pool Cleaner".
+- **Trademarks always carry their registered mark**, even where a row prints the name bare:
+  "IntelliCenter® White Faceplate Indoor Control Panel". This applies to parts and accessories
+  too, wherever the trademark name appears.
+- **Ambiguous abbreviations:** btr. → Buttress, ASY → Assembly. If an abbreviation still can't
+  be read, mark it unsure.
+- **356210S** is "Mechanical Seal". The majority wording rule stands, and the bracketed
+  "(ozone/salt resistant)" is dropped.
