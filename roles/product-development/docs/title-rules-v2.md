@@ -272,3 +272,7 @@ Matthew approved these calls:
   and ordering rows.
 - **Whole-good specs from pentair.com:** when the catalog row doesn't print a spec the series'
   ordering table varies by, Pentair's own cached product page may supply it (cite it in `why`).
+- **Per-unit counts don't split the page count:** "Flat Washer (Qty. 6)" and "Flat Washer" count as
+  the same wording for the majority.
+- **A row on a shared list that names its own line** ("WhisperFloXF VS Wet End Assembly") takes
+  that line's brand; rows that name no line count for every line the list covers.
