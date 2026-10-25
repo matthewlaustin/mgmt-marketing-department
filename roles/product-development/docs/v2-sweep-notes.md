@@ -7,3 +7,7 @@
 - Pleatco: same-dimension pairs across batches need "Upgrade for" (ULTRA-B6 fixed by hand).
 - b48 77707-0203: "Model 300 Flameholder Kit" drops Max-E-Therm's 333 (fit rule). Ask Matthew on the final page.
 - b39 263043/263044 (CVA-24L/Y …, 24V AC) vs b02 final 263045 "CVA24T Valve Actuator": harmonize in sweep.
+- b48 side panels 42002-0032Z/0033Z/0039Z ("Flue Stack Side Panel") vs b49 "Side Panel, Service Panel" call: harmonize.
+- b48 77707-0251 "Natural Gas" vs b49 p393 "Natural" (Model 333NA Natural Air Blower Kit): one pattern per table.
+- b43 150084Z keeps p354 models while 152290Z on the same page drops them: one page, one style.
+- b50 473149 / b51 473778Z contactors must use one pattern.

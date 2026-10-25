@@ -257,3 +257,5 @@ Matthew approved these calls:
 - **Bracketed dates on heat pump lists:** don't add a noun the row doesn't print ("Units"). If the
   row names what was made ("Heaters", "Filters"), use the short footnote-date form; otherwise keep
   the printed words after a comma: "Heat Pump Contactor, Prior to 12/2014".
+- **Cross-line ties never break a settled pattern:** where Matthew approved a pattern ("Scroll
+  Compressor ZP61"), use the page wording that keeps it, even across lines.
