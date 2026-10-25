@@ -105,3 +105,11 @@ Matthew approved these calls:
   be read, mark it unsure.
 - **356210S** is "Mechanical Seal". The majority wording rule stands, and the bracketed
   "(ozone/salt resistant)" is dropped.
+
+## Interim calls during the full run [to confirm with Matthew on the final page]
+- **Pleatco differentiators** other than "Upgrade for" go at the end after a comma, like
+  ", Upgrade for X": ", Short Thread", ", 1-1/2 in SAE Bottom Hole".
+- **Pleatco packs:** use the sq ft printed on the pack's row (the pack total when that is what is
+  printed): "Set of 4 Advanced Filter Cartridges 224 sq ft 7 in x 17-3/8 in".
+- **Pleatco line names** (Ultra, Advanced) carry no ™, as in Matthew's approved examples.
+- **Conflicting dimensions between Pleatco pages:** use the measurement page and mark unsure.
