@@ -254,3 +254,6 @@ Matthew approved these calls:
 - **A bracket mixing models and a date** that is the only difference: models in front, date after
   the noun ("Model 70 Titanium Heat Exchanger for Units Built After Jan 2017"); an "all models
   except …" list is left out.
+- **Bracketed dates on heat pump lists:** don't add a noun the row doesn't print ("Units"). If the
+  row names what was made ("Heaters", "Filters"), use the short footnote-date form; otherwise keep
+  the printed words after a comma: "Heat Pump Contactor, Prior to 12/2014".
