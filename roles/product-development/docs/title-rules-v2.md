@@ -147,3 +147,6 @@ Matthew approved these calls:
   the noun ("BlueSquare Retro Ratcheting Head Multi Orifice Cap"), the colour leads the whole
   name, as in the 40-SKU check's 220065: "White BlueSquare Retro Ratcheting Head Multi Orifice Cap".
   Keep one page consistent.
+- **A model printed after "for"** in a part's line item goes in front of the noun, like Matthew's
+  "194R/195R Replacement Brushes" (printed "For No. 194 and No. 195"):
+  "100 sq. ft. Inner Replacement Module for S7M120" → "S7M120 100 sq ft Inner Replacement Module".
