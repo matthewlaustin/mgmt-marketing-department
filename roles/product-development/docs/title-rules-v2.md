@@ -159,3 +159,6 @@ Matthew approved these calls:
 - **"Super-Duty"** is treated as a promotional word like Heavy Duty (to confirm).
 - **Competitor models in basket titles stay.** Matthew decided this in round 1:
   "Hayward® SP 1070 Replacement Basket".
+- **"Commercial" as part of a line name** (Commercial IntelliChlor®, Commercial IntelliChem®,
+  Commercial PowerMax®): Matthew ticked Commercial as marketing, so it stays out for now. These SKUs
+  are marked unsure and will be shown to him with examples, the same issue as "Low Profile".
