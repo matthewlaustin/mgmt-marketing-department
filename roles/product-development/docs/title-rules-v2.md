@@ -150,3 +150,6 @@ Matthew approved these calls:
 - **A model printed after "for"** in a part's line item goes in front of the noun, like Matthew's
   "194R/195R Replacement Brushes" (printed "For No. 194 and No. 195"):
   "100 sq. ft. Inner Replacement Module for S7M120" → "S7M120 100 sq ft Inner Replacement Module".
+- **Model column on whole goods and accessories:** when a row has both a description and a Model
+  number, the model goes in front as printed. A bare column value stays bare ("194R/195R …",
+  "127 Tube Thermometer"). "No. 801" or "Model 250" are written that way only where the row prints it.
