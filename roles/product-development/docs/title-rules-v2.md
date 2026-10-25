@@ -356,3 +356,5 @@ Matthew approved these calls:
   is unsure.
 - **Web rows that leave out a spec their catalog siblings carry:** follow the siblings' pattern
   only where the model printed on the row fixes the spec (MasterTemp 175 → 175K BTU), unsure.
+- **Web-only rows with no noun** take the noun from Pentair's own catalog band or caption for the
+  same product group, unsure.
