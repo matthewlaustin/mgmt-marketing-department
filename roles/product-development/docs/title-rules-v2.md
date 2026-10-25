@@ -296,3 +296,5 @@ Matthew approved these calls:
 - **A banned word that is part of a model name** ("Variable Speed" for the IntelliPro® VS): use the
   catalog's short model name where it prints one ("IntelliPro® VS Power End"), unsure.
 - **Shape in brackets** ("(Square)", "(Round)") is a spec: "Square Seal Plate O-Ring".
+- **"- Models X, Y, Z" lists inside a part's line item** are fit lists: dropped, unless they are the
+  only difference (then in front, per the fit-bracket call).
