@@ -222,3 +222,8 @@ Matthew approved these calls:
 - **A parts page carrying the STA-RITE logo** counts as a Sta-Rite line even when the directory
   doesn't list the family (D Series™, Posi-Clear™ RP, Dynamo®).
 - **A printed list of sizes** is written with slashes: "150/200 sq ft Filter Lid".
+- **A model that differs by parts list** (TR100/140 on one, TR100C/TR140C on another) is fit
+  information. Leave it out unless it is needed to tell rows apart within one list. If it is
+  needed, use the model printed on the list where the clash happens.
+- Date footnotes use the short form from the footnote-date call: "… for Filters Made After 11/1/99"
+  (not "Filters Manufactured After 11-1-99").
