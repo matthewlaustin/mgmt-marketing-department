@@ -364,3 +364,5 @@ Matthew approved these calls:
   gap); a number with no twin and no description is a gap.
 - **A footnote legend that doesn't match the row** (a misnumbered web legend) is ignored; say so in
   `why`.
+- **Marketing words** ("Professional Grade", "Super-Duty") are dropped from parts as well as whole
+  goods (the checker already bans them catalog-wide).
