@@ -290,6 +290,7 @@ def main() -> int:
         w.writerows(exported)
 
     con.executemany("DELETE FROM conflicts WHERE mpn = ?", [(m,) for m in excluded])
+    con.commit()
     EXCLUDED.write_text(json.dumps(excluded, indent=0, sort_keys=True))
     counts = dict(con.execute("SELECT status, count(*) FROM products GROUP BY status").fetchall())
     conflicts = con.execute("SELECT count(DISTINCT mpn) FROM conflicts").fetchone()[0]
