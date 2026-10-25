@@ -351,3 +351,8 @@ Matthew approved these calls:
   "Model".
 - **"Kit includes N screws" as the whole description:** "Screw Kit, 2 Screws" (the count after a
   comma tells the kits apart), unsure.
+- **EC- (e-commerce) twins** take their dealer twin's exact title, not marked unsure each; one
+  group question for Matthew (marker or not). A bare EC- number matched to its twin only by digits
+  is unsure.
+- **Web rows that leave out a spec their catalog siblings carry:** follow the siblings' pattern
+  only where the model printed on the row fixes the spec (MasterTemp 175 → 175K BTU), unsure.
