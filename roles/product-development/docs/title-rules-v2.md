@@ -266,5 +266,7 @@ Matthew approved these calls:
   only for the number of items sold. Mark unsure where it isn't clear which it is.
 - **Matthew's approved sibling decides the page:** where he approved a sibling's title from one
   table (R201536 "194R/195R Replacement Brushes", from p426), the siblings follow that table.
-- **"(Xn)" counts** follow the bare-count call ("Set of N") on single parts; on a kit or set they
-  count contents and are dropped (unsure).
+- **"(Xn)" / "(n req.)" on an equipment parts list** usually count how many one unit uses, not how
+  many are sold. Drop them and mark unsure unless another page prints the same SKU as a pack
+  ("Set of N", "N per card", "bulk pack"). The bare-count call above applies only to accessory
+  and ordering rows.
