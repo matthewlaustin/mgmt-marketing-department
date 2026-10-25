@@ -162,3 +162,11 @@ Matthew approved these calls:
 - **"Commercial" as part of a line name** (Commercial IntelliChlor®, Commercial IntelliChem®,
   Commercial PowerMax®): Matthew ticked Commercial as marketing, so it stays out for now. These SKUs
   are marked unsure and will be shown to him with examples, the same issue as "Low Profile".
+- **Matthew's own training answers beat the general rules.** Parts-Paks™ seal/gasket kits are
+  "Seal/Gasket Kit" (his PP1010 answer), even though every kit on p243 then shares that title.
+  Mark them unsure so he sees the effect.
+- **Pages for items not sold in the USA** (50 Hz pages, international pages) don't count toward the
+  majority wording.
+- **"5PK" kits:** "Set of 5 IC Cross Guards" (drop "Kit").
+- **One page, one style:** a later title on a page follows that page's already-final siblings
+  ("Plus40 and Plus60 Spacer Cell" → "LT15, LT25 and Plus30 Spacer Cell").
