@@ -280,7 +280,14 @@ Matthew approved these calls:
 - **Old "(parts are Pentair)" notes in batch context are out of date.** Some batch contexts carry
   this v1 note next to a STA-RITE logo. Ignore it: the brand rules above decide (a Sta-Rite-logo
   parts page is a Sta-Rite line; a part on both Pentair and Sta-Rite lines is Pentair/Sta-Rite).
-- **Model codes containing fractions** ("1/2F, 3/4A") keep the printed commas, since slashes would be
-  unreadable; one question for Matthew, marked unsure.
+- **Model codes or size lists containing fractions** ("1/2F, 3/4A", "1/2, 3/4, 1 HP") keep the
+  printed commas, since slashes would be unreadable: "1/2, 3/4, 1 HP Diffuser". One question for
+  Matthew on the review page; don't mark each SKU unsure for it.
 - **Pump motor abbreviations:** 1SP → "Single Speed" (p450 band), 1PH/3PH → "1-Phase"/"3-Phase" (as
   the motor pages print). Use one form for all pump motors.
+- **A SKU sitting with siblings on two lines' lists in one batch:** use the fuller wording (it
+  prints more of the item), as within one line.
+- **"(Only)" in brackets** stays as "Only" after the noun ("Tank and Trap Body Only"), like "Cover
+  Only".
+- **Titles that differ only in how a number is written** ("1.5 HP" vs "1-1/2 HP") count as the same
+  title for telling parts apart.
