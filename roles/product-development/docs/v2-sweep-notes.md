@@ -19,3 +19,4 @@
 - b24 410029 "3 in Union Kit for 3 HP Pumps" keeps a fit tail; its p431 sibling 410028 has none (whole fit-tail rule).
 - b24 356159Z why says "IntelliFlo3 column"; p431 heads are colours only (wording fix).
 - b54 p426: 7 titles add "No." to bare model numbers for one-page style (R201420/421, R201470/472, R201490/492, R201498); ask Matthew whether "No." is added or only kept where printed.
+- Batches whose context carried the stale "(parts are Pentair)" note: recheck brands in their finals (list: b06 b24 b40 b41 b42 b44 b55 b56 b57 b58 b59 b60 ).

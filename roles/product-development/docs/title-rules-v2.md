@@ -276,3 +276,6 @@ Matthew approved these calls:
   the same wording for the majority.
 - **A row on a shared list that names its own line** ("WhisperFloXF VS Wet End Assembly") takes
   that line's brand; rows that name no line count for every line the list covers.
+- **Old "(parts are Pentair)" notes in batch context are out of date.** Some batch contexts carry
+  this v1 note next to a STA-RITE logo. Ignore it: the brand rules above decide (a Sta-Rite-logo
+  parts page is a Sta-Rite line; a part on both Pentair and Sta-Rite lines is Pentair/Sta-Rite).
