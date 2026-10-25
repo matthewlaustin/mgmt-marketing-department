@@ -344,3 +344,8 @@ Matthew approved these calls:
   model-in-front call is for model names only.
 - **Differences settled by other pages:** a date footnote is added only if the titles would still
   clash without it.
+- **Very bare generic titles** ("Upgrade Kit", "Top Half", "Washer") stay as printed, but go on the
+  review page as one group question: add the parts list's line name in front ("IntelliChem®
+  Upgrade Kit") or not.
+- **Model ranges** ("Model #522635 - 522637") are written "Model 522635-522637"; "Models" →
+  "Model".
