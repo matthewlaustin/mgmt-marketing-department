@@ -340,3 +340,7 @@ Matthew approved these calls:
   "Round Fire Only Bronze Bowl", "Square Water Only Spillway".
 - **"with X" / "without X" pairs** that are the only difference keep the printed with/without phrase
   after the noun, no comma ("… Gasket Set with Double Wall" / "… without Double Wall").
+- **"for <part number>"** ("O-Ring for 191368 Plug") keeps the printed for-phrase; the
+  model-in-front call is for model names only.
+- **Differences settled by other pages:** a date footnote is added only if the titles would still
+  clash without it.
