@@ -54,3 +54,39 @@ Keep the line, sq ft and dimensions: "Advanced Filter Cartridge 40 sq ft 7 in x 
 ## Writing
 - Title Case. Units are standard lower-case abbreviations: "24 sq ft", "2 in", "100 ft", "120V",
   "28W", "1-1/2 HP".
+
+## Settled by the 40-SKU check [2026-10-25]
+Matthew approved these calls:
+- **Abbreviations are spelled out**, even if no nearby page spells them: Assy → Assembly,
+  Subassy → Subassembly, Hx Hd → Hex Head, MPV → Multiport Valve. Leave product codes and
+  trademarks alone.
+- **Packaging words never go in a title**: display box, bubble pack, bulk, carded, and so on.
+  Two numbers that differ only by packaging share a title.
+- **When pages describe one SKU differently**, use the wording most pages print. On a tie, use the
+  product's own page or parts list.
+  - 470161: Torx (2 pages) wins over Square Drive (1 page).
+  - 475002: the Max-E-Therm® page's "Air Intake Kit".
+  - RCS1: the parts lists' "Wall Mount Single Gang Plate Spa Jets Switch".
+  - 154512Z: its title page's "6-1/2 in Across Flats Wrench".
+- **Descriptor placement:** a descriptor printed after a comma goes immediately before the noun
+  phrase, and colour stays closest to the noun:
+  - "Small PVC niche, concrete" → "Small PVC Concrete Niche"
+  - "Strainer Pot, Black" → "Black Strainer Pot"
+  - "Bottom Cover - Gray" → "Gray Bottom Cover"
+  Noun-first text is put in natural order even without a comma: "Tube air relief TR50/60" →
+  "TR50/60 Air Relief Tube".
+- **A whole good with no noun of its own** takes the noun from the page heading:
+  "G4VHP Complete White Cleaning Head with Riser".
+- **A whole good's fit tail** is kept only when it is the only printed difference from a sibling
+  in the same table: "1-1/2 in Multiport Valve Kit for Triton & Quad D.E. Filters".
+- **Voltage** is written as "V": "525-600V", "208-230V". HP is written as printed ("3.0 HP").
+- **Pleatco:**
+  - a cartridge with no printed sq ft keeps its dimensions; if a sibling has the same dimensions,
+    add the printed ", Upgrade for X";
+  - D.E. grid sets follow the cartridge pattern: "Universal DE Grid Set 48 sq ft 11 in x 24 in".
+- **Within one parts list** includes several bands on one page: "Title-22 Controller Circuit Board".
+- **Pack counts:** "Set of N" in front, noun in the plural: "Set of 5 … Black Trim Rings".
+- **Typos** are corrected when the right spelling is printed on the same page. A lower-case MPN
+  suffix ("410020z") is written upper case.
+- **Repeated words:** "Kit-THS3461, single tank manifold, with butterfly valve kit" →
+  "THS3461 Single Tank Manifold with Butterfly Valve Kit".
