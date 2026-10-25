@@ -187,3 +187,7 @@ Matthew approved these calls:
   size and other specs, then colour, then material, then the noun. Examples: "White Plastic Mender
   Nut" (not "Plastic White"), "9-7/8 in White Skimmer Lid", "Bermuda™ 2 in Slip Ports White PVC
   Gunite Skimmer". The final sweep applies this to batches finalized earlier.
+- **Tie between two parts lists of one line:** use the wording that prints more of the item
+  (colour, size), as the b45 adjudication did. Mark it unsure only when the two pages really
+  contradict each other (a different noun, colour or size), e.g. EC110 "Turbine Shaft" vs
+  "Turbine Cover".
