@@ -5,3 +5,4 @@
 - Word-order call (colour before material and pool type) applied to batches finalized before it.
 - Low Profile, Commercial, SS, Aux, abbreviations: re-check early finals (b01–b18) against the latest calls.
 - Pleatco: same-dimension pairs across batches need "Upgrade for" (ULTRA-B6 fixed by hand).
+- b48 77707-0203: "Model 300 Flameholder Kit" drops Max-E-Therm's 333 (fit rule). Ask Matthew on the final page.
