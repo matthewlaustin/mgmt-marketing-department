@@ -27,28 +27,8 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
 </style>
 
 <div class="wrap">
-  <header>
-    <div class="eyebrow">Pool Geek · Pentair titles · Training round 2</div>
-    <h1>What I learned, and my questions</h1>
-    <p class="lede">I read all 27 of your answers. Below is what I took from them, then the questions I still have. Your answers save as you tap. Your round 1 answers are further down.</p>
-  </header>
-
-  <div class="rule">
-    <h3>What I took from your answers</h3>
-    <ul>
-      <li><b>Parts:</b> the title is Pentair's line-item description, cleaned up. Nothing added from the product line, the page heading or a fit list (“Diffuser”, “Lid”, “Shaft Seal”, “Center Diverter”, “Rear Cover Kit”, “Power Supply”).</li>
-      <li>A part gets an extra word only when the same name appears more than once in that parts list and something printed tells them apart (“24 Sq Ft Filter Tank Lid” vs the 36 sq ft lid).</li>
-      <li>Descriptors after a comma move in front of the noun: “Tank lid, 24 sq. ft. filter” → “24 Sq Ft Filter Tank Lid”; “Plaster ring, for gunite niche, spa” → “Spa Gunite Niche Plaster Ring”; “Compressor, Scroll ZP61” → “Scroll Compressor ZP61”. Words in brackets are dropped.</li>
-      <li>Trademarked names stay only when they are printed in the line item itself (“QuikSkim Ultra Silt Sock”); a name that is only in the band or heading is dropped (Parts-Paks™ → “Seal/Gasket Kit”).</li>
-      <li><b>Whole goods:</b> no marketing words (“High Performance”). Include every spec that varies within the series' ordering table (the light's 28W). Heater size reads “400K BTU”.</li>
-      <li>Pleatco cartridges, including Pentair-numbered packs like 179133, are brand Pleatco.</li>
-      <li>Discontinued products get no product data.</li>
-      <li>Two mistakes of mine: the training page printed “Pentair” in front of every number. The database already had Sta-Rite for 343001 and Pleatco for PA40; that was a bug in the page, now fixed below. 179133 and 25021-0021 really were stored as Pentair, and I'll correct those.</li>
-      <li>I've dropped the extra data fields (fits, fit notes, application) and am working on titles only.</li>
-    </ul>
-  </div>
-
-  <section aria-labelledby="qs-h">
+/*HEADER*/
+  <section aria-labelledby="qs-h" id="qs-section">
     <header>
       <h2 id="qs-h">Questions</h2>
       <p class="progress" id="qprogress">Answers save when you pick them.</p>
@@ -58,7 +38,7 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
 
   <section aria-labelledby="items-h">
     <header>
-      <h2 id="items-h">Round 1: your answers</h2>
+      <h2 id="items-h">/*ITEMS_HEADING*/</h2>
       <p class="progress" id="progress">Answers save as you go.</p>
     </header>
     <div id="db-notice" class="notice" hidden>Your answers can't be saved from this view (you may be signed out). Reply in chat instead.</div>
@@ -71,6 +51,7 @@ input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offse
 <script>
 const ITEMS = /*ITEMS*/;
 const QUESTIONS = /*QUESTIONS*/;
+const LABELS = /*LABELS*/;
 const $ = (id) => document.getElementById(id);
 const answers = {};
 let db = null;
@@ -111,10 +92,10 @@ function card(d) {
   }
   el.append(ev);
   const t = document.createElement("div"); t.className = "titles";
-  t.append(row("now", "Today", d.brand + " " + d.mpn + " - " + d.now), row("draft", "Draft", d.brand + " " + d.mpn + " - " + d.draft, d.fields));
+  t.append(row("now", LABELS[0], d.brand + " " + d.mpn + " - " + d.now), row("draft", LABELS[1], d.brand + " " + d.mpn + " - " + d.draft, d.fields));
   el.append(t);
   const choices = document.createElement("div"); choices.className = "choices";
-  const ok = document.createElement("button"); ok.type = "button"; ok.className = "choice"; ok.textContent = "Draft is right"; ok.setAttribute("aria-pressed", "false");
+  const ok = document.createElement("button"); ok.type = "button"; ok.className = "choice"; ok.textContent = LABELS[2]; ok.setAttribute("aria-pressed", "false");
   ok.addEventListener("click", () => save(d.id, { verdict: "draft", title: "" }));
   choices.append(ok);
   const inp = document.createElement("input"); inp.type = "text"; inp.id = "title-" + d.id; inp.placeholder = "Your title (without the " + d.brand + " " + d.mpn + " - prefix)"; inp.setAttribute("aria-label", "Your title for " + d.mpn);
@@ -210,6 +191,7 @@ async function qsave(id, patch) {
   } finally { delete qwriting[id]; }
 }
 QUESTIONS.forEach((d) => $("questions").append(qcard(d)));
+if (!QUESTIONS.length) $("qs-section").hidden = true;
 ITEMS.forEach((d) => $("items").append(card(d)));
 (async () => {
   try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
