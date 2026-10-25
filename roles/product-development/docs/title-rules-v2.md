@@ -157,3 +157,5 @@ Matthew approved these calls:
   differently (e.g. the three Seal Quick Kits, or the union kits on one list), use the wording of
   the table they share for all of them.
 - **"Super-Duty"** is treated as a promotional word like Heavy Duty (to confirm).
+- **Competitor models in basket titles stay.** Matthew decided this in round 1:
+  "Hayward® SP 1070 Replacement Basket".
