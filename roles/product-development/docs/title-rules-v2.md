@@ -107,7 +107,27 @@ Matthew approved these calls:
 - **356210S** is "Mechanical Seal". The majority wording rule stands, and the bracketed
   "(ozone/salt resistant)" is dropped.
 
-## Interim calls during the full run [to confirm with Matthew on the final page]
+## Settled by the final review [Matthew, 2026-10-25]
+All interim calls below are accepted, except where this section changes them.
+- **Short part titles stay short**: no product line added in front (his "Pump Volute" rule).
+- **Colour vs pool type order**: either is fine; keep what each title has.
+- **X / XZ pairs** keep each number's own printed wording.
+- **EC- numbers** share their dealer twin's title exactly (no marker), including EC- numbers whose
+  base number the catalog marks discontinued: keep them.
+- **Items Pentair says aren't sold on their own** ("not sold individually", "may not be purchased
+  separately", only listed as kit contents) are left out like discontinued items.
+- **Stark/AQ base numbers** stay in.
+- **"Commercial"** stays out of line names.
+- **Rows printed identically** may share a title.
+- **Counts on pump/equipment parts lists** ("(X4)", "2 req.", "(Qty. 3)") are packs: write
+  "Set of N" ("Set of 4 Motor Bolts"). This replaces the per-unit-count calls below.
+- **Abbreviations no page spells out** stay as printed.
+- **Obvious misspellings are corrected even when the right word isn't printed anywhere**
+  (Mitrile → Nitrile, Kratom → Kraton, Dampner → Dampener).
+- **Marketing words**: keep "Variable Speed" spelled out (IntelliFlo® Variable Speed …) and
+  "Efficient"; drop "Super-Duty", "Professional Grade" and "High Powered".
+
+## Interim calls during the full run [accepted in the final review, except as changed above]
 - **Pleatco differentiators** other than "Upgrade for" go at the end after a comma, like
   ", Upgrade for X": ", Short Thread", ", 1-1/2 in SAE Bottom Hole".
 - **Pleatco packs:** use the sq ft printed on the pack's row (the pack total when that is what is

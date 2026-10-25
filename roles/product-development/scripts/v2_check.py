@@ -21,7 +21,7 @@ V2 = ROOT / "data/work/pentair/v2"
 BRANDS = {"Pentair", "Sta-Rite", "Pentair/Sta-Rite", "Pleatco", "Waterco"}  # Waterco: 301300 (Matthew)
 # Matthew, 2026-10-25: marketing words ("Low Profile" is exempt: it names Pentair's in-floor valve line), packaging words and unexpanded abbreviations stay out of titles.
 V2_BANNED = [
-    (re.compile(r"\b(High Performance|Variable Speed|Self[- ]Priming|Commercial|DOE Compliant|Heavy Duty)\b", re.I),
+    (re.compile(r"\b(High Performance|Self[- ]Priming|Commercial|DOE Compliant|Heavy Duty)\b", re.I),
      "marketing word"),
     (re.compile(r"\b(display box|bubble pack|bulk pack|carded|blister)\b", re.I), "packaging word"),
     (re.compile(r"\b(Assy|Subassy|Mfg|Approx|Qty)\b\.?", re.I), "abbreviation not spelled out"),
