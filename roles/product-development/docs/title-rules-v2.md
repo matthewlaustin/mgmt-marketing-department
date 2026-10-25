@@ -137,3 +137,5 @@ Matthew approved these calls:
 - **"Low Profile"** is the name of Pentair's in-floor valve line (the counterpart of Top Feed), not
   a marketing word. Keep it wherever it names that line: "6 Port Low Profile Retro Kit",
   "WAVE 6 Port Low Profile 2 in T-Valve". I put it on Matthew's marketing list by mistake; to confirm.
+- **Matthew's earlier decisions still hold.** data/work/pentair/owner_decisions.json lists them.
+  For example, 301300 is "Waterco 301300 - MultiCyclone 16 Pro Pre Filter".
