@@ -306,3 +306,8 @@ Matthew approved these calls:
 - **Thread sizes** are written "3/8-16", "5/8-11" (as finals 070429Z/070430Z), whatever the printed
   separator ("3/8 in.-16", "5/8, 11").
 - **Technical codes** (TEFC, VFD, PMSM, ODP) stay as printed, like product codes.
+- **Material in brackets** ("(Silicon Brass)") is a spec: "Silicon Brass Impeller".
+- **"60H" / "60 Hz"** → "60 Hz".
+- **Typos fixed from an adjacent page of the same product's parts list** are allowed, unsure.
+- **A model list that is the only difference but runs past 4 models:** use the shortest printed list
+  that still tells the rows apart, unsure.
