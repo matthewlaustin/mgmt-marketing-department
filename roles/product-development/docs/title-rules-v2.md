@@ -199,3 +199,8 @@ Matthew approved these calls:
 - **Open round-2 questions** (85018000 beige/tan, 523434, 18201-0300/263053 brand, 521057Z,
   160448/188616, ULTRA-A18, 192115Z, 98211400Z, 150085Z, 470161, 9104800Z) keep their SKUs unsure
   until Matthew answers.
+- **A date footnote that is the only difference** between two parts in one list goes after the
+  noun in short form (Matthew: extra words only to tell parts apart): "Drain Plug O-Ring for
+  Filters Made After 5/21/05".
+- **One SKU printed twice on one page with different wording:** use the row in the SKU's own table
+  (its item number in the parts list) and mark it unsure.
