@@ -57,5 +57,7 @@ Read everything above, plus /home/user/product-namer/data/work/pentair/v2/adjudi
 (the differences) and both passes. Start from whichever pass is right more often. For each
 difference, decide from the printed rows and the rules. You may write a better title than either
 pass, using printed words only. Keep `unsure: true` only where Matthew must decide, and give the
-question in `why`. Write v2/final/{BATCH}.json, run `python3 scripts/v2_check.py final {BATCH}`,
+question in `why`. Records where both passes agree must still follow every rule in
+title-rules-v2.md, including sections added after the passes ran (e.g. "Settled by the pilot"):
+fix any that don't, and say so in `why`. Write v2/final/{BATCH}.json, run `python3 scripts/v2_check.py final {BATCH}`,
 and don't commit.
