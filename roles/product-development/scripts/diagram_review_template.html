@@ -62,7 +62,7 @@ footer { font-size: 12px; color: var(--muted); }
   <header>
     <div class="eyebrow">Pool Geek · Pentair · diagrams, brochures, storage</div>
     <h1>Parts diagrams, brochures and where to keep the files</h1>
-    <p class="lede">What was wrong with the parts diagrams and how they are rendered now, the brochures and sell sheets found on pentair.com, and the storage question. Two answers to give; every diagram is at the bottom to check.</p>
+    <p class="lede">What was wrong with the parts diagrams and how they are rendered now, the brochures and sell sheets found on pentair.com, and the storage question. Your answers so far are recorded; one new question on where the catalog database should live.</p>
   </header>
 
   <section class="block"><h2 class="sec">Figures</h2><div class="stats" id="stats"></div></section>
@@ -114,6 +114,7 @@ $("before").src = DATA.before; $("after").src = DATA.after;
 const QUESTIONS = [
   { id: "d1", h: "Do the parts diagrams look right now?", c: "Every one of the " + n(S.images) + " renders is in the gallery below (tap to enlarge). If some still look wrong, name the page numbers in the note.", o: ["Yes, use these", "Some are wrong (see note)"] },
   { id: "d2", h: "Set up a Cloudflare R2 bucket for the photos, PDFs and diagrams?", c: "Yes, we need one. Everything downloaded so far (" + S.disk + " of product photos, manuals, brochures, diagram and chart renders) sits in this session's container, which is wiped when idle; the Git repo holds only the data and the links. R2 is the right fit: S3-compatible, no egress fees when your site serves the files, about 2 GB today so storage costs cents a month. To use it I need, as environment secrets (not pasted in chat): R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET and, if you set one, R2_PUBLIC_URL. I would then upload every file under a key like pentair/images/<sha>.jpg and store that key and URL on each images and documents row in Neon.", o: ["Yes, R2 (recommended)", "Use Vercel Blob instead", "Hold off for now"] },
+  { id: "d4", h: "Move the catalog out of Pool Geek Products into its own Neon project?", c: "The catalog lives in its own schema, mfr_catalog (22 tables, 31 MB), inside Pool Geek Products next to your app's public schema (19 tables). Nothing links the two: no foreign keys or views cross between them. But every reload connects as the database owner on a near-production database, so a mistake in a load script could reach your app's tables. Recommended: a new Neon project just for this catalog (own compute, own credentials, no path to production), reload it there, check it, then drop mfr_catalog from Pool Geek Products. Your app can read from the catalog project when you are ready to bring the data across. Until you answer, I make no more writes to Pool Geek Products.", o: ["Yes, new project (recommended)", "Separate database in Pool Geek Products", "Leave it where it is"] },
 ];
 const answers = {}; let db = null;
 function qCount() { $("qcount").textContent = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length + " of " + QUESTIONS.length + " answered."; }
