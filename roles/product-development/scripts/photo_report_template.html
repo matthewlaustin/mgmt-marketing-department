@@ -1,0 +1,164 @@
+<title>Pentair Product Photos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column. Coverage figures, where photos came from, questions answered in place, a sample wall of photos, then a searchable SKU list. */
+:root {
+  --bg: #f3f7f8; --surface: #ffffff; --ink: #0f2a33; --muted: #557079; --line: #d4e1e4;
+  --accent: #0b8a8f; --accent-soft: #dff1f1; --warn: #a5560b; --warn-soft: #fbeedd; --ok: #1d7a46;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 820px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--display); font-size: 30px; line-height: 1.15; margin: 4px 0 6px; text-wrap: balance; }
+h2.sec { font-family: var(--display); font-size: 21px; margin: 0; text-wrap: balance; }
+.lede, .note { color: var(--muted); margin: 0; max-width: 66ch; }
+.note { font-size: 14px; }
+section.block { display: grid; gap: 14px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--muted); }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; }
+.q .qh { font-weight: 600; } .q .ctx { font-size: 14px; color: var(--muted); margin: 0; } .q.done { border-color: var(--accent); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+button.act { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); text-align: left; }
+button.act[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+button.act:focus-visible, .fam summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { font: inherit; font-size: 14px; width: 100%; min-height: 56px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical; }
+.saved { font-size: 13px; color: var(--muted); margin: 0; min-height: 1.2em; } .saved.ok { color: var(--ok); } .saved.err { color: var(--warn); }
+label.f { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+#q { width: 100%; font: inherit; font-size: 17px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+#q:focus-visible { outline: none; border-color: var(--accent); }
+.fam { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; }
+.fam summary { cursor: pointer; padding: 10px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.fam summary b { font-family: var(--display); font-size: 16px; }
+.chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+.body { display: grid; gap: 12px; padding-bottom: 14px; }
+.pics { display: flex; flex-wrap: wrap; gap: 8px; }
+.pics figure { margin: 0; width: 110px; display: grid; gap: 3px; }
+.pics img { width: 110px; height: 110px; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+.pics figcaption { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.docs { display: grid; gap: 4px; font-size: 14px; }
+.docs a { color: var(--accent); text-decoration: none; } .docs a:hover { text-decoration: underline; }
+.docs .k { font-size: 12px; color: var(--muted); }
+.miss { display: grid; gap: 6px; font-size: 14px; }
+.miss .m { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.list { display: grid; gap: 8px; }
+.empty { color: var(--muted); margin: 0; }
+footer { font-size: 12px; color: var(--muted); }
+
+.srcs { width: 100%; border-collapse: collapse; font-size: 14px; }
+.srcs th, .srcs td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.srcs td.n, .srcs th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+.wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.wall figure { margin: 0; display: grid; gap: 3px; }
+.wall img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+.wall figcaption { font-size: 11px; color: var(--muted); font-family: var(--mono); overflow-wrap: anywhere; }
+.row { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.row .t { font-weight: 500; overflow-wrap: anywhere; }
+.row .m { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.row a { color: var(--accent); text-decoration: none; } .row a:hover { text-decoration: underline; }
+.tier { font-size: 11px; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); }
+.tier.single { background: var(--warn-soft); color: var(--warn); }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pool Geek · Pentair · product photos</div>
+    <h1>One photo per SKU</h1>
+    <p class="lede">The first photo run: Pentair's own images first, then poolgeek.com, then other stores. Every photo here is at least 1000 x 1000, was checked by eye for watermarks, and shows the part. Three questions below; the full list is at the bottom.</p>
+  </header>
+  <section class="block"><h2 class="sec">Coverage</h2><div class="stats" id="stats"></div><p class="note" id="covnote"></p></section>
+  <section class="block"><h2 class="sec">Where the photos came from</h2>
+    <div class="tw"><table class="srcs" id="srcs"><thead><tr><th>Source</th><th class="n">SKUs</th><th>Note</th></tr></thead><tbody></tbody></table></div>
+    <p class="note" id="exnote"></p></section>
+  <section class="block"><h2 class="sec">Questions</h2>
+    <p class="note">Tap an answer; add a note if it needs one. <span id="qcount"></span></p>
+    <div id="questions" class="list" style="gap:12px"></div></section>
+  <section class="block"><h2 class="sec">A sample of the photos</h2><p class="note" id="wallnote"></p><div class="wall" id="wall"></div></section>
+  <section class="block"><h2 class="sec">Every SKU</h2>
+    <label class="f" for="q">Find a part number or product</label><input id="q" type="search" placeholder="e.g. 011057, IntelliFlo, O-ring">
+    <p class="note" id="fcount"></p><div id="rows"></div></section>
+  <section class="block q"><div class="qh">Anything else?</div><textarea id="followup" placeholder="Follow-ups, or SKUs whose photo looks wrong"></textarea><p class="saved" id="fu-st"></p></section>
+  <footer>Photos are copies in Pool Geek's Cloudflare R2 bucket; "Photo" opens our copy and "Source" opens the page it came from. Sizes are the image's own pixels; nothing was enlarged.</footer>
+</div>
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id), S = DATA.S, n = (x) => Number(x).toLocaleString();
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+[[S.with_photo, "of " + n(S.skus) + " active SKUs have an approved photo"], [S.pentair, "from Pentair's own images"], [S.poolgeek, "from poolgeek.com"],
+ [S.multi, "from other stores, same picture on 2+ sites"], [S.single, "from other stores, one site only"]]
+ .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
+$("covnote").textContent = n(S.small500) + " of these are 500-999 px photos, used only where nothing at 1000 px exists (your answer to question 4), and " + n(S.padded) + " are centred on a white square because they were not square. Still without a photo: " + S.missing.map(([k, v]) => n(v) + " " + k).join("; ") + ".";
+DATA.SRC.forEach(([s, c, note]) => { const tr = el("tr"); tr.append(el("td", null, s), el("td", "n", n(c)), el("td", null, note)); $("srcs").tBodies[0].append(tr); });
+$("exnote").textContent = "Not used: " + DATA.EX.map(([s, why]) => s + " (" + why + ")").join("; ") + ". Pool360 blocks automated access. Six other stores' robots.txt forbids it.";
+
+const QUESTIONS = [
+  { id: "p1", h: "Keep the photos found on only one store?", c: n(S.single) + " SKUs have a photo that only one store shows. Most stores take their own photos, so a picture on one store is usually that store's own work. The same picture on several stores usually comes from Pentair's or a distributor's dealer image feed, which is the safer kind to use; that does not mean its copyright has lapsed, but dealers are normally allowed to use it.", o: ["Keep them", "Keep, but replace when a shared picture turns up", "Drop them"] },
+  { id: "p2", h: "Pad the near-miss photos onto a white square?", c: n(S.near) + " SKUs have a clean photo whose long side is 1000+ but whose short side is under 1000 (e.g. 1400 x 800). Placing it centred on a white 1000 x 1000+ square keeps every pixel sharp; nothing is enlarged.", o: ["Pad them to a square", "Leave them out"] },
+  { id: "p4", h: "How should we get photos for the rest?", c: "The second search round looked up 425 more SKUs; only 45 had an image of 1000 x 1000 anywhere online. The remaining " + n(S.to_search) + " are mostly small parts whose only photos online are small. More rounds would add roughly 1 photo per 10 searches, about 8 sessions for some 150 photos. Two other routes: ask Pentair for its dealer image library (Pentair supplies product images to authorized dealers, which would be the cleanest source), or photograph parts in-house as they come through stock.", o: ["Keep searching anyway", "Ask Pentair for the dealer image library", "Photograph in-house", "Stop here for now"] },
+  { id: "p3", h: "Keep searching the web for the rest?", c: n(S.to_search) + " SKUs still have no photo of 1000 x 1000: most have only small images online, some were not searched yet. Web searches are capped at about 200 per working turn, so this runs over several sessions.", o: ["Yes, keep going", "Not now"] },
+];
+const answers = {}; let db = null;
+function qCount() { $("qcount").textContent = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length + " of " + QUESTIONS.length + " answered."; }
+QUESTIONS.forEach((q) => {
+  const box = el("div", "q"); box.id = "box-" + q.id; box.append(el("div", "qh", q.h), el("p", "ctx", q.c));
+  const opts = el("div", "opts"); const btns = [];
+  q.o.forEach((o) => { const b = el("button", "act", o); b.type = "button"; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => saveAns(q.id, { choice: o })); btns.push(b); opts.append(b); });
+  const ta = el("textarea"); ta.id = "note-" + q.id; ta.placeholder = "Note (optional)"; ta.setAttribute("aria-label", "Note for: " + q.h);
+  let t; ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => saveAns(q.id, { note: ta.value }), 800); });
+  const st = el("p", "saved"); st.id = "st-" + q.id; box.append(opts, ta, st); $("questions").append(box);
+  box.paint = () => { const a = answers[q.id] || {}; btns.forEach((b) => b.setAttribute("aria-pressed", String(a.choice === b.textContent))); box.classList.toggle("done", !!a.choice); if (document.activeElement !== ta) ta.value = a.note || ""; };
+});
+qCount();
+const writing = {};
+async function put(path, data, st) {
+  if (!db) { st.textContent = "Answers can't be saved from this view."; st.className = "saved err"; return; }
+  if (writing[path]) { writing[path].pending = true; return; }
+  writing[path] = { pending: false }; st.textContent = "Saving…"; st.className = "saved";
+  try { do { writing[path].pending = false; await db.doc(path).set(data()); } while (writing[path].pending); st.textContent = "Saved"; st.className = "saved ok"; }
+  catch (e) { st.textContent = e && e.code === "not_granted" ? "You can read this page but not save here." : "Couldn't save. Try again in a moment."; st.className = "saved err"; }
+  finally { delete writing[path]; }
+}
+function saveAns(id, patch) { const q = QUESTIONS.find((x) => x.id === id); answers[id] = Object.assign({}, answers[id], patch, { question: q.h, updatedAt: new Date().toISOString() }); $("box-" + id).paint(); qCount(); put("photo_answers/" + id, () => answers[id], $("st-" + id)); }
+let fuT; $("followup").addEventListener("input", () => { clearTimeout(fuT); fuT = setTimeout(() => put("photo_followups/general", () => ({ text: $("followup").value, updatedAt: new Date().toISOString() }), $("fu-st")), 800); });
+
+$("wallnote").textContent = DATA.W.length + " photos picked at random across the sources, as stored (white added only in this preview).";
+DATA.W.forEach(([mpn, tier, src, uri]) => { const f = el("figure"); const im = el("img"); im.src = uri; im.alt = "Photo of " + mpn; im.loading = "lazy"; f.append(im, el("figcaption", null, mpn + " · " + src)); $("wall").append(f); });
+
+const R = DATA.R;  // [mpn, title, tier, source, nsites, w, h, photo_url, page_url]
+function render(filter) {
+  const f = (filter || "").toLowerCase(); const box = $("rows"); box.replaceChildren();
+  const list = R.filter((r) => !f || r[0].toLowerCase().includes(f) || r[1].toLowerCase().includes(f));
+  $("fcount").textContent = n(list.length) + " SKUs" + (f ? " match" : "") + (list.length > 200 ? "; showing the first 200, type to narrow." : ".");
+  list.slice(0, 200).forEach((r) => {
+    const d = el("div", "row"); d.append(el("div", "t", r[0] + " · " + r[1]));
+    const m = el("div", "m"); m.append(el("span", "tier" + (r[2] === "single site" ? " single" : ""), r[2]), el("span", null, r[3]), el("span", null, r[5] + " x " + r[6]));
+    if (r[4] > 1) m.append(el("span", null, "same picture on " + r[4] + " sites"));
+    if (r[7]) { const a = el("a", null, "Photo"); a.href = r[7]; a.target = "_blank"; a.rel = "noopener"; m.append(a); }
+    if (r[8]) { const a = el("a", null, "Source"); a.href = r[8]; a.target = "_blank"; a.rel = "noopener"; m.append(a); }
+    d.append(m); box.append(d);
+  });
+}
+$("q").addEventListener("input", () => render($("q").value)); render("");
+
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { document.querySelectorAll(".saved").forEach((s) => { s.textContent = "Answers can't be saved from this view."; s.className = "saved err"; }); return; }
+  db.collection("photo_answers").onSnapshot((snap) => { snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); }); QUESTIONS.forEach((q) => $("box-" + q.id).paint()); qCount(); }, () => {});
+  db.doc("photo_followups/general").onSnapshot((d) => { const v = d && d.exists ? d.data() : null; if (v && document.activeElement !== $("followup")) $("followup").value = v.text || ""; }, () => {});
+})();
+</script>

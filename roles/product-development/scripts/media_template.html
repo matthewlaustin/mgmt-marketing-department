@@ -1,0 +1,163 @@
+<title>Pentair Manuals and Photos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column. Coverage figures, questions to answer in place, then a browsable list of product lines with their photos and documents. */
+:root {
+  --bg: #f3f7f8; --surface: #ffffff; --ink: #0f2a33; --muted: #557079; --line: #d4e1e4;
+  --accent: #0b8a8f; --accent-soft: #dff1f1; --warn: #a5560b; --warn-soft: #fbeedd; --ok: #1d7a46;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 820px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--display); font-size: 30px; line-height: 1.15; margin: 4px 0 6px; text-wrap: balance; }
+h2.sec { font-family: var(--display); font-size: 21px; margin: 0; text-wrap: balance; }
+.lede, .note { color: var(--muted); margin: 0; max-width: 66ch; }
+.note { font-size: 14px; }
+section.block { display: grid; gap: 14px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--muted); }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; }
+.q .qh { font-weight: 600; } .q .ctx { font-size: 14px; color: var(--muted); margin: 0; } .q.done { border-color: var(--accent); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+button.act { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); text-align: left; }
+button.act[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+button.act:focus-visible, .fam summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { font: inherit; font-size: 14px; width: 100%; min-height: 56px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical; }
+.saved { font-size: 13px; color: var(--muted); margin: 0; min-height: 1.2em; } .saved.ok { color: var(--ok); } .saved.err { color: var(--warn); }
+label.f { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+#q { width: 100%; font: inherit; font-size: 17px; padding: 10px 14px; border: 2px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+#q:focus-visible { outline: none; border-color: var(--accent); }
+.fam { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; }
+.fam summary { cursor: pointer; padding: 10px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.fam summary b { font-family: var(--display); font-size: 16px; }
+.chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+.body { display: grid; gap: 12px; padding-bottom: 14px; }
+.pics { display: flex; flex-wrap: wrap; gap: 8px; }
+.pics figure { margin: 0; width: 110px; display: grid; gap: 3px; }
+.pics img { width: 110px; height: 110px; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+.pics figcaption { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.docs { display: grid; gap: 4px; font-size: 14px; }
+.docs a { color: var(--accent); text-decoration: none; } .docs a:hover { text-decoration: underline; }
+.docs .k { font-size: 12px; color: var(--muted); }
+.miss { display: grid; gap: 6px; font-size: 14px; }
+.miss .m { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.list { display: grid; gap: 8px; }
+.empty { color: var(--muted); margin: 0; }
+footer { font-size: 12px; color: var(--muted); }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pool Geek · Pentair · manuals, brochures, photos</div>
+    <h1>Pentair manuals and photos</h1>
+    <p class="lede">What Pentair publishes on its own product pages, matched to our product lines: installation and user guides, brochures, data sheets, parts sheets, and the product photos it shows. Answer the questions, then browse the lines below.</p>
+  </header>
+
+  <section class="block"><h2 class="sec">Coverage</h2><div class="stats" id="stats"></div><p class="note" id="sumnote"></p></section>
+
+  <section class="block"><h2 class="sec">Questions</h2>
+    <p class="note">Tap an answer; add a note if it needs one. <span id="qcount"></span></p>
+    <div id="questions" class="list" style="gap:12px"></div>
+  </section>
+
+  <section class="block"><h2 class="sec">Pentair sells these but our database doesn't have them</h2>
+    <p class="note" id="missnote"></p><div id="missing" class="list"></div></section>
+
+  <section class="block"><h2 class="sec">Product lines</h2>
+    <label class="f" for="q">Find a product line</label><input id="q" type="search" placeholder="e.g. IntelliPro3, Tagelus, MasterTemp">
+    <p class="note" id="fcount"></p><div id="fams" class="list"></div></section>
+
+  <section class="block q"><div class="qh">Anything else?</div><textarea id="followup" placeholder="Follow-ups or what to work on next"></textarea><p class="saved" id="fu-st"></p></section>
+  <footer>Documents and photos are links to pentair.com (Pentair's own servers); photos are also cached for upload. Matched to product lines by the SKUs Pentair prints on each page, or by the page's product name.</footer>
+</div>
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id), S = DATA.S, n = (x) => Number(x).toLocaleString();
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+[[S.models_with_photo, "of " + n(S.models) + " whole-goods SKUs have a Pentair photo (through their product line)"],
+ [S.models_with_docs, "of " + n(S.models) + " whole-goods SKUs have manuals or brochures"],
+ [S.parts_with_photo, "of " + n(S.parts) + " parts have a photo of their own"],
+ [S.docs_linked, "documents linked (" + n(S.docs) + " found)"], [S.images_disk, "of " + n(S.images) + " photos downloaded"]]
+ .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
+$("sumnote").textContent = "Documents by kind: " + S.kinds.map(([k, c]) => k + " " + c).join(", ") + ". Languages: " + S.langs.map(([k, c]) => k + " " + c).join(", ") + ". Pentair's pages show photos per product line, not per part number; parts have no photos on pentair.com beyond a handful of Pleatco cartridges.";
+
+const QUESTIONS = [
+  { id: "m1", h: "Add the products Pentair sells that aren't in our database?", c: "Current (not discontinued) pentair.com product pages list " + DATA.M.reduce((a, [, s]) => a + s.length, 0) + " SKUs the catalog never printed: maintenance kits, Dynamic filters, U-3 skimmers, ClearPro filters and others (list below). Adding them means new titles under the same title rules, then the same data, manuals and photos.", o: ["Yes, add them next", "Not now"] },
+  { id: "m6", h: "Catalog says active, pentair.com says discontinued", c: "Eight pump SKUs are printed as current in the 2025-2026 catalog (older IntelliFlo, IntelliPro and WhisperFloXF versions, e.g. 011028, 011056, 013004, 022034) but their pentair.com page carries a Discontinued ribbon. They are active in our database today.", o: ["Keep them active (catalog wins)", "Mark them discontinued (website wins)"] },
+  { id: "m7", h: "Manuals for lines whose pumps are gone but whose parts are still sold", c: "Pentair still publishes manuals and parts sheets for discontinued lines (Challenger, Dynamo, Prowler, Racer, Legend and others) and we still sell their parts. Under the discontinued rule these documents are left out. They could instead be attached to the parts lists for those lines.", o: ["Leave them out (rule as written)", "Attach manuals and parts sheets to the parts lists"] },
+  { id: "m2", h: "Manuals and brochures: link to Pentair or keep our own copies?", c: "Right now each document is a link to the PDF on pentair.com. Pentair can move or remove files; our own copies (about 650 PDFs) would need storage.", o: ["Links to pentair.com are fine", "Download copies for us", "Both: link now, copy later"] },
+  { id: "m3", h: "Keep the Spanish and French documents?", c: "About a third of the documents are Spanish or French-Canadian versions of the English ones.", o: ["Keep all languages", "English only"] },
+  { id: "m4", h: "Photos for parts", c: "Pentair publishes no photos of individual parts. The catalog's exploded diagrams show each part as a numbered line drawing. We could crop each part's drawing from the diagram as a stand-in image, or leave parts without a picture.", o: ["Crop the diagram drawing per part", "Leave parts without a picture", "Use the whole exploded diagram as the part's image"] },
+  { id: "m5", h: "Which photo is the main one?", c: "Each line has one main image on pentair.com and a few gallery views. We'll store the main image as the line's primary photo and the gallery as extra views, on every SKU in the line. Colour variants (e.g. IntelliFlo3 almond vs IntelliPro3 black) stay with their own line.", o: ["That's right", "Let me pick per line"] },
+];
+const answers = {}; let db = null;
+function qCount() { $("qcount").textContent = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length + " of " + QUESTIONS.length + " answered."; }
+QUESTIONS.forEach((q) => {
+  const box = el("div", "q"); box.id = "box-" + q.id; box.append(el("div", "qh", q.h), el("p", "ctx", q.c));
+  const opts = el("div", "opts"); const btns = [];
+  q.o.forEach((o) => { const b = el("button", "act", o); b.type = "button"; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => saveAns(q.id, { choice: o })); btns.push(b); opts.append(b); });
+  const ta = el("textarea"); ta.id = "note-" + q.id; ta.placeholder = "Note (optional)"; ta.setAttribute("aria-label", "Note for: " + q.h);
+  let t; ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => saveAns(q.id, { note: ta.value }), 800); });
+  const st = el("p", "saved"); st.id = "st-" + q.id; box.append(opts, ta, st); $("questions").append(box);
+  box.paint = () => { const a = answers[q.id] || {}; btns.forEach((b) => b.setAttribute("aria-pressed", String(a.choice === b.textContent))); box.classList.toggle("done", !!a.choice); if (document.activeElement !== ta) ta.value = a.note || ""; };
+});
+qCount();
+const writing = {};
+async function put(path, data, st) {
+  if (!db) { st.textContent = "Answers can't be saved from this view."; st.className = "saved err"; return; }
+  if (writing[path]) { writing[path].pending = true; return; }
+  writing[path] = { pending: false }; st.textContent = "Saving…"; st.className = "saved";
+  try { do { writing[path].pending = false; await db.doc(path).set(data()); } while (writing[path].pending); st.textContent = "Saved"; st.className = "saved ok"; }
+  catch (e) { st.textContent = e && e.code === "not_granted" ? "You can read this page but not save here." : "Couldn't save. Try again in a moment."; st.className = "saved err"; }
+  finally { delete writing[path]; }
+}
+function saveAns(id, patch) { const q = QUESTIONS.find((x) => x.id === id); answers[id] = Object.assign({}, answers[id], patch, { question: q.h, updatedAt: new Date().toISOString() }); $("box-" + id).paint(); qCount(); put("media_answers/" + id, () => answers[id], $("st-" + id)); }
+let fuT; $("followup").addEventListener("input", () => { clearTimeout(fuT); fuT = setTimeout(() => put("media_followups/general", () => ({ text: $("followup").value, updatedAt: new Date().toISOString() }), $("fu-st")), 800); });
+
+// missing SKUs
+$("missnote").textContent = DATA.M.length + " pentair.com pages, " + DATA.M.reduce((a, [, s]) => a + s.length, 0) + " SKUs. Shown by the page they appear on.";
+DATA.M.forEach(([name, skus]) => { const d = el("div", "miss"); d.append(el("b", null, name + " (" + skus.length + ")"), el("div", "m", skus.join("  "))); $("missing").append(d); });
+
+// families
+const F = DATA.F, T = DATA.T;
+function renderFams(filter) {
+  const box = $("fams"); box.replaceChildren(); const f = (filter || "").toLowerCase();
+  const list = F.filter((x) => !f || x.name.toLowerCase().includes(f) || x.id.includes(f) || x.cat.toLowerCase().includes(f));
+  $("fcount").textContent = list.length + " product lines" + (f ? " match" : "") + ".";
+  list.slice(0, 120).forEach((x) => {
+    const d = el("details", "fam"); const s = el("summary"); s.append(el("b", null, x.name));
+    s.append(el("span", "chip", x.models + " SKU" + (x.models === 1 ? "" : "s")));
+    s.append(el("span", x.imgs.length ? "chip" : "chip warn", x.imgs.length ? x.imgs.length + " photo" + (x.imgs.length > 1 ? "s" : "") : "no photo"));
+    s.append(el("span", x.docs.length ? "chip" : "chip warn", x.docs.length ? x.docs.length + " document" + (x.docs.length > 1 ? "s" : "") : "no documents"));
+    d.append(s);
+    const b = el("div", "body"); b.append(el("p", "note", x.cat));
+    if (x.imgs.length) { const p = el("div", "pics"); x.imgs.forEach(([iid, alt, role, url]) => { const fg = el("figure"); const im = el("img"); im.src = T[iid] || ""; im.alt = alt || role; im.loading = "lazy"; fg.append(im, el("figcaption", null, (role === "main" ? "main · " : "") + (alt || ""))); p.append(fg); }); b.append(p); }
+    if (x.docs.length) { const dl = el("div", "docs"); x.docs.forEach(([title, kind, lang, url]) => { const r = el("div"); const a = el("a", null, title); a.href = url; a.target = "_blank"; a.rel = "noopener"; r.append(a, el("span", "k", " · " + kind + " · " + lang)); dl.append(r); }); b.append(dl); }
+    if (!x.imgs.length && !x.docs.length) b.append(el("p", "empty", "Nothing on pentair.com matched this line."));
+    d.append(b); box.append(d);
+  });
+  if (list.length > 120) box.append(el("p", "empty", "Showing the first 120; type to narrow the list."));
+}
+$("q").addEventListener("input", () => renderFams($("q").value)); renderFams("");
+
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { document.querySelectorAll(".saved").forEach((s) => { s.textContent = "Answers can't be saved from this view."; s.className = "saved err"; }); return; }
+  db.collection("media_answers").onSnapshot((snap) => { snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); }); QUESTIONS.forEach((q) => $("box-" + q.id).paint()); qCount(); }, () => {});
+  db.doc("media_followups/general").onSnapshot((d) => { const v = d && d.exists ? d.data() : null; if (v && document.activeElement !== $("followup")) $("followup").value = v.text || ""; }, () => {});
+})();
+</script>

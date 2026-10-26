@@ -1,0 +1,6 @@
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=4.9
+pdfplumber>=0.11
+pypdf>=4
+pytest>=8
