@@ -53,3 +53,14 @@ def test_current_price():
     tie = d3_load.current_price([(1.0, 1.2, "", 300), (2.0, 2.4, "", 400)])
     assert tie[:2] == (2.0, 2.4) and tie[3].startswith("tie")
     assert d3_load.current_price([(None, None, "CALL", 5)])[2] == "CALL"
+
+
+def test_turnover_list_split(tmp_path):
+    con = sqlite3.connect(":memory:")
+    con.execute("CREATE TABLE products (mpn TEXT, status TEXT)")
+    con.execute("INSERT INTO products VALUES ('W1', 'active')")
+    out = {"batch": "w01", "products": [{"mpn": "W1", "page": 0, "family": None, "role": "model", "specs": [
+        {"attr": "turnover_capacity", "value": [{"hours": 8, "gallons": 24000}, {"hours": 10, "gallons": 30000}], "raw": "x"}]}]}
+    (tmp_path / "w01.json").write_text(json.dumps(out))
+    d3_load.load(con, tmp_path)
+    assert con.execute("SELECT count(*) FROM specs WHERE attr='turnover_capacity'").fetchone()[0] == 2

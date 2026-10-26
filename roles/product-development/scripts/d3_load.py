@@ -200,7 +200,14 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
             for fid in as_list(fam) or [None]:
                 con.execute("INSERT INTO product_families VALUES (?,?,?,?,?)", (m, fid, p["role"], p.get("band"), pg))
             seen = set()
+            specs = []
             for s in filter(None, map(normalize_spec, p.get("specs", []))):
+                # web pages give turnover as a list of {hours, gallons}: one row each, like the catalog
+                if s["attr"] == "turnover_capacity" and isinstance(s["value"], list):
+                    specs += [dict(s, value=v) for v in s["value"]]
+                else:
+                    specs.append(s)
+            for s in specs:
                 key = (s["attr"], text(s["value"]))
                 if key in seen:
                     continue
