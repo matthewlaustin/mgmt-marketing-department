@@ -30,6 +30,14 @@ for part, fids, models, mpns, item, qty, cond, page in con.execute(
     fl = [fidx[f] for f in json.loads(fids) if f in fidx]
     P[part]["x"].append([fl, json.loads(models) + json.loads(mpns), item or "", qty, cond or "", page])
 
+MP = defaultdict(list)  # model -> [[part, item, qty, condition, page]]
+for m, part, item, qty, cond, pg in con.execute(
+        "SELECT model_mpn, part_mpn, item, qty, condition, pdf_page FROM model_parts ORDER BY model_mpn, pdf_page, CAST(item AS INTEGER), part_mpn"):
+    if m in P and part in P:
+        MP[m].append([part, item or "", qty, cond or "", pg])
+for m, lst in MP.items():
+    P[m]["mp"] = lst
+
 issues = defaultdict(list)
 for mpn, page, q in con.execute("SELECT mpn, pdf_page, question FROM data_issues WHERE mpn IS NOT NULL"):
     if mpn in P:
@@ -50,6 +58,11 @@ stats = {
     "issues": q("SELECT count(*) FROM data_issues"),
     "price_conflicts": q("SELECT count(*) FROM data_issues WHERE batch = 'price_check'"),
     "web_only": q("SELECT count(*) FROM products WHERE status = 'active' AND pages = '0'"),
+    "models": q("SELECT count(DISTINCT mpn) FROM product_families WHERE role = 'model'"),
+    "models_with_parts": q("SELECT count(DISTINCT model_mpn) FROM model_parts"),
+    "model_parts": q("SELECT count(*) FROM model_parts"),
+    "cross_refs": q("SELECT count(*) FROM cross_references"),
+    "replacements": q("SELECT count(DISTINCT old_mpn) FROM replacements"),
     "no_data": q("""SELECT count(*) FROM products WHERE status = 'active' AND mpn NOT IN (SELECT mpn FROM product_families)
                     AND mpn NOT IN (SELECT part_mpn FROM fitment)"""),
 }

@@ -143,8 +143,10 @@ const n = (x) => Number(x).toLocaleString();
 const FP = {};
 KEYS.forEach((m) => P[m].x.forEach(([fl]) => fl.forEach((fi) => { (FP[fi] = FP[fi] || new Set()).add(m); })));
 
-[[S.with_data, "of " + n(S.active) + " SKUs have data"], [S.specs, "specs"], [S.priced, "SKUs with list prices"],
- [S.fitment, "fitment records (" + n(S.parts_fitted) + " parts)"], [S.families, "product lines"], [S.tables, "reference tables and charts"]]
+[[S.with_data, "of " + n(S.active) + " SKUs have data"], [S.specs, "specs, values normalized"], [S.priced, "SKUs with list prices"],
+ [S.models_with_parts, "of " + n(S.models) + " products link to their parts (" + n(S.model_parts) + " product–part pairs)"],
+ [S.cross_refs, "competitor numbers (Unicel, Filbur, OEM)"], [S.replacements, "old numbers that find their replacement"],
+ [S.families, "product lines"], [S.tables, "reference tables and charts"]]
   .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
 $("sumnote").textContent = "The " + n(S.web_only) + " SKUs that only pentair.com lists now have data from their Pentair product pages (page \"web\" below). "
   + (S.no_data ? n(S.no_data) + " SKU still has none: Pentair prints no description for it anywhere. " : "")
@@ -260,9 +262,9 @@ function showSku(mpn) {
       const what = fl.map((fi) => F[fi][1]).concat(models).filter((v, i, a) => v && a.indexOf(v) === i).join("; ");
       const extra = [item && "item " + item, qty && "qty " + qty, cond].filter(Boolean).join(" · ");
       return tr([["k", what], ["", extra], ["pg", pgl(pg)]]); }))); }
-  const parts = new Set(); d.f.forEach((fi) => (FP[fi] || []).forEach((m) => m !== mpn && parts.add(m)));
-  if (parts.size && d.r === "model") { c.append(el("h3", null, "Parts listed for this product line (" + parts.size + ")"));
-    const lst = el("div", "list"); [...parts].sort().slice(0, 60).forEach((m) => lst.append(hit(m))); c.append(lst); }
+  if (d.mp && d.mp.length) { c.append(el("h3", null, "Parts for this product (" + d.mp.length + ")"));
+    c.append(table(d.mp.map(([part, item, qty, cond, pg]) => { const r = tr([["k", ""], ["", [item && "item " + item, qty && "qty " + qty, cond].filter(Boolean).join(" · ")], ["pg", pgl(pg)]]);
+      r.firstChild.replaceChildren(hit(part)); return r; }))); }
   if (d.i) { c.append(el("h3", null, "Catalog problems noted")); d.i.forEach(([pg, q]) => c.append(el("div", "iss", (pg ? "p" + pg + ": " : "") + q))); }
   const f = el("div", "q"); f.style.padding = "0"; f.style.border = "0";
   f.append(el("h3", null, "Spot check"));

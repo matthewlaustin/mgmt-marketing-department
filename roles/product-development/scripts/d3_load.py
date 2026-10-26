@@ -210,15 +210,28 @@ def attr_units() -> dict[str, str]:
 
 def build_structured(con: sqlite3.Connection, active: set[str]) -> None:
     """Tables a shop app queries directly: competitor numbers, old numbers, family links, model -> parts."""
-    for m, v, pg in con.execute("SELECT mpn, value, pdf_page FROM specs WHERE attr = 'cross_reference'").fetchall():
+    seen = set()
+    for m, v, pg in con.execute("SELECT mpn, value, pdf_page FROM specs WHERE attr = 'cross_reference' ORDER BY pdf_page").fetchall():
         for item in (json.loads(v) if v.startswith("[") else [v]):
             brand, _, number = str(item).partition(":")
             if not number:
                 brand, number = None, str(item)
-            con.execute("INSERT INTO cross_references VALUES (?,?,?,?)", (m, brand.strip() if brand else None, number.strip(), pg))
-    for m, v, raw, pg in con.execute("SELECT mpn, value, raw, pdf_page FROM specs WHERE attr = 'replaces'").fetchall():
+            key = (m, (brand or "").strip().lower(), number.strip().upper())
+            if key not in seen:
+                seen.add(key)
+                con.execute("INSERT INTO cross_references VALUES (?,?,?,?)", (m, brand.strip() if brand else None, number.strip(), pg))
+    seen = set()
+    for m, v, raw, pg in con.execute("SELECT mpn, value, raw, pdf_page FROM specs WHERE attr = 'replaces' ORDER BY pdf_page").fetchall():
         for old in (json.loads(v) if v.startswith("[") else [v]):
-            con.execute("INSERT INTO replacements VALUES (?,?,?,?)", (str(old).strip(), m, raw, pg))
+            old = str(old).strip()
+            if (old, m) in seen or old == m:
+                continue
+            seen.add((old, m))
+            if old in active:  # still sold: the catalog offers m as an upgrade, it does not replace it
+                con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)", (old, "upgrade", m, None, None, raw, pg))
+            else:
+                con.execute("INSERT INTO replacements VALUES (?,?,?,?)", (old, m, raw, pg))
+    con.execute("DELETE FROM specs WHERE attr = 'replaces' AND value IN (SELECT mpn FROM products WHERE status = 'active')")
     fam_ids = {f for (f,) in con.execute("SELECT id FROM families")}
     for f, parent in con.execute("SELECT id, parent FROM families WHERE parent IS NOT NULL").fetchall():
         if parent in fam_ids:
