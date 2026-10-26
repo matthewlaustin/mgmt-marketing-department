@@ -241,8 +241,13 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
     by_mpn = {}
     for row in con.execute("SELECT mpn, us_list, can_list, price_note, pdf_page FROM prices ORDER BY mpn, pdf_page"):
         by_mpn.setdefault(row[0], []).append(row[1:])
+    picks_file = ROOT / "data/work/pentair/d3/price_picks.json"
+    picks = {p["mpn"]: p for p in json.loads(picks_file.read_text())["picks"]} if picks_file.exists() else {}
     for m, rows in by_mpn.items():
-        con.execute("INSERT INTO product_prices VALUES (?,?,?,?,?,?)", (m, *current_price(rows)))
+        row = current_price(rows)
+        if m in picks:  # Matthew chose the current price for a part printed at different prices
+            row = (picks[m]["us_list"], picks[m]["can_list"], None, "chosen by Matthew", row[4])
+        con.execute("INSERT INTO product_prices VALUES (?,?,?,?,?,?)", (m, *row))
     # the catalog sometimes prints different list prices for one SKU on different pages
     for m, pages in con.execute("""SELECT mpn, group_concat(pdf_page || ': ' || us_list || ' / ' || can_list, '; ')
                                    FROM prices WHERE us_list IS NOT NULL GROUP BY mpn

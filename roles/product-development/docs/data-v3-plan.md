@@ -44,5 +44,5 @@ filtered and compared. A value the list doesn't cover is written with an `x_` ke
 - Weights printed without a unit are pounds.
 - Logos printed once per page go on the page's main products only.
 - A part printed at different list prices: use the price printed on the most pages (`product_prices`);
-  ties use the later page and are shown to Matthew to confirm. All page prices stay in `prices`.
+  ties use the later page. Matthew then chose the price for 25 of the 26 (`d3/price_picks.json`). All page prices stay in `prices`.
 - Next: gather data for the web-only SKUs from pentair.com (manufacturer data only).
