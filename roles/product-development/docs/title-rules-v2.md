@@ -388,6 +388,13 @@ All interim calls below are accepted, except where this section changes them.
 - **Marketing words** ("Professional Grade", "Super-Duty") are dropped from parts as well as whole
   goods (the checker already bans them catalog-wide).
 
+## Pump horsepower [Matthew, spot check 2026-10-26]
+- **Pump titles carry THP (total horsepower), not rated HP**: "THP is what people shop for with
+  pumps. They will confirm voltage as a function of that." Use the THP column the ordering table
+  prints, written "N THP" in the HP's place ("IntelliPro3® VSF 3.95 THP 208-230V …"); keep voltage.
+  Where a pump row prints no rated HP (N/A), its THP still goes in. Where no THP is printed, keep
+  the rated HP and say so in `why`.
+
 ## Second pass on the review items [coordinator, 2026-10-25]
 Matthew asked for fewer review items, so the 179 unsure records were settled by rule where a rule
 reaches, with the alternative reading kept in `why`:
