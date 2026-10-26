@@ -90,6 +90,6 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
 - Diagram review answered (Matthew, 2026-10-26 18:04): d1 the new diagrams are right, use them. d2 yes to R2;
   he asked where to put the credentials (answered in chat: the cloud environment's settings, Network secrets /
   environment variables, names R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_PUBLIC_URL).
-  `scripts/r2_upload.py` is ready (dry run: 1,153 files, 1.65 GB). Follow-up, not yet: "can you search the web
+  `scripts/r2_upload.py` is ready (dry run: 1,193 files, 1.65 GB). Follow-up, not yet: "can you search the web
   for images and download them for all these skus?" — assessed in chat; needs an amendment to the
   manufacturer-only rule before any retailer image is taken.
