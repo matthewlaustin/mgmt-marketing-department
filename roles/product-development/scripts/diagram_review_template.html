@@ -62,7 +62,7 @@ footer { font-size: 12px; color: var(--muted); }
   <header>
     <div class="eyebrow">Pool Geek · Pentair · diagrams, brochures, storage</div>
     <h1>Parts diagrams, brochures and where to keep the files</h1>
-    <p class="lede">What was wrong with the parts diagrams and how they are rendered now, the brochures and sell sheets found on pentair.com, and the storage question. Three answers to give; every diagram is at the bottom to check.</p>
+    <p class="lede">What was wrong with the parts diagrams and how they are rendered now, the brochures and sell sheets found on pentair.com, and the storage question. Two answers to give; every diagram is at the bottom to check.</p>
   </header>
 
   <section class="block"><h2 class="sec">Figures</h2><div class="stats" id="stats"></div></section>
@@ -114,7 +114,6 @@ $("before").src = DATA.before; $("after").src = DATA.after;
 const QUESTIONS = [
   { id: "d1", h: "Do the parts diagrams look right now?", c: "Every one of the " + n(S.images) + " renders is in the gallery below (tap to enlarge). If some still look wrong, name the page numbers in the note.", o: ["Yes, use these", "Some are wrong (see note)"] },
   { id: "d2", h: "Set up a Cloudflare R2 bucket for the photos, PDFs and diagrams?", c: "Yes, we need one. Everything downloaded so far (" + S.disk + " of product photos, manuals, brochures, diagram and chart renders) sits in this session's container, which is wiped when idle; the Git repo holds only the data and the links. R2 is the right fit: S3-compatible, no egress fees when your site serves the files, about 2 GB today so storage costs cents a month. To use it I need, as environment secrets (not pasted in chat): R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET and, if you set one, R2_PUBLIC_URL. I would then upload every file under a key like pentair/images/<sha>.jpg and store that key and URL on each images and documents row in Neon.", o: ["Yes, R2 (recommended)", "Use Vercel Blob instead", "Hold off for now"] },
-  { id: "d3", h: "Keep the brochure and sell-sheet PDFs taken from the FlippingBook viewer?", c: "pentair.com embeds brochures and sell sheets as FlippingBook flipbooks rather than PDF links, which is why the parser missed them. The viewer's own Download button hands out Pentair's original PDF (for example STARITE_INTELLIPRO3_BROCHURE_FEB2023.pdf), so the files are the manufacturer's, served by a third party. " + n(S.fbo_disk) + " of " + n(S.fbo_docs) + " are on disk and linked to their product lines.", o: ["Yes, keep them", "Link to the flipbook only, no copies"] },
 ];
 const answers = {}; let db = null;
 function qCount() { $("qcount").textContent = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length + " of " + QUESTIONS.length + " answered."; }
@@ -141,7 +140,7 @@ function saveAns(id, patch) { const q = QUESTIONS.find((x) => x.id === id); answ
 let fuT; $("followup").addEventListener("input", () => { clearTimeout(fuT); fuT = setTimeout(() => put("diagram_followups/general", () => ({ text: $("followup").value, updatedAt: new Date().toISOString() }), $("fu-st")), 800); });
 
 // brochures
-$("docnote").textContent = DATA.D.length + " publications on " + S.fbo_pages + " product pages: " + S.fbo_kinds + ". Each is linked to the product line of the page it sits on and to any line its text names.";
+$("docnote").textContent = DATA.D.length + " publications on " + S.fbo_pages + " product pages: " + S.fbo_kinds + ". Each is Pentair's own PDF (FlippingBook is only the viewer around it), downloaded and linked to the product line of the page it sits on and to any line its text names.";
 DATA.D.forEach(([title, kind, lang, url, lines]) => { const r = el("div"); const a = el("a", null, title); a.href = url; a.target = "_blank"; a.rel = "noopener"; r.append(a, el("span", "k", " · " + kind + " · " + lang + (lines ? " · " + lines : ""))); $("docs").append(r); });
 
 // gallery

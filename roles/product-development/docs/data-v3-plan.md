@@ -85,3 +85,5 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   page's "User's Guide".
 - Storage: all downloaded media lives in the container's gitignored data/raw/; an R2 bucket (or similar) is
   needed. Asked on the review page (d2) with the secret names I would read.
+- Matthew (2026-10-26): "Flipping book is just a pdf wrapper" — the brochure and sell-sheet PDFs downloaded through
+  the FlippingBook viewer count as Pentair's own PDFs; keep them (question d3 withdrawn from the review page).
