@@ -185,6 +185,12 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
         con.execute("INSERT INTO families VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (f["id"], f["name"], f["brand"], f["parent"], f["category"], f["description"],
                      json.dumps(f["features"], ensure_ascii=False), json.dumps(f["notes"], ensure_ascii=False), json.dumps(f["parts_pages"]), json.dumps(sorted(f["pages"]))))
+    # the catalog sometimes prints different list prices for one SKU on different pages
+    for m, pages in con.execute("""SELECT mpn, group_concat(pdf_page || ': ' || us_list || ' / ' || can_list, '; ')
+                                   FROM prices WHERE us_list IS NOT NULL GROUP BY mpn
+                                   HAVING count(DISTINCT us_list) > 1""").fetchall():
+        con.execute("INSERT INTO data_issues VALUES ('price_check', NULL, ?, ?)",
+                    (m, f"Different list prices printed on different pages (page: US / Can): {pages}. Which is current?"))
     controlled = {}
     for line in (ROOT / "docs/data-v3-attributes.md").read_text().splitlines():
         m = re.match(r"\| ([a-z_0-9]+) \| ([^|]*) \|([^|]*)\|", line)
