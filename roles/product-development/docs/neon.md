@@ -33,3 +33,26 @@ endpoint. Get the connection string from the Neon console (never commit it).
     CREATE TABLE mfr_catalog.conflicts (mpn text NOT NULL REFERENCES mfr_catalog.products(mpn) ON DELETE CASCADE,
       field text NOT NULL, values_by_page jsonb NOT NULL);
     CREATE TABLE mfr_catalog.excluded_mpns (mpn text PRIMARY KEY, status text NOT NULL);
+
+## Phase-3 tables (product data, `scripts/d3_load.py`)
+
+    CREATE TABLE mfr_catalog.families (id text PRIMARY KEY, name text NOT NULL, brand text, parent text,
+      category text, description text, features jsonb NOT NULL, parts_pages jsonb NOT NULL, pages jsonb NOT NULL);
+    CREATE TABLE mfr_catalog.product_families (mpn text NOT NULL, family_id text, role text NOT NULL,
+      band text, pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.specs (mpn text NOT NULL, attr text NOT NULL, value text NOT NULL,
+      value_num double precision, unit text, raw text, pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.prices (mpn text NOT NULL, us_list numeric, can_list numeric, price_note text,
+      pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.fitment (part_mpn text NOT NULL, family_ids jsonb NOT NULL, models jsonb NOT NULL,
+      mpns jsonb NOT NULL, item text, qty double precision, condition text, raw text, pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.reference_tables (id integer PRIMARY KEY, kind text NOT NULL, title text,
+      columns jsonb, rows jsonb, summary text, pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.data_issues (batch text NOT NULL, pdf_page integer, mpn text, question text NOT NULL);
+    CREATE INDEX specs_mpn_idx ON mfr_catalog.specs (mpn);
+    CREATE INDEX specs_attr_idx ON mfr_catalog.specs (attr, value_num);
+    CREATE INDEX fitment_part_idx ON mfr_catalog.fitment (part_mpn);
+    CREATE INDEX fitment_family_idx ON mfr_catalog.fitment USING gin (family_ids);
+    CREATE INDEX product_families_idx ON mfr_catalog.product_families (family_id);
+
+Load order: `consolidate.py`, then `d3_load.py`, then `load_neon.py`.

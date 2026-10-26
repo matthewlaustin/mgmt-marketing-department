@@ -3,7 +3,8 @@
   NEON_URL=postgresql://... python3 scripts/load_neon.py
 
 Uses Neon's HTTPS SQL endpoint (plain Postgres ports are blocked in the cloud sandbox). Replaces
-the contents of mfr_catalog.products, evidence, conflicts and excluded_mpns in one transaction;
+the contents of mfr_catalog.products, evidence, conflicts, excluded_mpns and the phase-3 tables
+(when data/catalog.db has them) in one transaction;
 nothing outside the mfr_catalog schema is touched. The schema itself is created once by hand
 (see the CREATE statements in docs/neon.md).
 """
@@ -23,6 +24,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data/catalog.db"
 EXCLUDED = ROOT / "data/work/pentair/excluded_mpns.json"
 BATCH = 1000
+# phase-3 tables (scripts/d3_load.py); these columns hold JSON text in SQLite and jsonb in Neon
+D3_TABLES = {"families": ("features", "parts_pages", "pages"), "product_families": (), "specs": (),
+             "prices": (), "fitment": ("family_ids", "models", "mpns"),
+             "reference_tables": ("columns", "rows"), "data_issues": ()}
 
 
 def post(url: str, body: dict) -> dict:
@@ -62,10 +67,18 @@ def main() -> int:
     conflicts = [dict(c, values_by_page=json.loads(c["values_by_page"])) for c in rows(con, "conflicts")]
     excluded = [{"mpn": m, "status": s} for m, s in json.loads(EXCLUDED.read_text()).items()]
 
-    queries = [{"query": "DELETE FROM mfr_catalog.conflicts"}, {"query": "DELETE FROM mfr_catalog.evidence"},
+    have = {t for (t,) in con.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
+    d3 = {}
+    for table, json_cols in D3_TABLES.items():
+        if table in have:
+            d3[table] = [{k: json.loads(v) if k in json_cols and v is not None else v for k, v in r.items()}
+                         for r in rows(con, table)]
+
+    queries = [{"query": f"DELETE FROM mfr_catalog.{t}"} for t in d3]
+    queries += [{"query": "DELETE FROM mfr_catalog.conflicts"}, {"query": "DELETE FROM mfr_catalog.evidence"},
                {"query": "DELETE FROM mfr_catalog.products"}, {"query": "DELETE FROM mfr_catalog.excluded_mpns"}]
     for table, data in (("products", products), ("evidence", evidence), ("conflicts", conflicts),
-                        ("excluded_mpns", excluded)):
+                        ("excluded_mpns", excluded), *d3.items()):
         for i in range(0, len(data), BATCH):
             queries.append({"query": f"INSERT INTO mfr_catalog.{table} SELECT * FROM "
                                      f"json_populate_recordset(null::mfr_catalog.{table}, $1::json)",
@@ -76,6 +89,9 @@ def main() -> int:
                                  "(SELECT count(*) FROM mfr_catalog.conflicts) c, "
                                  "(SELECT count(*) FROM mfr_catalog.excluded_mpns) x", "params": []})["rows"][0]
     print(f"loaded: products {counts['p']}, evidence {counts['e']}, conflicts {counts['c']}, excluded {counts['x']}")
+    if d3:
+        sel = ", ".join(f"(SELECT count(*) FROM mfr_catalog.{t}) {t}" for t in d3)
+        print("phase 3:", post(url, {"query": f"SELECT {sel}", "params": []})["rows"][0])
     return 0
 
 
