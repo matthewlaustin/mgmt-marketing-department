@@ -105,3 +105,8 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   cross_references, replacements, family_links and model_parts were never in load_neon.py, so they were empty
   in Neon until now. CLAUDE.md now says never load into Pool Geek® Products. Removing the stale copy there
   (DROP SCHEMA mfr_catalog CASCADE) waits for Matthew's answer on the review page (d5).
+- Matthew (2026-10-26 19:06, d5): remove the old copy. Checked first: no views, foreign keys or functions outside
+  mfr_catalog depended on it. Ran DROP SCHEMA mfr_catalog CASCADE on Pool Geek® Products at 19:07:06 UTC. The
+  app's 20 tables in public and drizzle had 35,957 rows before and after, identical per table. Restorable
+  from Neon history until about 2026-10-27 19:07 UTC. The Products connection string was deleted from the
+  session scratchpad; only the Manufacturer Catalog string remains (scratchpad/neon_catalog_url).
