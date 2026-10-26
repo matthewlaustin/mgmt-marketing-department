@@ -29,7 +29,7 @@ DROP TABLE IF EXISTS reference_tables;
 DROP TABLE IF EXISTS data_issues;
 CREATE TABLE families (
     id TEXT PRIMARY KEY, name TEXT NOT NULL, brand TEXT, parent TEXT, category TEXT,
-    description TEXT, features TEXT NOT NULL, parts_pages TEXT NOT NULL, pages TEXT NOT NULL
+    description TEXT, features TEXT NOT NULL, notes TEXT NOT NULL, parts_pages TEXT NOT NULL, pages TEXT NOT NULL
 );
 CREATE TABLE product_families (
     mpn TEXT NOT NULL, family_id TEXT, role TEXT NOT NULL, band TEXT, pdf_page INTEGER NOT NULL
@@ -83,11 +83,12 @@ def merge_family(fams: dict, f: dict) -> None:
     if cur is None:
         fams[fid] = {"id": fid, "name": f["name"], "brand": f.get("brand"), "parent": f.get("parent"),
                      "category": f.get("category"), "description": f.get("description"),
-                     "features": list(f.get("features") or []), "parts_pages": parts, "pages": [f["page"]]}
+                     "features": list(f.get("features") or []), "notes": list(f.get("notes") or []), "parts_pages": parts, "pages": [f["page"]]}
         return
     for k in ("brand", "parent", "category", "description"):
         cur[k] = cur[k] or f.get(k)
     cur["features"] += [x for x in f.get("features") or [] if x not in cur["features"]]
+    cur["notes"] += [x for x in f.get("notes") or [] if x not in cur["notes"]]
     cur["parts_pages"] += [p for p in parts if p not in cur["parts_pages"]]
     if f["page"] not in cur["pages"]:
         cur["pages"].append(f["page"])
@@ -134,9 +135,9 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
         for i in d.get("issues", []):
             con.execute("INSERT INTO data_issues VALUES (?,?,?,?)", (batch, i.get("page"), i.get("mpn") or None, i["question"]))
     for f in fams.values():
-        con.execute("INSERT INTO families VALUES (?,?,?,?,?,?,?,?,?)",
+        con.execute("INSERT INTO families VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (f["id"], f["name"], f["brand"], f["parent"], f["category"], f["description"],
-                     json.dumps(f["features"], ensure_ascii=False), json.dumps(f["parts_pages"]), json.dumps(sorted(f["pages"]))))
+                     json.dumps(f["features"], ensure_ascii=False), json.dumps(f["notes"], ensure_ascii=False), json.dumps(f["parts_pages"]), json.dumps(sorted(f["pages"]))))
     con.commit()
     counts = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0]
               for t in ("families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}

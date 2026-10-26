@@ -37,7 +37,7 @@ endpoint. Get the connection string from the Neon console (never commit it).
 ## Phase-3 tables (product data, `scripts/d3_load.py`)
 
     CREATE TABLE mfr_catalog.families (id text PRIMARY KEY, name text NOT NULL, brand text, parent text,
-      category text, description text, features jsonb NOT NULL, parts_pages jsonb NOT NULL, pages jsonb NOT NULL);
+      category text, description text, features jsonb NOT NULL, notes jsonb NOT NULL, parts_pages jsonb NOT NULL, pages jsonb NOT NULL);
     CREATE TABLE mfr_catalog.product_families (mpn text NOT NULL, family_id text, role text NOT NULL,
       band text, pdf_page integer NOT NULL);
     CREATE TABLE mfr_catalog.specs (mpn text NOT NULL, attr text NOT NULL, value text NOT NULL,

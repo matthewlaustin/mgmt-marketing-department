@@ -56,6 +56,8 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
 - **Logos count**: certification or program marks printed as logos for a product (UL, CSA, ETL,
   NSF, AHRI, Energy Star, TradeGrade) → `certification` / `program` specs on each SKU the logo covers,
   with `raw` like "logo: UL". Footnote digits are dropped from description/feature text.
+- Printed notes and footnotes about a family (installation, GFCI, compatibility, "sold
+  individually") go word for word in the family's `notes` list, not in `description`.
 - Blank price cells: `"price_note": "blank"`.
 - **Family ids are shared across batches.** Before inventing one, list existing ids with
   `grep -ho '"id": "[^"]*"' data/work/pentair/d3/out/*.json | sort -u` and reuse the id when it is
@@ -67,7 +69,7 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
 ```json
 {
  "batch": "d063",
- "families": [{"id", "name", "brand", "parent", "category", "page", "description", "features": [], "links": []}],
+ "families": [{"id", "name", "brand", "parent", "category", "page", "description", "features": [], "notes": [], "links": []}],
  "products": [{"mpn", "page", "family", "band", "role": "model|part|kit|accessory|replacement",
                "specs": [{"attr", "value", "unit", "raw"}],
                "prices": {"us_list": 0.0, "can_list": 0.0} , "price_note": ""}],
