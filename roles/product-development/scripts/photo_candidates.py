@@ -89,8 +89,9 @@ def stores(active: set[str]) -> dict[str, list[dict]]:
                     if m:
                         hits[m] = ("sku", v)
                 if OURS.search(text):
-                    for m in found(p.get("title", "") + " " + p.get("handle", "").replace("-", " ")):
-                        hits.setdefault(m, ("title", {}))
+                    named = found(p.get("title", "") + " " + p.get("handle", "").replace("-", " "))
+                    if len(named) == 1:  # a title naming several of our numbers ("fits 070387, 070388") is not one part
+                        hits.setdefault(next(iter(named)), ("title", {}))
                     body = found(TAG.sub(" ", p.get("body_html") or ""))
                     if len(body) == 1 and len(p.get("variants", [])) == 1 and not hits:
                         hits[next(iter(body))] = ("description", {})

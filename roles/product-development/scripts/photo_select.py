@@ -145,10 +145,11 @@ def choose() -> int:
             continue
         for c in pool:  # independent sites showing the same picture
             c["sites"] = sorted({d["source"] for d in pool if ham(d["dhash"], c["dhash"]) <= 6})
-        best = min(pool, key=lambda c: (c["grade"] != "ok", c["source"] != "pentair.com", -len(c["sites"]), SITE_PREF.get(c["source"], 1), -(c["width"] * c["height"])))
+        # Matthew's order: Pentair, then Pool Geek's own store, then a picture several sites share, then one site
+        best = min(pool, key=lambda c: (c["grade"] != "ok", c["source"] != "pentair.com", SITE_PREF.get(c["source"], 1), -len(c["sites"]), -(c["width"] * c["height"])))
         best = {k: v for k, v in best.items() if k != "dhash"}
-        best["tier"] = ("pentair (long side)" if best["source"] == "pentair.com" else
-                        "multi-site" if len(best["sites"]) >= 2 else "pool geek" if best["source"] == "www.poolgeek.com" else "single site")
+        best["tier"] = ("pentair (long side)" if best["source"] == "pentair.com" else "pool geek" if best["source"] == "www.poolgeek.com" else
+                        "multi-site" if len(best["sites"]) >= 2 else "single site")
         if best["grade"] != "ok":
             best["tier"] += ", below 1000x1000"
         out[m] = best

@@ -6,3 +6,4 @@ output/
 data/raw/
 data/work/*/crops*/
 data/work/*/scratch/
+data/work/photos/review/*.png
