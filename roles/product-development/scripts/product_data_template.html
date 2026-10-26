@@ -79,6 +79,11 @@ td.num { font-variant-numeric: tabular-nums; font-family: var(--mono); }
 .hit .m { font-family: var(--mono); font-weight: 500; }
 .hit .t { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
 .empty { color: var(--muted); margin: 0; }
+.pr { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 8px; }
+.pr .top { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.pr .m { font-family: var(--mono); font-weight: 500; }
+.pr .t { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.pr .pages { font-size: 13px; color: var(--muted); }
 .iss { font-size: 13px; color: var(--warn); }
 footer { font-size: 12px; color: var(--muted); }
 </style>
@@ -99,6 +104,12 @@ footer { font-size: 12px; color: var(--muted); }
     <h2 class="sec" id="h-q">Seven questions</h2>
     <p class="note">Tap an answer; add a note if it needs one. Your answers save for me to read. <span id="qcount"></span></p>
     <div id="questions" class="list" style="gap:12px"></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-pr">
+    <h2 class="sec" id="h-pr">Parts printed at two prices</h2>
+    <p class="note">You chose the most common price. These <span id="prn"></span> parts are the ones affected. Where two prices tie (one page each), I used the price from the later page; tap the other price if it's the right one. <span id="prcount"></span></p>
+    <div id="prices" class="list"></div>
   </section>
 
   <section class="block" aria-labelledby="h-look">
@@ -196,6 +207,26 @@ function saveAns(id, patch) {
 let fuT; $("followup").addEventListener("input", () => { clearTimeout(fuT); fuT = setTimeout(() =>
   put("followups/general", () => ({ text: $("followup").value, updatedAt: new Date().toISOString() }), $("fu-st")), 800); });
 
+// ---- price picks
+const picks = {};
+const PC = DATA.PC;
+$("prn").textContent = PC.length;
+function prCount() { const n2 = Object.keys(picks).length; $("prcount").textContent = n2 ? n2 + " changed by you." : ""; }
+PC.forEach((r) => {
+  const box = el("div", "pr"); const id = r.m.replace(/[^A-Za-z0-9_\-.]/g, "_");
+  const top = el("div", "top"); top.append(el("span", "m", r.m), el("span", "t", P[r.m] ? P[r.m].t : ""));
+  if (r.tie) top.append(el("span", "chip warn", "tie"));
+  const opts = el("div", "opts"); const btns = [];
+  r.opts.forEach(([u, c, pgs]) => { const b = el("button", "act", money(u) + " US / " + money(c) + " CAN · p" + pgs.join(", p"));
+    b.type = "button"; b.dataset.k = u + "|" + c; btns.push(b); opts.append(b);
+    b.addEventListener("click", () => { picks[id] = { mpn: r.m, us_list: u, can_list: c, updatedAt: new Date().toISOString() };
+      paint(); prCount(); put("price_picks/" + id, () => picks[id], st); }); });
+  const st = el("p", "saved");
+  const paint = () => { const k = picks[id] ? picks[id].us_list + "|" + picks[id].can_list : r.pick[0] + "|" + r.pick[1];
+    btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === k))); };
+  box.paint = paint; paint(); box.append(top, opts, st); $("prices").append(box);
+});
+
 // ---- lookup
 const checks = {};
 const docId = (m) => m.replace(/[^A-Za-z0-9_\-.]/g, "_");
@@ -265,6 +296,8 @@ $("q").value = "013075"; run();
   if (!db) { document.querySelectorAll(".saved").forEach((s) => { s.textContent = "Answers can't be saved from this view."; s.className = "saved err"; }); return; }
   db.collection("answers").onSnapshot((snap) => { snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); });
     QUESTIONS.forEach((q) => $("box-" + q.id).paint()); qCount(); }, () => {});
+  db.collection("price_picks").onSnapshot((snap) => { snap.docs.forEach((d) => { picks[d.id] = Object.assign({}, d.data()); });
+    document.querySelectorAll(".pr").forEach((b) => b.paint()); prCount(); }, () => {});
   db.collection("data_checks").onSnapshot((snap) => { snap.docs.forEach((d) => { checks[d.id] = Object.assign({}, d.data()); }); ckCount();
     const card = document.querySelector(".card"); if (card && card.paint) card.paint(); }, () => {});
   db.doc("followups/general").onSnapshot((d) => { const v = d && d.exists ? d.data() : null;

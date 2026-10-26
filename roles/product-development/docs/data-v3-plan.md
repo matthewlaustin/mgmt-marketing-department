@@ -35,3 +35,14 @@ filtered and compared. A value the list doesn't cover is written with an `x_` ke
 5. `scripts/consolidate.py` loads it all into SQLite and Neon (`mfr_catalog`), with new tables
    `families`, `specs`, `prices`, `fitment`, `reference_tables`.
 6. Questions go to Matthew on an artifact page, grouped, never as a list in chat.
+
+## Decisions (Matthew, review page, 2026-10-26)
+- Discontinued numbers that the catalog maps to a current replacement are stored as `replaces` on the
+  ACTIVE replacement (chains followed to the active end). Discontinued SKUs themselves still get no data.
+- Pleatco "Pack #" is a case count (`case_pack`).
+- A lone digit under a Certifications column is that page's footnote mark (e.g. 1 = UL, 2 = NSF).
+- Weights printed without a unit are pounds.
+- Logos printed once per page go on the page's main products only.
+- A part printed at different list prices: use the price printed on the most pages (`product_prices`);
+  ties use the later page and are shown to Matthew to confirm. All page prices stay in `prices`.
+- Next: gather data for the web-only SKUs from pentair.com (manufacturer data only).

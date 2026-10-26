@@ -43,3 +43,13 @@ def test_normalize_spec():
     assert d3_load.normalize_spec({"attr": "x_backwash_valve_size", "value": 2})["attr"] == "backwash_valve_size"
     assert d3_load.normalize_spec({"attr": "x_description", "value": "x"}) is None
     assert d3_load.normalize_spec({"attr": "x_curve_key", "value": "A"})["attr"] == "x_curve_key"
+
+
+def test_current_price():
+    one = d3_load.current_price([(10.0, 12.0, "", 300)])
+    assert one[:2] == (10.0, 12.0) and one[3] == "single price"
+    common = d3_load.current_price([(53.69, 64.51, "", 307), (15.72, 18.89, "", 309), (15.72, 18.89, "", 311)])
+    assert common[:2] == (15.72, 18.89) and common[3].startswith("most common")
+    tie = d3_load.current_price([(1.0, 1.2, "", 300), (2.0, 2.4, "", 400)])
+    assert tie[:2] == (2.0, 2.4) and tie[3].startswith("tie")
+    assert d3_load.current_price([(None, None, "CALL", 5)])[2] == "CALL"

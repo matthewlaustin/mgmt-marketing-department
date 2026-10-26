@@ -38,6 +38,8 @@ endpoint. Get the connection string from the Neon console (never commit it).
 
     CREATE TABLE mfr_catalog.attributes (key text PRIMARY KEY, unit text, meaning text, controlled integer NOT NULL,
       spec_count integer NOT NULL);
+    CREATE TABLE mfr_catalog.product_prices (mpn text PRIMARY KEY, us_list numeric, can_list numeric,
+      price_note text, basis text NOT NULL, pages text NOT NULL);
     CREATE TABLE mfr_catalog.families (id text PRIMARY KEY, name text NOT NULL, brand text, parent text,
       category text, description text, features jsonb NOT NULL, notes jsonb NOT NULL, parts_pages jsonb NOT NULL, pages jsonb NOT NULL);
     CREATE TABLE mfr_catalog.product_families (mpn text NOT NULL, family_id text, role text NOT NULL,

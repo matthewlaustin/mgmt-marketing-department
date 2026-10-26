@@ -28,6 +28,10 @@ DROP TABLE IF EXISTS fitment;
 DROP TABLE IF EXISTS reference_tables;
 DROP TABLE IF EXISTS data_issues;
 DROP TABLE IF EXISTS attributes;
+DROP TABLE IF EXISTS product_prices;
+CREATE TABLE product_prices (
+    mpn TEXT PRIMARY KEY, us_list REAL, can_list REAL, price_note TEXT, basis TEXT NOT NULL, pages TEXT NOT NULL
+);
 CREATE TABLE attributes (
     key TEXT PRIMARY KEY, unit TEXT, meaning TEXT, controlled INTEGER NOT NULL, spec_count INTEGER NOT NULL
 );
@@ -96,6 +100,47 @@ ALIASES = {
 DROP = {"x_description", "x_band"}  # copies of the title / band text
 TURNOVER = re.compile(r"x_turnover(?:_capacity|_gal)?_(\d+)h")
 BOILERPLATE = re.compile(r"proposition 65|p65warnings|cancer and reproductive harm", re.I)
+
+
+def load_replacements(active: set[str]) -> list[tuple]:
+    """Discontinued number -> active replacement, from the phase-1 page reviews (Matthew 2026-10-26: store the
+    old number as `replaces` on the active SKU). Chains (PA12 -> PA225 -> ULTRA-D7) are followed to the active end."""
+    nxt, src = {}, {}
+    for f in sorted((ROOT / "data/work/pentair/reviews_final").glob("p*.json")):
+        r = json.loads(f.read_text())
+        for rec in r.get("records", []):
+            rb = (rec.get("replaced_by") or "").strip()
+            if rb and rec["mpn"] not in active and rec["mpn"] not in nxt:
+                nxt[rec["mpn"]] = rb
+                src[rec["mpn"]] = (r["page"], rec.get("source_row") or "")
+    out = []
+    for old, new in sorted(nxt.items()):
+        chain = [old, new]
+        while chain[-1] not in active and chain[-1] in nxt and len(chain) < 8 and nxt[chain[-1]] not in chain:
+            chain.append(nxt[chain[-1]])
+        if chain[-1] in active:
+            page, row = src[old]
+            raw = row + ("" if len(chain) == 2 else " (via " + " -> ".join(chain[1:-1]) + ")")
+            out.append((chain[-1], "replaces", old, None, None, raw, page))
+    return out
+
+
+def current_price(rows: list[tuple]) -> tuple:
+    """One price per SKU (Matthew 2026-10-26): the price printed on the most pages; ties go to the higher page count
+    then the latest page, and are marked so they can be reviewed."""
+    from collections import Counter
+    priced = [(u, c) for u, c, _, _ in rows if u is not None]
+    pages = ",".join(str(r[3]) for r in rows)
+    if not priced:
+        return (None, None, next((n for _, _, n, _ in rows if n), "CALL"), "no printed price", pages)
+    counts = Counter(priced)
+    top = max(counts.values())
+    best = [pc for pc in counts if counts[pc] == top]
+    if len(counts) == 1:
+        return (*priced[0], None, "single price", pages)
+    pick = best[0] if len(best) == 1 else max(best, key=lambda pc: max(r[3] for r in rows if (r[0], r[1]) == pc))
+    basis = "most common of " + str(len(counts)) + " printed prices" if len(best) == 1 else "tie; latest page used"
+    return (*pick, None, basis, pages)
 
 
 def normalize_spec(s: dict) -> dict | None:
@@ -185,6 +230,19 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
         con.execute("INSERT INTO families VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (f["id"], f["name"], f["brand"], f["parent"], f["category"], f["description"],
                      json.dumps(f["features"], ensure_ascii=False), json.dumps(f["notes"], ensure_ascii=False), json.dumps(f["parts_pages"]), json.dumps(sorted(f["pages"]))))
+    for row in load_replacements(active):
+        con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)", row)
+    certs = ROOT / "data/work/pentair/d3/cert_marks.json"
+    if certs.exists():  # Matthew 2026-10-26: lone digits under Certifications are the page's footnote marks
+        for c in json.loads(certs.read_text()):
+            if c["mpn"] in active:
+                con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)",
+                            (c["mpn"], "certification", c["certification"], None, None, c["raw"], c["page"]))
+    by_mpn = {}
+    for row in con.execute("SELECT mpn, us_list, can_list, price_note, pdf_page FROM prices ORDER BY mpn, pdf_page"):
+        by_mpn.setdefault(row[0], []).append(row[1:])
+    for m, rows in by_mpn.items():
+        con.execute("INSERT INTO product_prices VALUES (?,?,?,?,?,?)", (m, *current_price(rows)))
     # the catalog sometimes prints different list prices for one SKU on different pages
     for m, pages in con.execute("""SELECT mpn, group_concat(pdf_page || ': ' || us_list || ' / ' || can_list, '; ')
                                    FROM prices WHERE us_list IS NOT NULL GROUP BY mpn
@@ -202,7 +260,7 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
         con.execute("INSERT INTO attributes VALUES (?,?,?,?,?)", (k, unit, meaning, int(k in controlled), used.get(k, 0)))
     con.commit()
     counts = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0]
-              for t in ("attributes", "families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}
+              for t in ("attributes", "product_prices", "families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}
     counts["dropped_not_active"] = dropped
     return counts
 

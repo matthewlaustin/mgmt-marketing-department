@@ -51,7 +51,14 @@ stats = {
     "price_conflicts": q("SELECT count(*) FROM data_issues WHERE batch = 'price_check'"),
     "web_only": q("SELECT count(*) FROM products WHERE status = 'active' AND pages = '0'"),
 }
-out = {"P": P, "F": fams, "S": stats}
+PC = []
+for mpn, us, can, basis in con.execute(
+        "SELECT mpn, us_list, can_list, basis FROM product_prices WHERE basis LIKE 'most common%' OR basis LIKE 'tie%' ORDER BY basis DESC, mpn"):
+    opts = {}
+    for u, c, pg in con.execute("SELECT us_list, can_list, pdf_page FROM prices WHERE mpn = ? AND us_list IS NOT NULL ORDER BY pdf_page", (mpn,)):
+        opts.setdefault((u, c), []).append(pg)
+    PC.append({"m": mpn, "tie": basis.startswith("tie"), "pick": [us, can], "opts": [[u, c, pgs] for (u, c), pgs in opts.items()]})
+out = {"P": P, "F": fams, "S": stats, "PC": PC}
 page = (ROOT / "scripts/product_data_template.html").read_text().replace(
     "/*DATA*/", json.dumps(out, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
 (ROOT / "reports/product-data.html").write_text(page)
