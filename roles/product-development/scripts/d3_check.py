@@ -1,4 +1,4 @@
-"""Validate a phase-3 extraction batch: python3 scripts/d3_check.py dNNN"""
+"""Validate a phase-3 extraction batch: python3 scripts/d3_check.py dNNN [out_dir]"""
 
 from __future__ import annotations
 
@@ -21,12 +21,12 @@ def attr_keys() -> dict[str, str]:
     return keys
 
 
-def check(batch: str) -> list[str]:
+def check(batch: str, out_dir: str = "out") -> list[str]:
     src = json.loads((D3 / f"batches/{batch}.json").read_text())
     pages = {p["page"] for p in src["pages"]}
     skus = {s["mpn"] for p in src["pages"] for s in p["skus"] if not s.get("excluded")}
     excluded = {s["mpn"] for p in src["pages"] for s in p["skus"] if s.get("excluded")}
-    out = json.loads((D3 / f"out/{batch}.json").read_text())
+    out = json.loads((D3 / out_dir / f"{batch}.json").read_text())
     keys, errs = attr_keys(), []
 
     def page_ok(where: str, rec: dict) -> None:
@@ -81,6 +81,6 @@ def check(batch: str) -> list[str]:
 
 
 if __name__ == "__main__":
-    errors = check(sys.argv[1])
+    errors = check(sys.argv[1], *sys.argv[2:3])
     print("\n".join(errors) if errors else "OK")
     sys.exit(1 if errors else 0)
