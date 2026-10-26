@@ -32,7 +32,7 @@ def norm(s: str) -> str:
 
 def grade(w, h) -> str:
     w, h = w or 0, h or 0
-    return "ok" if min(w, h) >= 1000 else "long" if max(w, h) >= 1000 else "small"
+    return "ok" if min(w, h) >= 1000 else "long" if max(w, h) >= 1000 else "mid" if max(w, h) >= 500 else "small"
 
 
 def manufacturer(con) -> dict[str, list[dict]]:

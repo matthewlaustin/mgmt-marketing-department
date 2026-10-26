@@ -72,7 +72,7 @@ def wanted(cands: dict) -> list[str]:
         if not r["needs_outside"]:
             continue
         for c in r["stores"] + r["manufacturer"]:
-            if c.get("image_url") and c.get("grade") in ("ok", "long") and not c.get("file"):
+            if c.get("image_url") and c.get("grade") in ("ok", "long", "mid") and not c.get("file"):
                 urls.append(c["image_url"])
     return sorted(set(urls))
 
@@ -141,7 +141,7 @@ def choose() -> int:
             why["manufacturer"] += 1
             continue
         pool = []
-        for c in r["stores"] + web.get(m, []) + [c for c in r["manufacturer"] if c["grade"] in ("ok", "long")]:
+        for c in r["stores"] + web.get(m, []) + [c for c in r["manufacturer"] if c["grade"] in ("ok", "long", "mid")]:
             h = hashes.get(c.get("image_url") or "")
             if not h or "dhash" not in h or c["image_url"] in rejected or c["source"] in EXCLUDE_SOURCES:
                 continue
@@ -152,7 +152,8 @@ def choose() -> int:
             if (c["source"], h["dhash"]) in placeholder:
                 why["placeholder dropped"] += 1
                 continue
-            g = "ok" if min(h["width"], h["height"]) >= 1000 else "long" if max(h["width"], h["height"]) >= 1000 else "small"
+            g = ("ok" if min(h["width"], h["height"]) >= 1000 else "long" if max(h["width"], h["height"]) >= 1000
+                 else "mid" if max(h["width"], h["height"]) >= 500 else "small")  # mid: Matthew 2026-10-26, "take the cutoff down to 500 px"
             if g == "small":
                 continue
             pool.append(dict(c, width=h["width"], height=h["height"], grade=g, dhash=h["dhash"], file=c.get("file") or h["file"]))
@@ -161,12 +162,15 @@ def choose() -> int:
         for c in pool:  # independent sites showing the same picture
             c["sites"] = sorted({d["source"] for d in pool if ham(d["dhash"], c["dhash"]) <= 6})
         # Matthew's order: Pentair, then Pool Geek's own store, then a picture several sites share, then one site
-        best = min(pool, key=lambda c: (c["grade"] != "ok", c["source"] != "pentair.com", SITE_PREF.get(c["source"], 1), -len(c["sites"]), -(c["width"] * c["height"])))
+        rank = {"ok": 0, "long": 1, "mid": 2}
+        best = min(pool, key=lambda c: (rank[c["grade"]], c["source"] != "pentair.com", SITE_PREF.get(c["source"], 1), -len(c["sites"]), -(c["width"] * c["height"])))
         best = {k: v for k, v in best.items() if k != "dhash"}
         best["tier"] = ("pentair (long side)" if best["source"] == "pentair.com" else "pool geek" if best["source"] == "www.poolgeek.com" else
                         "multi-site" if len(best["sites"]) >= 2 else "single site")
-        if best["grade"] != "ok":
+        if best["grade"] == "long":
             best["tier"] += ", below 1000x1000"
+        elif best["grade"] == "mid":
+            best["tier"] += ", 500-999 px"
         out[m] = best
         why[best["tier"]] += 1
     CHOSEN.write_text(json.dumps(out, indent=1))

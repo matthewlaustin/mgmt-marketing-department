@@ -5,7 +5,9 @@
 One row per SKU (Matthew 2026-10-26: one good image per product for the first run). A photo is approved when it
 is at least 1000 x 1000 and either Pentair's own or passed the visual review (scripts/photo_review.py). A reviewed
 photo whose long side is 1000+ but short side is not is centred on a white square as wide as its long side
-(Matthew 2026-10-26: "Pad them to a square"); nothing is enlarged. Padded copies: data/raw/photos/padded/. Columns:
+(Matthew 2026-10-26: "Pad them to a square"); nothing is enlarged. When no 1000 px photo exists, a reviewed photo
+whose long side is 500-999 px is used the same way, marked "(500-999 px)" in its tier (Matthew: "take the cutoff
+down to 500 px"). Padded copies: data/raw/photos/padded/. Columns:
 tier (manufacturer / pool geek / multi-site / single site), source (site), page_url (the listing it came from),
 image_url (as found), sites (JSON list of sites showing the same picture), match (how the listing was tied to the
 SKU), width, height, object_key and public_url (our copy in R2).
@@ -60,12 +62,15 @@ def main() -> int:
     rows = []
     PAD.mkdir(parents=True, exist_ok=True)
     for m, c in sorted(chosen.items()):
-        if c.get("grade") not in ("ok", "long"):
+        if c.get("grade") not in ("ok", "long", "mid"):
             continue
-        if c.get("grade") == "long":
+        if c.get("grade") in ("long", "mid"):
             if reviewed.get(c["image_url"]) != "pass" or not c.get("file"):
                 continue
-            c = dict(c, **pad(ROOT / c["file"]), tier=c["tier"].replace(", below 1000x1000", "") + " (padded)")
+            base = c["tier"].replace(", below 1000x1000", "").replace(", 500-999 px", "")
+            square = c["width"] == c["height"]
+            tier = base + (" (500-999 px)" if c["grade"] == "mid" else "") + ("" if square else " (padded)")
+            c = dict(c, **(pad(ROOT / c["file"]) if not square else {}), tier=tier)
         if c["tier"] != "manufacturer" and reviewed.get(c["image_url"]) != "pass":
             continue
         if not c.get("file") or not (ROOT / c["file"]).exists():

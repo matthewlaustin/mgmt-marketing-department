@@ -157,7 +157,8 @@ def main(files: list[str]) -> int:
                         hashes[u] = h
                     except Exception:  # noqa: BLE001
                         continue
-                g = "ok" if min(h["width"], h["height"]) >= 1000 else "long" if max(h["width"], h["height"]) >= 1000 else "small"
+                g = ("ok" if min(h["width"], h["height"]) >= 1000 else "long" if max(h["width"], h["height"]) >= 1000
+                     else "mid" if max(h["width"], h["height"]) >= 500 else "small")
                 out.setdefault(m, []).append({"source": host.removeprefix("www."), "page_url": page_url, "image_url": u, "width": h["width"],
                                               "height": h["height"], "grade": g, "match": "web page names the part number"})
                 break  # the page's main image is enough

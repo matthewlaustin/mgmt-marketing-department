@@ -9,6 +9,8 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
   be at least 1000 x 1000, carry no watermark, and show the SKU itself. Prefer an image found on several
   independent sites; a single source is acceptable when that is all there is. Keep each photo's source URLs.
   One good image per SKU for the first run. Product data (titles, specs, prices) stays manufacturer-only.
+  Amended 2026-10-26 (Matthew): when no 1000 px photo exists, accept 500 px (long side), padded square, never
+  enlarged; such photos are marked so they can be replaced later.
 - Every SKU keeps evidence: the URL (or PDF + page) and the raw text it came from.
 - Crawl politely: obey robots.txt, ~1 request/second, cache downloads under `data/raw/`
   (gitignored), don't re-download what's cached.
