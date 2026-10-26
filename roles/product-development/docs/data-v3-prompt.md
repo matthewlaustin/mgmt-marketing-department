@@ -7,6 +7,9 @@ anything they would otherwise use the catalog for. Repo: /home/user/product-name
 Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch file
 `data/work/pentair/d3/batches/{BATCH}.json`. Write `data/work/pentair/d3/out/{BATCH}.json`, then run
 `python3 scripts/d3_check.py {BATCH}` and fix every error it reports. Don't commit.
+Other agents run at the same time: keep any helper scripts or scratch files in your own folder
+`/tmp/claude-0/-home-user-product-namer/28224544-019c-5471-b0e0-39374ec9eedf/scratchpad/d3_{BATCH}/`,
+never a shared name like `gen.py` in the scratchpad root.
 
 ## Rules
 - **Manufacturer data only, nothing guessed.** Every record cites its `page`. If you can't read a
