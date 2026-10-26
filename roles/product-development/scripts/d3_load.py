@@ -186,7 +186,7 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
     con.executescript(SCHEMA)
     fams: dict[str, dict] = {}
     dropped = 0
-    for path in sorted(out_dir.glob("d*.json")):
+    for path in sorted(list(out_dir.glob("d*.json")) + list(out_dir.glob("w*.json"))):
         d = json.loads(path.read_text())
         batch = d.get("batch", path.stem)
         for f in d.get("families", []):
