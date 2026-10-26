@@ -54,6 +54,9 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
   the description as a spec; the band text goes in `band` on the product, not a spec.
 - Dimension drawings whose numbers aren't labelled: one `chart` reference with a summary, no table.
 - Blank price cells: `"price_note": "blank"`.
+- **Family ids are shared across batches.** Before inventing one, list existing ids with
+  `grep -ho '"id": "[^"]*"' data/work/pentair/d3/out/*.json | sort -u` and reuse the id when it is
+  the same product line (a parts page for IntelliFlo3 uses the whole-goods page's id when it fits).
 - Check `docs/data-v3-attributes.md` before inventing an x_ key (hhp, case_pack, media_weight,
   upgrade, options, min/max_speed exist).
 
