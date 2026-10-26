@@ -27,6 +27,10 @@ DROP TABLE IF EXISTS prices;
 DROP TABLE IF EXISTS fitment;
 DROP TABLE IF EXISTS reference_tables;
 DROP TABLE IF EXISTS data_issues;
+DROP TABLE IF EXISTS attributes;
+CREATE TABLE attributes (
+    key TEXT PRIMARY KEY, unit TEXT, meaning TEXT, controlled INTEGER NOT NULL, spec_count INTEGER NOT NULL
+);
 CREATE TABLE families (
     id TEXT PRIMARY KEY, name TEXT NOT NULL, brand TEXT, parent TEXT, category TEXT,
     description TEXT, features TEXT NOT NULL, notes TEXT NOT NULL, parts_pages TEXT NOT NULL, pages TEXT NOT NULL
@@ -71,6 +75,43 @@ def num(v):
     return None
 
 
+# x_ keys agents invented that mean a controlled key (or one canonical x_ key)
+ALIASES = {
+    "x_backwash_valve": "backwash_valve_size", "x_backwash_valve_size": "backwash_valve_size",
+    "x_operating_weight": "operating_weight", "x_tank_count": "tank_count", "x_max_water_temp": "max_water_temp",
+    "x_de_required": "de_required", "x_breaker_size": "breaker_size", "x_thermal_efficiency": "thermal_efficiency",
+    "x_heat_exchanger_material": "heat_exchanger_material", "x_gas_line_size": "gas_line_size", "x_hhp": "hhp",
+    "x_min_speed_rpm": "min_speed", "x_max_speed_rpm": "max_speed", "x_conductors": "conductors",
+    "x_wire_count": "conductors", "x_option": "options", "x_carton_weight": "weight", "x_wt": "weight",
+    "x_application": "pool_type", "x_program": "program", "x_media_weight": "media_weight",
+    "x_ultra_replacement": "upgrade", "x_nsf_flow_gpm_per_sqft": "flow_per_sqft",
+    "x_flow_rated_per_sqft": "flow_per_sqft",
+    "x_epa_registration": "x_epa_number", "x_doe_dppp": "x_doe_dedicated_purpose_pool_pump",
+    "x_flow_30_mj_cm2": "x_flow_30mj", "x_flow_40_mj_cm2": "x_flow_40mj", "x_flow_60_mj_cm2": "x_flow_60mj",
+    "x_a_dim": "x_dim_a", "x_b_dim": "x_dim_b", "x_inside_diameter": "x_inner_diameter",
+    "x_scale_unit": "x_scale_units", "x_language": "x_languages", "x_features": "x_feature",
+    "x_compatible_with": "x_compatibility", "x_tablet_capacity_lb": "x_tablet_capacity",
+    "x_nozzle_sizes": "x_nozzle_size",
+}
+DROP = {"x_description", "x_band"}  # copies of the title / band text
+TURNOVER = re.compile(r"x_turnover(?:_capacity|_gal)?_(\d+)h")
+BOILERPLATE = re.compile(r"proposition 65|p65warnings|cancer and reproductive harm", re.I)
+
+
+def normalize_spec(s: dict) -> dict | None:
+    """Map an extracted spec onto the controlled list; None drops it."""
+    attr = s.get("attr", "")
+    if attr in DROP:
+        return None
+    m = TURNOVER.fullmatch(attr)
+    if m:
+        v = s.get("value")
+        n = num(v.replace(",", "")) if isinstance(v, str) else num(v)
+        gal = int(n) if n is not None and n == int(n) else (n if n is not None else v)
+        return dict(s, attr="turnover_capacity", value={"hours": int(m.group(1)), "gallons": gal}, unit="gal")
+    return dict(s, attr=ALIASES.get(attr, attr))
+
+
 def text(v) -> str:
     return v if isinstance(v, str) else json.dumps(v, ensure_ascii=False)
 
@@ -83,12 +124,13 @@ def merge_family(fams: dict, f: dict) -> None:
     if cur is None:
         fams[fid] = {"id": fid, "name": f["name"], "brand": f.get("brand"), "parent": f.get("parent"),
                      "category": f.get("category"), "description": f.get("description"),
-                     "features": list(f.get("features") or []), "notes": list(f.get("notes") or []), "parts_pages": parts, "pages": [f["page"]]}
+                     "features": list(f.get("features") or []),
+                     "notes": [x for x in f.get("notes") or [] if not BOILERPLATE.search(x)], "parts_pages": parts, "pages": [f["page"]]}
         return
     for k in ("brand", "parent", "category", "description"):
         cur[k] = cur[k] or f.get(k)
     cur["features"] += [x for x in f.get("features") or [] if x not in cur["features"]]
-    cur["notes"] += [x for x in f.get("notes") or [] if x not in cur["notes"]]
+    cur["notes"] += [x for x in f.get("notes") or [] if x not in cur["notes"] and not BOILERPLATE.search(x)]
     cur["parts_pages"] += [p for p in parts if p not in cur["parts_pages"]]
     if f["page"] not in cur["pages"]:
         cur["pages"].append(f["page"])
@@ -112,7 +154,12 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
             fam = p.get("family")
             for fid in as_list(fam) or [None]:
                 con.execute("INSERT INTO product_families VALUES (?,?,?,?,?)", (m, fid, p["role"], p.get("band"), pg))
-            for s in p.get("specs", []):
+            seen = set()
+            for s in filter(None, map(normalize_spec, p.get("specs", []))):
+                key = (s["attr"], text(s["value"]))
+                if key in seen:
+                    continue
+                seen.add(key)
                 con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)",
                             (m, s["attr"], text(s["value"]), num(s["value"]), s.get("unit"), s.get("raw"), pg))
             pr = p.get("prices") or {}
@@ -138,9 +185,18 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
         con.execute("INSERT INTO families VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (f["id"], f["name"], f["brand"], f["parent"], f["category"], f["description"],
                      json.dumps(f["features"], ensure_ascii=False), json.dumps(f["notes"], ensure_ascii=False), json.dumps(f["parts_pages"]), json.dumps(sorted(f["pages"]))))
+    controlled = {}
+    for line in (ROOT / "docs/data-v3-attributes.md").read_text().splitlines():
+        m = re.match(r"\| ([a-z_0-9]+) \| ([^|]*) \|([^|]*)\|", line)
+        if m and m.group(1) != "key":
+            controlled[m.group(1)] = (m.group(2).strip().replace("—", "") or None, m.group(3).strip() or None)
+    used = dict(con.execute("SELECT attr, count(*) FROM specs GROUP BY attr"))
+    for k in sorted(set(controlled) | set(used)):
+        unit, meaning = controlled.get(k, (None, None))
+        con.execute("INSERT INTO attributes VALUES (?,?,?,?,?)", (k, unit, meaning, int(k in controlled), used.get(k, 0)))
     con.commit()
     counts = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0]
-              for t in ("families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}
+              for t in ("attributes", "families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}
     counts["dropped_not_active"] = dropped
     return counts
 

@@ -34,3 +34,12 @@ def test_load_merges_families_and_drops_inactive(tmp_path):
     assert con.execute("SELECT value_num FROM specs WHERE attr='port_size'").fetchone() == (None,)
     assert con.execute("SELECT family_ids, item, qty FROM fitment").fetchone() == ('["fam", "fam2"]', "7", 2.0)
     assert counts["prices"] == 1 and counts["reference_tables"] == 1 and counts["data_issues"] == 1
+
+
+def test_normalize_spec():
+    t = d3_load.normalize_spec({"attr": "x_turnover_capacity_8h", "value": "21,000", "raw": "21,000"})
+    assert t["attr"] == "turnover_capacity" and t["value"] == {"hours": 8, "gallons": 21000}
+    assert d3_load.normalize_spec({"attr": "x_turnover_gal_12h", "value": 30000})["value"]["hours"] == 12
+    assert d3_load.normalize_spec({"attr": "x_backwash_valve_size", "value": 2})["attr"] == "backwash_valve_size"
+    assert d3_load.normalize_spec({"attr": "x_description", "value": "x"}) is None
+    assert d3_load.normalize_spec({"attr": "x_curve_key", "value": "A"})["attr"] == "x_curve_key"

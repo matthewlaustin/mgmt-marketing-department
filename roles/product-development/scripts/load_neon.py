@@ -25,7 +25,7 @@ DB = ROOT / "data/catalog.db"
 EXCLUDED = ROOT / "data/work/pentair/excluded_mpns.json"
 BATCH = 1000
 # phase-3 tables (scripts/d3_load.py); these columns hold JSON text in SQLite and jsonb in Neon
-D3_TABLES = {"families": ("features", "notes", "parts_pages", "pages"), "product_families": (), "specs": (),
+D3_TABLES = {"attributes": (), "families": ("features", "notes", "parts_pages", "pages"), "product_families": (), "specs": (),
              "prices": (), "fitment": ("family_ids", "models", "mpns"),
              "reference_tables": ("family_ids", "columns", "rows"), "data_issues": ()}
 
