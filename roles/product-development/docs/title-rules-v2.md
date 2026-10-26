@@ -391,7 +391,7 @@ All interim calls below are accepted, except where this section changes them.
 ## Pump horsepower [Matthew, spot check 2026-10-26]
 - **Pump titles carry THP (total horsepower), not rated HP**: "THP is what people shop for with
   pumps. They will confirm voltage as a function of that." Use the THP column the ordering table
-  prints, written "N THP" in the HP's place ("IntelliPro3® VSF 3.95 THP …").
+  prints, written "N THP" in the HP's place ("IntelliPro3® VSF 3 THP Variable Speed and Flow Pool Pump").
 - **No voltage on pump titles**, unless two pumps of one family would otherwise share a title
   (same THP, different voltage); then the voltage stays.
   Where a pump row prints no rated HP (N/A), its THP still goes in. Where no THP is printed, keep
