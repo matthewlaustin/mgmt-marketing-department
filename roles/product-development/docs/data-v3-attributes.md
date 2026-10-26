@@ -103,6 +103,7 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | options | — | factory options that set this SKU apart from its siblings (relay board, touchscreen) |
 | contents | — | what a kit includes (text) |
 | certification | — | UL, NSF, ETL, CSA… as printed |
+| program | — | dealer program mark shown for the item/family (TradeGrade, Energy Star) |
 | warranty | — | as printed |
 | replaces | — | older number this SKU replaces |
 | replaced_by | — | newer number that replaces this SKU |
