@@ -135,3 +135,8 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   picture (perceptual hash) for content problems; watermark rejections block only unreviewed copies. Result:
   3,199 SKUs with an approved photo (149 padded), all in R2 and Neon; 1,526 without. New question p4 on the
   photos page: keep searching, ask Pentair for its dealer image library, photograph in-house, or stop.
+- Matthew (2026-10-26 22:10, p4): "Keep searching anyway", note "Take the cutoff down to 500 px". Applied as: a
+  1000 px photo still wins; otherwise a reviewed photo whose long side is 500-999 px, padded square, never enlarged,
+  tier marked "(500-999 px)". Search batches r2_006-011 run (~180 searches). Reviewed 581 + replacements: 116
+  rejected (mostly a "(c) APC" mark carried by an image supplier across many stores; rulers in O-ring photos pass).
+  Result: 3,540 SKUs with a photo (336 at 500-999 px, 330 padded), 1,185 without; 43 search batches remain.

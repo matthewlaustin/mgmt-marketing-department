@@ -102,7 +102,7 @@ function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.
 [[S.with_photo, "of " + n(S.skus) + " active SKUs have an approved photo"], [S.pentair, "from Pentair's own images"], [S.poolgeek, "from poolgeek.com"],
  [S.multi, "from other stores, same picture on 2+ sites"], [S.single, "from other stores, one site only"]]
  .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
-$("covnote").textContent = n(S.padded) + " of these are near-miss photos centred on a white square (question 2). Still without a photo: " + S.missing.map(([k, v]) => n(v) + " " + k).join("; ") + ".";
+$("covnote").textContent = n(S.small500) + " of these are 500-999 px photos, used only where nothing at 1000 px exists (your answer to question 4), and " + n(S.padded) + " are centred on a white square because they were not square. Still without a photo: " + S.missing.map(([k, v]) => n(v) + " " + k).join("; ") + ".";
 DATA.SRC.forEach(([s, c, note]) => { const tr = el("tr"); tr.append(el("td", null, s), el("td", "n", n(c)), el("td", null, note)); $("srcs").tBodies[0].append(tr); });
 $("exnote").textContent = "Not used: " + DATA.EX.map(([s, why]) => s + " (" + why + ")").join("; ") + ". Pool360 blocks automated access. Six other stores' robots.txt forbids it.";
 
