@@ -146,7 +146,8 @@ KEYS.forEach((m) => P[m].x.forEach(([fl]) => fl.forEach((fi) => { (FP[fi] = FP[f
 [[S.with_data, "of " + n(S.active) + " SKUs have data"], [S.specs, "specs"], [S.priced, "SKUs with list prices"],
  [S.fitment, "fitment records (" + n(S.parts_fitted) + " parts)"], [S.families, "product lines"], [S.tables, "reference tables and charts"]]
   .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
-$("sumnote").textContent = "Every SKU printed in the catalog has data. The " + n(S.web_only) + " without any came from pentair.com only, so the catalog has nothing on them. "
+$("sumnote").textContent = "The " + n(S.web_only) + " SKUs that only pentair.com lists now have data from their Pentair product pages (page \"web\" below). "
+  + (S.no_data ? n(S.no_data) + " SKU still has none: Pentair prints no description for it anywhere. " : "")
   + "Agents also logged " + n(S.issues) + " small catalog problems (misprints, footnotes with no mark, " + S.price_conflicts + " parts printed at two different prices). They're stored with the data; you don't need to read them.";
 
 const QUESTIONS = [
@@ -240,6 +241,7 @@ function fmtVal(v, unit) {
 }
 function table(rows) { const w = el("div", "tbl"), t = el("table"); rows.forEach((r) => t.append(r)); w.append(t); return w; }
 function tr(cells) { const r = el("tr"); cells.forEach(([c, t]) => r.append(el("td", c, t))); return r; }
+const pgl = (pg) => pg ? "p" + pg : "web";
 function money(v) { return v == null ? "" : "$" + Number(v).toFixed(2); }
 
 function showSku(mpn) {
@@ -248,16 +250,16 @@ function showSku(mpn) {
   c.append(el("div", "mpn", mpn), el("div", "title", d.t));
   const meta = el("div", "meta"); meta.append(el("span", "chip", d.b)); if (d.r) meta.append(el("span", "chip", d.r));
   d.f.forEach((fi) => meta.append(el("span", "chip", F[fi][1]))); c.append(meta);
-  if (!d.s.length && !d.p.length && !d.x.length) c.append(el("p", "empty", "No catalog data. This SKU came from pentair.com only."));
+  if (!d.s.length && !d.p.length && !d.x.length) c.append(el("p", "empty", "Pentair prints no data for this SKU."));
   if (d.p.length) { c.append(el("h3", null, "List price"));
-    c.append(table(d.p.map(([u, ca, note, pg]) => tr([["num", u != null ? money(u) + " US" : ""], ["num", ca != null ? money(ca) + " CAN" : ""], ["", note], ["pg", "p" + pg]])))); }
+    c.append(table(d.p.map(([u, ca, note, pg]) => tr([["num", u != null ? money(u) + " US" : ""], ["num", ca != null ? money(ca) + " CAN" : ""], ["", note], ["pg", pgl(pg)]])))); }
   if (d.s.length) { c.append(el("h3", null, "Specs"));
-    c.append(table(d.s.map(([a, v, u, pg]) => tr([["k", label(a)], ["", fmtVal(v, u)], ["pg", "p" + pg]])))); }
+    c.append(table(d.s.map(([a, v, u, pg]) => tr([["k", label(a)], ["", fmtVal(v, u)], ["pg", pgl(pg)]])))); }
   if (d.x.length) { c.append(el("h3", null, "Fits"));
     c.append(table(d.x.map(([fl, models, item, qty, cond, pg]) => {
       const what = fl.map((fi) => F[fi][1]).concat(models).filter((v, i, a) => v && a.indexOf(v) === i).join("; ");
       const extra = [item && "item " + item, qty && "qty " + qty, cond].filter(Boolean).join(" · ");
-      return tr([["k", what], ["", extra], ["pg", "p" + pg]]); }))); }
+      return tr([["k", what], ["", extra], ["pg", pgl(pg)]]); }))); }
   const parts = new Set(); d.f.forEach((fi) => (FP[fi] || []).forEach((m) => m !== mpn && parts.add(m)));
   if (parts.size && d.r === "model") { c.append(el("h3", null, "Parts listed for this product line (" + parts.size + ")"));
     const lst = el("div", "list"); [...parts].sort().slice(0, 60).forEach((m) => lst.append(hit(m))); c.append(lst); }

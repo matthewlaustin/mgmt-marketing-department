@@ -50,6 +50,8 @@ stats = {
     "issues": q("SELECT count(*) FROM data_issues"),
     "price_conflicts": q("SELECT count(*) FROM data_issues WHERE batch = 'price_check'"),
     "web_only": q("SELECT count(*) FROM products WHERE status = 'active' AND pages = '0'"),
+    "no_data": q("""SELECT count(*) FROM products WHERE status = 'active' AND mpn NOT IN (SELECT mpn FROM product_families)
+                    AND mpn NOT IN (SELECT part_mpn FROM fitment)"""),
 }
 PC = []
 for mpn, us, can, basis in con.execute(
