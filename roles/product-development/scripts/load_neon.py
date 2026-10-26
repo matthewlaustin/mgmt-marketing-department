@@ -27,7 +27,8 @@ BATCH = 1000
 # phase-3 tables (scripts/d3_load.py); these columns hold JSON text in SQLite and jsonb in Neon
 D3_TABLES = {"attributes": (), "product_prices": (), "families": ("features", "notes", "parts_pages", "pages"), "product_families": (), "specs": (),
              "prices": (), "fitment": ("family_ids", "models", "mpns"),
-             "reference_tables": ("family_ids", "columns", "rows"), "data_issues": ()}
+             "reference_tables": ("family_ids", "columns", "rows"), "data_issues": (),
+             "documents": (), "document_links": (), "images": (), "image_links": ()}
 
 
 def post(url: str, body: dict) -> dict:
