@@ -58,3 +58,15 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   `d3/family_links.json`, each with page evidence), `model_parts` (every product–part pair the catalog supports,
   found by walking the family links; 983 of 1,171 whole-goods SKUs reach their parts)
 - parts lists for lines no longer in the catalog (dated headings, legacy pumps/cleaners) stay unlinked on purpose
+
+## Media review (Matthew, 2026-10-26)
+- Documents: keep our own copies of every PDF (all languages) in data/raw/pentair/docs/ (gitignored); the
+  `documents` table keeps Pentair's URL and the local file.
+- Photos: the line's main pentair.com image is the primary photo of every SKU in the line; gallery images are
+  extra views. Parts use the catalog's exploded diagram as their picture for now ("we need to expand our web
+  search for pictures" - manufacturer sources only, per the working rules).
+- Discontinued lines whose parts are still sold: attach their manuals, parts sheets and photos to the parts
+  lists; build product pages for them when data exists (rule amended in CLAUDE.md). Catalog-active SKUs on
+  pentair.com pages marked Discontinued are discontinued (owner_decisions.json).
+- Next: add the SKUs that current pentair.com pages list but the catalog never printed (88), then the
+  discontinued-with-parts lines, with titles under docs/title-rules-v2.md.

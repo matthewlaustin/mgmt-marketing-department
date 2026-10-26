@@ -26,7 +26,8 @@ DROP TABLE IF EXISTS documents;
 DROP TABLE IF EXISTS document_links;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS image_links;
-CREATE TABLE documents (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, title TEXT NOT NULL, kind TEXT NOT NULL, lang TEXT NOT NULL);
+CREATE TABLE documents (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, title TEXT NOT NULL, kind TEXT NOT NULL, lang TEXT NOT NULL,
+    local_file TEXT, bytes INTEGER);
 CREATE TABLE document_links (document_id INTEGER NOT NULL, family_id TEXT, mpn TEXT, page_url TEXT NOT NULL, via TEXT NOT NULL);
 CREATE TABLE images (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, alt TEXT, role TEXT NOT NULL, local_file TEXT,
     width INTEGER, height INTEGER, bytes INTEGER);
@@ -39,6 +40,32 @@ def image_path(url: str) -> Path:
     sys.path.insert(0, str(ROOT / "scripts"))
     from web_media_fetch import image_path as ip
     return ip(url)
+
+
+def doc_path(url: str) -> Path:
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from web_media_fetch import doc_path as dp
+    return dp(url)
+
+
+def load_diagrams(con: sqlite3.Connection, active: set[str]) -> int:
+    """Matthew 2026-10-26: for now a part's picture is the exploded diagram of the parts list it is on."""
+    meta_file = ROOT / "data/work/pentair/d3/diagrams.json"
+    if not meta_file.exists():
+        return 0
+    meta = {int(k): v for k, v in json.loads(meta_file.read_text()).items()}
+    n = 0
+    for page, m in sorted(meta.items()):
+        cur = con.execute("INSERT INTO images (url, alt, role, local_file, width, height, bytes) VALUES (?,?,?,?,?,?,?)",
+                          (f"catalog://pentair-2025-2026/p{page:03d}/diagram", f"Exploded parts diagram, catalog page {page - 2}", "diagram",
+                           m["file"], m["width"], m["height"], m["bytes"]))
+        iid = cur.lastrowid
+        for (part,) in con.execute("SELECT DISTINCT part_mpn FROM fitment WHERE pdf_page = ?", (page,)).fetchall():
+            if part in active:
+                con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (iid, None, part, f"catalog p{page}", "catalog exploded diagram of the part's list"))
+                n += 1
+    return n
 
 
 def load(con: sqlite3.Connection) -> dict[str, int]:
@@ -58,24 +85,33 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
     for p in pages:
         if "/products/" not in p["url"] and "/pleatco/resources" not in p["url"]:
             continue
-        if p.get("discontinued"):  # CLAUDE.md: nothing from a line the manufacturer lists as discontinued
-            continue
+        discontinued = bool(p.get("discontinued"))
         # targets this page speaks for
         targets = []  # (family_id, mpn, via)
         skus = [m for m in p["skus"] if m in active]
         fams_from_skus = {f for m in skus for f in fam_of[m]}
         targets += [(f, None, "SKUs printed on the page") for f in sorted(fams_from_skus)]
         targets += [(None, m, "SKU printed on the page") for m in skus]
-        for f in mapping.get(p["url"], {}).get("family_ids", []):
+        m_entry = mapping.get(p["url"], {})
+        for f in m_entry.get("family_ids", []):
             if f in fam_ids and f not in fams_from_skus:
                 targets.append((f, None, "page name matches the product line"))
+        if discontinued:
+            # Matthew 2026-10-26: a discontinued line's manuals, parts sheets and photos belong on the parts lists we still sell
+            for f in m_entry.get("would_map_to", []):
+                if f in fam_ids and all(f != t[0] for t in targets):
+                    targets.append((f, None, "discontinued line; attached to its parts list"))
+            targets = [(f, m, "discontinued line; " + via if not via.startswith("discontinued") else via) for f, m, via in targets]
         if not targets:
             continue
         for d in p["documents"]:
             if d["kind"] == "form":
                 continue
             if d["url"] not in doc_id:
-                cur = con.execute("INSERT INTO documents (url, title, kind, lang) VALUES (?,?,?,?)", (d["url"], d["title"], d["kind"], d["lang"]))
+                local = doc_path(d["url"])
+                cur = con.execute("INSERT INTO documents (url, title, kind, lang, local_file, bytes) VALUES (?,?,?,?,?,?)",
+                                  (d["url"], d["title"], d["kind"], d["lang"],
+                                   str(local.relative_to(ROOT)) if local.exists() else None, local.stat().st_size if local.exists() else None))
                 doc_id[d["url"]] = cur.lastrowid
             for f, m, via in targets:
                 con.execute("INSERT INTO document_links VALUES (?,?,?,?,?)", (doc_id[d["url"]], f, m, p["url"], via))
@@ -101,11 +137,14 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
                 continue
             for f, m, via in targets:
                 con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (img_id[i["url"]], f, m, p["url"], via))
+    load_diagrams(con, active)
     con.commit()
     out = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in ("documents", "document_links", "images", "image_links")}
     out["families_with_docs"] = con.execute("SELECT count(DISTINCT family_id) FROM document_links WHERE family_id IS NOT NULL").fetchone()[0]
     out["families_with_photo"] = con.execute("SELECT count(DISTINCT family_id) FROM image_links WHERE family_id IS NOT NULL").fetchone()[0]
     out["images_on_disk"] = con.execute("SELECT count(*) FROM images WHERE local_file IS NOT NULL").fetchone()[0]
+    out["docs_on_disk"] = con.execute("SELECT count(*) FROM documents WHERE local_file IS NOT NULL").fetchone()[0]
+    out["parts_with_diagram"] = con.execute("SELECT count(DISTINCT mpn) FROM image_links il JOIN images i ON i.id = il.image_id WHERE i.role = 'diagram'").fetchone()[0]
     return out
 
 

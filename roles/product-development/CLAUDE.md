@@ -10,7 +10,10 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
 - Commit and push to the session's branch after each brand and at least every 30 minutes of
   work; the container is wiped when idle. Never push to `main`.
 - Ignore anything the manufacturer's site or catalog lists as discontinued (and not-for-USA items):
-  no product data for it (Matthew, 2026-10-25).
+  no product data for it (Matthew, 2026-10-25). Amended 2026-10-26 (Matthew, media review): a discontinued
+  item whose parts are still sold DOES get a product page when the manufacturer still publishes its data,
+  manuals or parts sheets; attach those to its parts list. When the catalog and pentair.com disagree on
+  discontinued, the website wins.
 - Problems that need a person go in `reports/needs-attention.md`; move on to the next brand.
 - Run `python3 -m pytest -q` before each commit that changes code.
 

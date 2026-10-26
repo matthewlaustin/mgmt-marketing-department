@@ -69,6 +69,11 @@ def main(mpn: str) -> None:
                  (SELECT group_concat(DISTINCT value) FROM specs s WHERE s.mpn=mp.part_mpn AND s.attr='color')
                  FROM model_parts mp JOIN products p ON p.mpn=mp.part_mpn LEFT JOIN product_prices pp ON pp.mpn=mp.part_mpn
                  WHERE mp.model_mpn=? ORDER BY mp.pdf_page, CAST(mp.item AS INTEGER), mp.part_mpn""", mpn)
+    photos = q("""SELECT i.local_file, i.alt, i.role, i.url FROM image_links il JOIN images i ON i.id = il.image_id
+                  WHERE il.family_id = ? AND i.role IN ('main', 'gallery') AND i.local_file IS NOT NULL GROUP BY i.id ORDER BY i.role = 'main' DESC, i.id""", fam_id)
+    docs = q("""SELECT d.title, d.kind, d.lang, d.url FROM document_links dl JOIN documents d ON d.id = dl.document_id
+                WHERE dl.family_id = ? AND d.kind <> 'form' GROUP BY d.id ORDER BY d.kind, d.lang, d.title""", fam_id)
+    diagram_file = next((f for (f,) in q("SELECT local_file FROM images WHERE role='diagram' AND url LIKE ?", f"%/p{431:03d}/%")), None)
     thp = S["thp"][0][0]
     hp_tag = f"{float(thp):g} HP"  # the parts list splits rows by HP ("1.5 HP" / "3.0 HP")
     this_hp = {f"{float(thp):.1f} HP", f"{float(thp):g} HP"}
@@ -108,6 +113,11 @@ h2 { font-family: var(--display); font-weight: 700; font-size: 20px; margin: 0; 
 .photo { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: grid; gap: 8px; }
 .photo img { width: 100%; height: auto; display: block; border-radius: 3px; }
 .photo figcaption { font-size: 12px; color: var(--muted); }
+.gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.gallery img { aspect-ratio: 1; object-fit: cover; border: 1px solid var(--line); border-radius: 3px; }
+.doclist { display: grid; gap: 6px; }
+.doclist a { color: var(--accent); text-decoration: none; } .doclist a:hover { text-decoration: underline; }
+.doclist .k { font-size: 12px; color: var(--muted); }
 .buy { display: grid; gap: 14px; }
 .keyspecs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .ks { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
@@ -204,7 +214,10 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
 <div class="wrap">
 {header(short)}
 <div class="hero">
-  <figure class="photo"><img src="{data_uri(SCRATCH / 'p212_photo.png')}" alt="{e(short)}, black pump with strainer pot and drive on top"><figcaption>From the Pentair Pool Product Catalog 2025-2026, page {PRINTED(page)}</figcaption></figure>
+  <figure class="photo"><img src="{data_uri(ROOT / photos[0][0]) if photos else data_uri(SCRATCH / 'p212_photo.png')}" alt="{e(photos[0][1] or short) if photos else e(short)}">
+    <figcaption>{"Pentair product photo, pentair.com" if photos else f"From the Pentair Pool Product Catalog 2025-2026, page {PRINTED(page)}"}</figcaption>
+    {('<div class="gallery">' + ''.join(f'<img src="{data_uri(ROOT / f)}" alt="{e(a or r)}" loading="lazy">' for f, a, r, u in photos[1:5]) + '</div>') if len(photos) > 1 else ''}
+  </figure>
   <div class="buy">
     <div><div class="sku">{e(brand)} · Part No. {e(mpn)}</div><h1>{e(short)}</h1></div>
     <div class="keyspecs">{''.join(f'<div class="ks"><b>{e(str(v))}</b><span>{e(l)}</span></div>' for v, l in key)}</div>
@@ -223,6 +236,10 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
 
 <section class="block"><h2>Performance and dimensions</h2>{chart_html}
 <p class="note">The catalog prints these as drawings; the curves aren't tabulated, so the summary describes what each chart shows.</p></section>
+
+<section class="block"><h2>Manuals and documents</h2>
+<div class="doclist">{''.join(f'<div><a href="{e(u)}" target="_blank" rel="noopener">{e(t)}</a> <span class="k">{e(k)} · {e(l)} · PDF</span></div>' for t, k, l, u in docs) or '<p class="note">Pentair publishes no documents for this line.</p>'}</div>
+<p class="note">Pentair's own PDFs, as published on pentair.com for this product line.</p></section>
 
 <section class="block"><h2>Other versions of this pump</h2>
 <div class="tbl"><table><thead><tr><th>Part No.</th><th>THP</th><th>Voltage</th><th>Factory options</th></tr></thead><tbody>{sib_rows}</tbody></table></div>
@@ -262,7 +279,7 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
 {header('Replacement parts')}
 <div><a class="back" href="index.html">← Back to the pump</a></div>
 <div><div class="sku">Replacement parts for {e(brand)} {e(mpn)}</div><h1>{e(short)}: parts diagram and parts list</h1></div>
-<figure class="diagram"><div class="sheet"><img src="{data_uri(SCRATCH / 'p431_diagram.png')}" alt="Exploded parts diagram of the IntelliFlo3 and IntelliPro3 VSF pump with numbered items 1 to 36"></div><figcaption class="note">Pentair's exploded view, catalog page {PRINTED(431)}. Item numbers match the list below; on a phone, scroll the drawing sideways.</figcaption></figure>
+<figure class="diagram"><div class="sheet"><img src="{data_uri(ROOT / diagram_file) if diagram_file else data_uri(SCRATCH / 'p431_diagram.png')}" alt="Exploded parts diagram of the IntelliFlo3 and IntelliPro3 VSF pump with numbered items 1 to 36"></div><figcaption class="note">Pentair's exploded view, catalog page {PRINTED(431)}. Item numbers match the list below; on a phone, scroll the drawing sideways.</figcaption></figure>
 <div class="controls">
   <label><input type="checkbox" id="only-this" checked> Only parts for this {e(hp_tag)} pump</label>
   <label>Colour <select id="colour"><option value="">both (almond and black)</option><option value="almond">almond</option><option value="black">black</option></select></label>
