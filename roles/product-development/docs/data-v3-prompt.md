@@ -53,6 +53,9 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
 - Whole goods: option text that sets a SKU apart (relay board, touchscreen) → `options`. Don't copy
   the description as a spec; the band text goes in `band` on the product, not a spec.
 - Dimension drawings whose numbers aren't labelled: one `chart` reference with a summary, no table.
+- **Logos count**: certification or program marks printed as logos for a product (UL, CSA, ETL,
+  NSF, AHRI, Energy Star, TradeGrade) → `certification` / `program` specs on each SKU the logo covers,
+  with `raw` like "logo: UL". Footnote digits are dropped from description/feature text.
 - Blank price cells: `"price_note": "blank"`.
 - **Family ids are shared across batches.** Before inventing one, list existing ids with
   `grep -ho '"id": "[^"]*"' data/work/pentair/d3/out/*.json | sort -u` and reuse the id when it is

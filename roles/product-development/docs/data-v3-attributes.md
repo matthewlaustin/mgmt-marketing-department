@@ -68,6 +68,11 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | cop | — | coefficient of performance (heat pumps) |
 | heat_cool | — | heat only, heat/cool |
 | min_air_temp | °F | |
+| thermal_efficiency | % | |
+| breaker_size | A | required breaker |
+| heat_exchanger_material | — | cupro-nickel, copper, titanium |
+| gas_line_size | in | |
+| rating_condition | — | heat-pump BTU/COP rating condition, e.g. "80/80/80"; use with btu_output/cop as a list of {condition, btu_output, cop} in value |
 
 ## Lights / sanitizers / controls
 | key | unit | meaning |
