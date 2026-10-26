@@ -64,6 +64,8 @@ never a shared name like `gen.py` in the scratchpad root.
 - A reference table or chart about a product line (sizing, dimensions, performance) names that
   line in `family` (an id or list of ids), even when the SKUs are printed on another page. Specs go
   on a SKU only when its own row is on a page of this batch.
+- Skip page boilerplate: the California Prop 65 warning box, "see catalog page 23 for GFCI" and
+  similar notices printed on every page are not data.
 - Blank price cells: `"price_note": "blank"`.
 - **Family ids are shared across batches.** Before inventing one, list existing ids with
   `grep -ho '"id": "[^"]*"' data/work/pentair/d3/out/*.json | sort -u` and reuse the id when it is
