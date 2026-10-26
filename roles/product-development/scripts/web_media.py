@@ -32,7 +32,8 @@ KINDS = [  # first match wins
     (r"data ?sheet|spec(ification)? sheet|tech(nical)? (sheet|data|bulletin)|cut sheet|submittal", "data sheet"),
     (r"warranty", "warranty"),
     (r"wiring|diagram|drawing|dimension", "drawing"),
-    (r"guide|manual|instruction", "guide"),
+    (r"manual", "user guide"),
+    (r"guide|instruction", "guide"),
 ]
 LANG = {"english": "en", "spanish": "es", "french": "fr", "french canadian": "fr", "portuguese": "pt"}
 
