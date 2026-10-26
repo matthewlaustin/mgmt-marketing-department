@@ -97,7 +97,9 @@ def parse(path: Path) -> dict:
         if "/catalogs/" in href:  # the product catalog itself, which we already have
             continue
         seen.add(href)
-        title = clean(a.get_text(" ")) or clean(a.get("title") or a.get("aria-label") or "") or href.rsplit("/", 1)[-1]
+        title = clean(a.get_text(" ")) or clean(a.get("title") or a.get("aria-label") or "")
+        if not title or re.fullmatch(r"(learn more|download( now| pdf)?|view( pdf)?|click here|read more|pdf)", title, re.I):
+            title = re.sub(r"[-_]+", " ", re.sub(r"\.pdf$", "", href.rsplit("/", 1)[-1], flags=re.I)).strip().title()  # from the file name
         kind, lang = classify(title, href)
         docs.append({"title": title, "url": href, "kind": kind, "lang": lang})
     images, iseen = [], set()

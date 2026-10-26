@@ -73,7 +73,8 @@ def main(mpn: str) -> None:
     photos = q("""SELECT i.local_file, i.alt, i.role, i.url FROM image_links il JOIN images i ON i.id = il.image_id
                   WHERE il.family_id = ? AND i.role IN ('main', 'gallery') AND i.local_file IS NOT NULL
                     AND (i.label IS NULL OR i.label IN ('product', 'product_in_setting', 'detail')) AND coalesce(i.people, 0) = 0
-                  GROUP BY i.id ORDER BY (lower(i.alt) LIKE ?) DESC, i.role = 'main' DESC, i.id""", fam_id, f"%{key}%")
+                  GROUP BY i.id ORDER BY max(lower(il.page_url) LIKE ?) DESC, i.role = 'main' DESC, i.id""", fam_id, f"%{key}%")
+    photos = [(f, (a if a and a.lower() not in ("true", "false", "image", "png") else short + " product image"), r, u) for f, a, r, u in photos]
     derived = q("SELECT attr, value, basis FROM derived_specs WHERE mpn = ? ORDER BY rowid", mpn)
     chart_imgs = q("""SELECT i.local_file, i.alt FROM image_links il JOIN images i ON i.id = il.image_id
                       WHERE il.family_id = ? AND i.role = 'chart' AND i.local_file IS NOT NULL GROUP BY i.id ORDER BY i.id""", fam_id)
