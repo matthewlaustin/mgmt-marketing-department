@@ -110,3 +110,20 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   app's 20 tables in public and drizzle had 35,957 rows before and after, identical per table. Restorable
   from Neon history until about 2026-10-27 19:07 UTC. The Products connection string was deleted from the
   session scratchpad; only the Manufacturer Catalog string remains (scratchpad/neon_catalog_url).
+
+## 2026-10-26: product photos, first run
+- Matthew: photos for as many products as possible; 1000 x 1000+, no watermark; manufacturer first, then
+  poolgeek.com, then the web; prefer a picture several independent sites share; one image per SKU for now.
+  Recorded as an exception to "manufacturer data only" in CLAUDE.md.
+- Sources: Pentair originals (scripts/pentair_originals.py), 36 Shopify store catalogs that allow /products.json
+  (scripts/shopify_fetch.py, incl. poolgeek.com), web search for the rest (101 batches of 30 SKUs; only the first
+  8 batches ran because WebSearch is capped at ~200 calls per turn; scripts/page_images.py checks the pages).
+- Selection (scripts/photo_select.py): exact SKU match (or one part number in the title / description), store
+  placeholders dropped, perceptual hash for "same picture on several sites", order Pentair > Pool Geek > shared >
+  single site; nothing upscaled (Leslie's image server enlarges unless told not to).
+- Watermark review by eye (scripts/photo_review.py, three rounds, 2,581 photos): 379 rejected. Whole stores
+  excluded: bathandspaparts (every photo), discountpoolmart (225/225), sospool, thepoolsupplywarehouse,
+  nwpoolsupply.
+- Result: product_photos table, 3,048 of 4,725 SKUs (851 Pentair, 111 Pool Geek, 897 shared, 1,189 single
+  site), every photo copied to R2 (product-photos/<sha>.ext) and loaded to Neon. 163 near-misses and 1,514
+  without a photo. Questions on reports/product-photos.html (p1 single-site photos, p2 padding, p3 more search).

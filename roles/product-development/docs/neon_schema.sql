@@ -40,3 +40,5 @@ CREATE INDEX product_families_idx ON mfr_catalog.product_families USING btree (f
 CREATE INDEX replacements_old_idx ON mfr_catalog.replacements USING btree (old_mpn);
 CREATE INDEX specs_attr_idx ON mfr_catalog.specs USING btree (attr, value_num);
 CREATE INDEX specs_mpn_idx ON mfr_catalog.specs USING btree (mpn);
+-- product photos, one per SKU (scripts/photo_load.py, 2026-10-26)
+CREATE TABLE IF NOT EXISTS mfr_catalog.product_photos (mpn text PRIMARY KEY, tier text NOT NULL, source text NOT NULL, page_url text, image_url text NOT NULL, sites jsonb NOT NULL, match text, width integer NOT NULL, height integer NOT NULL, local_file text, object_key text, public_url text);

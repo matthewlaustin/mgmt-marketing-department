@@ -30,7 +30,8 @@ D3_TABLES = {"attributes": (), "product_prices": (), "families": ("features", "n
              "reference_tables": ("family_ids", "columns", "rows"), "data_issues": (),
              "documents": (), "document_links": (), "images": (), "image_links": (), "derived_specs": (),
              # query tables from the data review; missing here until 2026-10-26, so they were empty in Neon
-             "cross_references": (), "replacements": (), "family_links": (), "model_parts": ()}
+             "cross_references": (), "replacements": (), "family_links": (), "model_parts": (),
+             "product_photos": ("sites",)}  # scripts/photo_load.py
 
 
 def post(url: str, body: dict) -> dict:

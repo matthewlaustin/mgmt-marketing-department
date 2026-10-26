@@ -32,7 +32,12 @@ REJECT = ROOT / "data/work/photos/rejected.json"  # image_url -> reason, from th
 UA = "Mozilla/5.0 (compatible; PoolGeekCatalogBot/0.1; +https://poolgeek.com)"
 SITE_PREF = {"www.poolgeek.com": 0}
 # whole stores whose photos all carry a watermark (found by eye, 2026-10-26)
-EXCLUDE_SOURCES = {"www.bathandspaparts.com": "every photo carries a watermark (water-drop logo and '(c) Bath & Spa Parts Online')"}
+EXCLUDE_SOURCES = {"www.bathandspaparts.com": "every photo carries a watermark (water-drop logo and '(c) Bath & Spa Parts Online')",
+                   # review of 2,254 photos (2026-10-26): these stores watermark most or all of their photos
+                   "www.discountpoolmart.com": "225 of 225 reviewed photos watermarked (store logo + 'Pentair Pool' badge)",
+                   "www.sospool.com": "4 of 4 reviewed photos watermarked",
+                   "www.thepoolsupplywarehouse.com": "22 of 30 reviewed photos watermarked",
+                   "www.nwpoolsupply.com": "21 of 33 reviewed photos watermarked"}
 
 
 def cache_path(url: str) -> Path:
