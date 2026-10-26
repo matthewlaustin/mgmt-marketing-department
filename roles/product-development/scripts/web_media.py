@@ -112,7 +112,12 @@ def parse(path: Path) -> dict:
             continue
         iseen.add(src)
         images.append({"url": src, "alt": clean(im.get("alt") or ""), "role": "main" if is_main else "gallery"})
-    return {"url": url, "file": path.name, "name": name, "skus": sorted(set(skus)), "documents": docs, "images": images}
+    # pentair.com marks a discontinued line with a "Discontinued" ribbon on the page's own product image, or says so in the text
+    own = soup.select_one(".owl-carousel.large-images .image")
+    ribbon = bool(own and own.find(string=re.compile(r"^\s*discontinued\s*$", re.I)))
+    said = bool(soup.find(string=re.compile(r"no longer (manufactur|produc)|has been discontinued", re.I)))
+    return {"url": url, "file": path.name, "name": name, "skus": sorted(set(skus)), "documents": docs, "images": images,
+            "discontinued": ribbon or said}
 
 
 def main() -> int:
@@ -121,6 +126,7 @@ def main() -> int:
     nd = sum(len(p["documents"]) for p in pages)
     ud = len({d["url"] for p in pages for d in p["documents"]})
     ni = len({i["url"] for p in pages for i in p["images"]})
+    print(sum(1 for p in pages if p["discontinued"]), "pages marked discontinued on pentair.com")
     print(f"{len(pages)} pages; {nd} document links ({ud} unique PDFs); {ni} unique product images; "
           f"{sum(1 for p in pages if p['images'])} pages with a photo; {sum(1 for p in pages if p['documents'])} with documents")
     from collections import Counter

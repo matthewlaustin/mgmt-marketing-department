@@ -58,6 +58,8 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
     for p in pages:
         if "/products/" not in p["url"] and "/pleatco/resources" not in p["url"]:
             continue
+        if p.get("discontinued"):  # CLAUDE.md: nothing from a line the manufacturer lists as discontinued
+            continue
         # targets this page speaks for
         targets = []  # (family_id, mpn, via)
         skus = [m for m in p["skus"] if m in active]
