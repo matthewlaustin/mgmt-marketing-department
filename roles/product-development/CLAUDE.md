@@ -4,6 +4,11 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
 
 - **Manufacturer data only.** Sources are the brand's own site and its PDFs. Never fill gaps
   from retailers or distributors, and never invent a SKU or title: a gap is recorded, not guessed.
+- Product photos are the one exception (Matthew, 2026-10-26): manufacturer images first; when the manufacturer
+  has none that is sharp enough, use Pool Geek's own store (poolgeek.com), then other websites. Every photo must
+  be at least 1000 x 1000, carry no watermark, and show the SKU itself. Prefer an image found on several
+  independent sites; a single source is acceptable when that is all there is. Keep each photo's source URLs.
+  One good image per SKU for the first run. Product data (titles, specs, prices) stays manufacturer-only.
 - Every SKU keeps evidence: the URL (or PDF + page) and the raw text it came from.
 - Crawl politely: obey robots.txt, ~1 request/second, cache downloads under `data/raw/`
   (gitignored), don't re-download what's cached.
