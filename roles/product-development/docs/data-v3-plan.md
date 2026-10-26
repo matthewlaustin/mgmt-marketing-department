@@ -130,3 +130,8 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
 - Matthew's answers (2026-10-26 20:57, product-photos page): p1 keep single-site photos; p2 pad near-misses onto
   a white square (no enlarging); p3 keep searching the web. Search round 2: 1,630 SKUs still to search, whole
   goods first, ~180 searches per turn.
+- Search round 2 (2026-10-26, ~180 searches, whole goods first): 425 SKUs checked in all, 45 with a 1000x1000+
+  image online. Near-misses reviewed (25 of 163 rejected) and padded to white squares. Rejections now follow the
+  picture (perceptual hash) for content problems; watermark rejections block only unreviewed copies. Result:
+  3,199 SKUs with an approved photo (149 padded), all in R2 and Neon; 1,526 without. New question p4 on the
+  photos page: keep searching, ask Pentair for its dealer image library, photograph in-house, or stop.

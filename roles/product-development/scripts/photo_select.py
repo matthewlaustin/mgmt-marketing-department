@@ -125,6 +125,12 @@ def choose() -> int:
             if h is not None:
                 per_site[c["source"]][h].add(m)
     placeholder = {(site, h) for site, d in per_site.items() for h, ms in d.items() if len(ms) >= 4}
+    # a rejection follows the picture, not the URL: other stores often re-serve the same (watermarked) file
+    # content problems (wrong item, not a photo...) follow the picture everywhere; a watermark only blocks copies
+    # nobody has looked at yet, so a reviewed clean copy of the same photo can still be used
+    reviewed = json.loads((ROOT / "data/work/photos/reviewed.json").read_text()) if (ROOT / "data/work/photos/reviewed.json").exists() else {}
+    bad_content = [hashes[u]["dhash"] for u, why in rejected.items() if "dhash" in hashes.get(u, {}) and not why.startswith("watermark")]
+    bad_marked = [hashes[u]["dhash"] for u, why in rejected.items() if "dhash" in hashes.get(u, {}) and why.startswith("watermark")]
     wf = ROOT / "data/work/photos/web_candidates.json"  # scripts/page_images.py: pages found by web search
     web = {k: v for k, v in json.loads(wf.read_text()).items() if k != "_checked"} if wf.exists() else {}
     out, why = {}, collections.Counter()
@@ -138,6 +144,10 @@ def choose() -> int:
         for c in r["stores"] + web.get(m, []) + [c for c in r["manufacturer"] if c["grade"] in ("ok", "long")]:
             h = hashes.get(c.get("image_url") or "")
             if not h or "dhash" not in h or c["image_url"] in rejected or c["source"] in EXCLUDE_SOURCES:
+                continue
+            if any(ham(h["dhash"], b) <= 6 for b in bad_content) or (
+                    reviewed.get(c["image_url"]) != "pass" and any(ham(h["dhash"], b) <= 6 for b in bad_marked)):
+                why["same picture as a rejected one"] += 1
                 continue
             if (c["source"], h["dhash"]) in placeholder:
                 why["placeholder dropped"] += 1

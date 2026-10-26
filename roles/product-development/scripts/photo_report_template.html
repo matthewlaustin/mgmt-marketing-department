@@ -102,13 +102,14 @@ function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.
 [[S.with_photo, "of " + n(S.skus) + " active SKUs have an approved photo"], [S.pentair, "from Pentair's own images"], [S.poolgeek, "from poolgeek.com"],
  [S.multi, "from other stores, same picture on 2+ sites"], [S.single, "from other stores, one site only"]]
  .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
-$("covnote").textContent = "Still without a photo: " + S.missing.map(([k, v]) => n(v) + " " + k).join("; ") + ".";
+$("covnote").textContent = n(S.padded) + " of these are near-miss photos centred on a white square (question 2). Still without a photo: " + S.missing.map(([k, v]) => n(v) + " " + k).join("; ") + ".";
 DATA.SRC.forEach(([s, c, note]) => { const tr = el("tr"); tr.append(el("td", null, s), el("td", "n", n(c)), el("td", null, note)); $("srcs").tBodies[0].append(tr); });
 $("exnote").textContent = "Not used: " + DATA.EX.map(([s, why]) => s + " (" + why + ")").join("; ") + ". Pool360 blocks automated access. Six other stores' robots.txt forbids it.";
 
 const QUESTIONS = [
   { id: "p1", h: "Keep the photos found on only one store?", c: n(S.single) + " SKUs have a photo that only one store shows. Most stores take their own photos, so a picture on one store is usually that store's own work. The same picture on several stores usually comes from Pentair's or a distributor's dealer image feed, which is the safer kind to use; that does not mean its copyright has lapsed, but dealers are normally allowed to use it.", o: ["Keep them", "Keep, but replace when a shared picture turns up", "Drop them"] },
   { id: "p2", h: "Pad the near-miss photos onto a white square?", c: n(S.near) + " SKUs have a clean photo whose long side is 1000+ but whose short side is under 1000 (e.g. 1400 x 800). Placing it centred on a white 1000 x 1000+ square keeps every pixel sharp; nothing is enlarged.", o: ["Pad them to a square", "Leave them out"] },
+  { id: "p4", h: "How should we get photos for the rest?", c: "The second search round looked up 425 more SKUs; only 45 had an image of 1000 x 1000 anywhere online. The remaining " + n(S.to_search) + " are mostly small parts whose only photos online are small. More rounds would add roughly 1 photo per 10 searches, about 8 sessions for some 150 photos. Two other routes: ask Pentair for its dealer image library (Pentair supplies product images to authorized dealers, which would be the cleanest source), or photograph parts in-house as they come through stock.", o: ["Keep searching anyway", "Ask Pentair for the dealer image library", "Photograph in-house", "Stop here for now"] },
   { id: "p3", h: "Keep searching the web for the rest?", c: n(S.to_search) + " SKUs still have no photo of 1000 x 1000: most have only small images online, some were not searched yet. Web searches are capped at about 200 per working turn, so this runs over several sessions.", o: ["Yes, keep going", "Not now"] },
 ];
 const answers = {}; let db = null;

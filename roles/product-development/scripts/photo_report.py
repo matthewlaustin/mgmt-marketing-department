@@ -43,13 +43,15 @@ def main() -> int:
     titles = dict(con.execute("SELECT mpn, title FROM products WHERE status = 'active'"))
     rows = con.execute("SELECT mpn, tier, source, sites, width, height, public_url, page_url, local_file FROM product_photos").fetchall()
     chosen = json.loads((ROOT / "data/work/photos/chosen.json").read_text())
-    tiers = collections.Counter(r[1] for r in rows)
+    tiers = collections.Counter(r[1].replace(" (padded)", "") for r in rows)
+    padded = sum(1 for r in rows if r[1].endswith("(padded)"))
     near = sum(1 for m, c in chosen.items() if c.get("grade") == "long" and m not in {r[0] for r in rows})
     have = {r[0] for r in rows}
     S = {"skus": len(titles), "with_photo": len(rows), "pentair": tiers["manufacturer"], "poolgeek": tiers["pool geek"],
          "multi": tiers["multi-site"], "single": tiers["single site"], "near": near,
          "to_search": len(titles) - len(rows) - near}
-    S["missing"] = [["with a near-miss photo (question 2)", near], ["with only small images or none found yet", S["to_search"]]]
+    S["padded"] = padded
+    S["missing"] = [["with only small images online or none found yet", S["to_search"]]]
     src = collections.Counter(r[2] for r in rows)
     notes = {"pentair.com": "Pentair's own images, full-size originals", "poolgeek.com": "Pool Geek's own store"}
     SRC = [[s, c, notes.get(s, "")] for s, c in src.most_common()]
@@ -59,7 +61,7 @@ def main() -> int:
     for r in rows:
         by[r[1]].append(r)
     pick = []
-    for t, k in (("manufacturer", 20), ("pool geek", 16), ("multi-site", 42), ("single site", 42)):
+    for t, k in (("manufacturer", 20), ("pool geek", 16), ("multi-site", 36), ("single site", 36), ("single site (padded)", 6), ("multi-site (padded)", 6)):
         pick += random.sample(by[t], min(k, len(by[t])))
     W = [[r[0], r[1], r[2], thumb(ROOT / r[8])] for r in pick]
     R = sorted([[r[0], titles.get(r[0], ""), r[1], r[2], len(json.loads(r[3])), r[4], r[5], r[6], r[7]] for r in rows])
