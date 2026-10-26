@@ -30,7 +30,7 @@ CREATE TABLE documents (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, title 
     local_file TEXT, bytes INTEGER);
 CREATE TABLE document_links (document_id INTEGER NOT NULL, family_id TEXT, mpn TEXT, page_url TEXT NOT NULL, via TEXT NOT NULL);
 CREATE TABLE images (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, alt TEXT, role TEXT NOT NULL, local_file TEXT,
-    width INTEGER, height INTEGER, bytes INTEGER);
+    width INTEGER, height INTEGER, bytes INTEGER, label TEXT, people INTEGER, background TEXT);
 CREATE TABLE image_links (image_id INTEGER NOT NULL, family_id TEXT, mpn TEXT, page_url TEXT NOT NULL, via TEXT NOT NULL);
 """
 
@@ -47,6 +47,22 @@ def doc_path(url: str) -> Path:
     sys.path.insert(0, str(ROOT / "scripts"))
     from web_media_fetch import doc_path as dp
     return dp(url)
+
+
+def load_charts(con: sqlite3.Connection) -> int:
+    """Reference charts (pump curves, dimension drawings, sizing charts) rendered from the catalog PDF."""
+    meta_file = ROOT / "data/work/pentair/d3/charts.json"
+    if not meta_file.exists():
+        return 0
+    n = 0
+    for cid, m in json.loads(meta_file.read_text()).items():
+        fids = con.execute("SELECT family_ids FROM reference_tables WHERE id = ?", (int(cid),)).fetchone()
+        cur = con.execute("INSERT INTO images (url, alt, role, local_file, width, height, bytes, label) VALUES (?,?,?,?,?,?,?,?)",
+                          (f"catalog://pentair-2025-2026/p{m['page']:03d}/chart/{cid}", m["title"], "chart", m["file"], m["width"], m["height"], m["bytes"], "chart"))
+        for f in (json.loads(fids[0]) if fids and fids[0] else []):
+            con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (cur.lastrowid, f, None, f"catalog p{m['page']}", "chart printed for the line"))
+            n += 1
+    return n
 
 
 def load_diagrams(con: sqlite3.Connection, active: set[str]) -> int:
@@ -78,6 +94,14 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
     fam_ids = {f for (f,) in con.execute("SELECT id FROM families")}
     con.executescript(SCHEMA)
     doc_id, img_id = {}, {}
+    cls_file = Path("/tmp/claude-0/-home-user-product-namer/28224544-019c-5471-b0e0-39374ec9eedf/scratchpad/images_classified.json")
+    cls_repo = WEB / "images_classified.json"
+    labels = {}
+    for src in (cls_repo, cls_file):
+        if src.exists():
+            labels = {c["url"]: c for c in json.loads(src.read_text())}
+            break
+    mentions = json.loads((WEB / "doc_mentions.json").read_text()) if (WEB / "doc_mentions.json").exists() else {}
     try:
         from PIL import Image
     except ImportError:  # pragma: no cover
@@ -127,9 +151,13 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
                                 w, h = im.size
                         except Exception:
                             pass
-                cur = con.execute("INSERT INTO images (url, alt, role, local_file, width, height, bytes) VALUES (?,?,?,?,?,?,?)",
-                                  (i["url"], i["alt"], i["role"], str(local.relative_to(ROOT)) if local.exists() else None, w, h, b))
+                lab = labels.get(i["url"], {})
+                cur = con.execute("INSERT INTO images (url, alt, role, local_file, width, height, bytes, label, people, background) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                                  (i["url"], i["alt"], i["role"], str(local.relative_to(ROOT)) if local.exists() else None, w, h, b,
+                                   lab.get("label"), int(bool(lab.get("people"))) if lab else None, lab.get("bg")))
                 img_id[i["url"]] = cur.lastrowid
+            if i["role"] == "marketing":
+                continue  # page bands (lifestyle shots, app screens) are kept on file but are not product photos
             # a gallery image whose alt text is one SKU belongs to that SKU alone
             alt_sku = i["alt"].strip().replace("_", " ")
             if alt_sku in active:
@@ -137,6 +165,14 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
                 continue
             for f, m, via in targets:
                 con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (img_id[i["url"]], f, m, p["url"], via))
+    for url, fids in mentions.items():
+        if url not in doc_id:
+            continue
+        linked = {f for (f,) in con.execute("SELECT family_id FROM document_links WHERE document_id = ? AND family_id IS NOT NULL", (doc_id[url],))}
+        for f in fids:
+            if f in fam_ids and f not in linked:
+                con.execute("INSERT INTO document_links VALUES (?,?,?,?,?)", (doc_id[url], f, None, url, "the document's text names the line"))
+    load_charts(con)
     load_diagrams(con, active)
     con.commit()
     out = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in ("documents", "document_links", "images", "image_links")}

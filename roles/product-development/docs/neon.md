@@ -78,3 +78,7 @@ Load order: `consolidate.py`, then `d3_load.py`, then `load_neon.py`.
 - `cross_references`: competitor numbers (Unicel, Filbur, OEM "Mfr #") -> Pentair/Pleatco SKU.
 - `replacements`: discontinued number -> the current SKU.
 - Spec values are normalized by `scripts/d3_normalize.py` (`raw` keeps the printed text).
+    CREATE TABLE mfr_catalog.derived_specs (mpn text NOT NULL, attr text NOT NULL, value text NOT NULL, basis text NOT NULL,
+      source text NOT NULL);  -- shopper-facing facts derived from the catalog's own text (scripts/d3_derive.py)
+    -- images also carry label text (product / product_in_setting / detail / lifestyle / infographic / chart / diagram),
+    -- people integer, background text

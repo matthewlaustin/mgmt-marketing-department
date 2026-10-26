@@ -106,12 +106,13 @@ def parse(path: Path) -> dict:
         if not src or src.startswith("data:"):
             continue
         src = urljoin(BASE, src)
-        is_main = ".thumb.1280" in src or "mainimage" in src.lower()
-        is_gallery = "product-information/additional-media" in src
-        if not (is_main or is_gallery) or re.search(r"icon|logo", src, re.I) or src in iseen:
+        is_main = ".thumb.1280" in src or "product-information/additional-media/mainimage" in src.lower()
+        is_gallery = "product-information/additional-media" in src and not is_main
+        is_marketing = "media_component" in src or "carousel-images" in src  # page bands: lifestyle shots, app screens
+        if not (is_main or is_gallery or is_marketing) or re.search(r"icon|logo", src, re.I) or src in iseen:
             continue
         iseen.add(src)
-        images.append({"url": src, "alt": clean(im.get("alt") or ""), "role": "main" if is_main else "gallery"})
+        images.append({"url": src, "alt": clean(im.get("alt") or ""), "role": "main" if is_main else "gallery" if is_gallery else "marketing"})
     # pentair.com marks a discontinued line with a "Discontinued" ribbon on the page's own product image, or says so in the text
     own = soup.select_one(".owl-carousel.large-images .image")
     ribbon = bool(own and own.find(string=re.compile(r"^\s*discontinued\s*$", re.I)))

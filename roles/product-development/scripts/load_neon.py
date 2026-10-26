@@ -28,7 +28,7 @@ BATCH = 1000
 D3_TABLES = {"attributes": (), "product_prices": (), "families": ("features", "notes", "parts_pages", "pages"), "product_families": (), "specs": (),
              "prices": (), "fitment": ("family_ids", "models", "mpns"),
              "reference_tables": ("family_ids", "columns", "rows"), "data_issues": (),
-             "documents": (), "document_links": (), "images": (), "image_links": ()}
+             "documents": (), "document_links": (), "images": (), "image_links": (), "derived_specs": ()}
 
 
 def post(url: str, body: dict) -> dict:

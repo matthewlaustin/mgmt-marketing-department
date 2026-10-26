@@ -69,8 +69,14 @@ def main(mpn: str) -> None:
                  (SELECT group_concat(DISTINCT value) FROM specs s WHERE s.mpn=mp.part_mpn AND s.attr='color')
                  FROM model_parts mp JOIN products p ON p.mpn=mp.part_mpn LEFT JOIN product_prices pp ON pp.mpn=mp.part_mpn
                  WHERE mp.model_mpn=? ORDER BY mp.pdf_page, CAST(mp.item AS INTEGER), mp.part_mpn""", mpn)
+    key = re.sub(r"[®™].*", "", fname).split()[0].lower()  # "IntelliPro3"
     photos = q("""SELECT i.local_file, i.alt, i.role, i.url FROM image_links il JOIN images i ON i.id = il.image_id
-                  WHERE il.family_id = ? AND i.role IN ('main', 'gallery') AND i.local_file IS NOT NULL GROUP BY i.id ORDER BY i.role = 'main' DESC, i.id""", fam_id)
+                  WHERE il.family_id = ? AND i.role IN ('main', 'gallery') AND i.local_file IS NOT NULL
+                    AND (i.label IS NULL OR i.label IN ('product', 'product_in_setting', 'detail')) AND coalesce(i.people, 0) = 0
+                  GROUP BY i.id ORDER BY (lower(i.alt) LIKE ?) DESC, i.role = 'main' DESC, i.id""", fam_id, f"%{key}%")
+    derived = q("SELECT attr, value, basis FROM derived_specs WHERE mpn = ? ORDER BY rowid", mpn)
+    chart_imgs = q("""SELECT i.local_file, i.alt FROM image_links il JOIN images i ON i.id = il.image_id
+                      WHERE il.family_id = ? AND i.role = 'chart' AND i.local_file IS NOT NULL GROUP BY i.id ORDER BY i.id""", fam_id)
     docs = q("""SELECT d.title, d.kind, d.lang, d.url FROM document_links dl JOIN documents d ON d.id = dl.document_id
                 WHERE dl.family_id = ? AND d.kind <> 'form' GROUP BY d.id ORDER BY d.kind, d.lang, d.title""", fam_id)
     diagram_file = next((f for (f,) in q("SELECT local_file FROM images WHERE role='diagram' AND url LIKE ?", f"%/p{431:03d}/%")), None)
@@ -124,6 +130,13 @@ h2 { font-family: var(--display); font-weight: 700; font-size: 20px; margin: 0; 
 .ks b { font-family: var(--display); font-size: 22px; font-variant-numeric: tabular-nums; }
 .ks span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .marks { display: flex; flex-wrap: wrap; gap: 6px; }
+.glance { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 14px; font-size: 14px; }
+.glance div { display: grid; border-bottom: 1px solid var(--line); padding: 3px 0; }
+.glance .gk { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.charts figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px; display: grid; gap: 6px; }
+.charts img { width: 100%; height: auto; display: block; }
+.charts figcaption { font-size: 12px; color: var(--muted); }
 .chip { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
 .chip.mark { background: var(--mark-soft); color: var(--mark); }
 .price { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -221,6 +234,7 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
   <div class="buy">
     <div><div class="sku">{e(brand)} · Part No. {e(mpn)}</div><h1>{e(short)}</h1></div>
     <div class="keyspecs">{''.join(f'<div class="ks"><b>{e(str(v))}</b><span>{e(l)}</span></div>' for v, l in key)}</div>
+    <div class="glance">{''.join(f'<div><span class="gk">{e(a.replace("_", " "))}</span><b>{e(v)}</b></div>' for a, v, b in derived if a not in ('certified', 'sold_as', 'warranty_note') and v != 'not stated')}</div>
     <div class="marks">{''.join(f'<span class="chip">{e(c)}</span>' for c in certs)}{''.join(f'<span class="chip mark">{e(p)}</span>' for p in programs)}</div>
     <div class="price">{price_html}</div>
     <div class="cta"><a class="btn primary" href="parts.html">Parts diagram &amp; replacement parts ({n_parts})</a><a class="btn secondary" href="#specs">Full specifications</a></div>
@@ -234,11 +248,12 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
 <p class="note">Port sizes are the pump's inlet x outlet; the 3 in. x 3 in. option is sold separately as a union kit (see parts). THP is total horsepower, the figure Pentair rates these pumps by.</p>
 </section>
 
-<section class="block"><h2>Performance and dimensions</h2>{chart_html}
-<p class="note">The catalog prints these as drawings; the curves aren't tabulated, so the summary describes what each chart shows.</p></section>
+<section class="block"><h2>Performance and dimensions</h2>
+<div class="charts">{''.join(f'<figure><img src="{data_uri(ROOT / f)}" alt="{e(a)}"><figcaption>{e(a)}</figcaption></figure>' for f, a in chart_imgs if (hp_tag.split()[0] in a or "HP" not in a))}</div>
+<p class="note">Pentair's charts as printed in the catalog (page {PRINTED(213)}); the curves aren't tabulated, so read values from the chart.</p></section>
 
 <section class="block"><h2>Manuals and documents</h2>
-<div class="doclist">{''.join(f'<div><a href="{e(u)}" target="_blank" rel="noopener">{e(t)}</a> <span class="k">{e(k)} · {e(l)} · PDF</span></div>' for t, k, l, u in docs) or '<p class="note">Pentair publishes no documents for this line.</p>'}</div>
+<div class="doclist">{''.join(f'<div><a href="{e(u)}" target="_blank" rel="noopener">{e(t)}</a> <span class="k">{e(k)} · {e(l)} · PDF</span></div>' for t, k, l, u in sorted(docs, key=lambda d: (d[1] not in ('brochure', 'data sheet'), d[1], d[2] != 'en', d[0]))) or '<p class="note">Pentair publishes no documents for this line.</p>'}</div>
 <p class="note">Pentair's own PDFs, as published on pentair.com for this product line.</p></section>
 
 <section class="block"><h2>Other versions of this pump</h2>
