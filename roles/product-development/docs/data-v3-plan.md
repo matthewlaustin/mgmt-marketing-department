@@ -46,3 +46,15 @@ filtered and compared. A value the list doesn't cover is written with an `x_` ke
 - A part printed at different list prices: use the price printed on the most pages (`product_prices`);
   ties use the later page. Matthew then chose the price for 25 of the 26 (`d3/price_picks.json`). All page prices stay in `prices`.
 - Next: gather data for the web-only SKUs from pentair.com (manufacturer data only).
+
+## Data review (2026-10-26): what was normalized and why
+Extraction was accurate but values were not comparable. `scripts/d3_normalize.py` now runs inside the loader:
+- categorical values lower-cased and mapped through synonym tables (colour 49 -> 34 spellings, material 102 -> 76,
+  surface 16 -> 6, pool type 34 -> 7, certification 23 -> 12, program 6 -> 4); lists split into one row per value
+- sizes keep their printed text and get a number (`value_num`) for filtering; missing units filled from the key list
+- 60 frequent `x_` keys promoted to the controlled list; `x_` rows fell from 19% to 8% of specs
+- new query tables: `cross_references` (competitor number -> SKU), `replacements` (old number -> SKU; an old number
+  that is still sold becomes an `upgrade` spec instead), `family_links` (family parent + parts-page links from
+  `d3/family_links.json`, each with page evidence), `model_parts` (every product–part pair the catalog supports,
+  found by walking the family links; 983 of 1,171 whole-goods SKUs reach their parts)
+- parts lists for lines no longer in the catalog (dated headings, legacy pumps/cleaners) stay unlinked on purpose
