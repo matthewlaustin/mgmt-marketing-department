@@ -46,7 +46,7 @@ CREATE TABLE fitment (
     item TEXT, qty REAL, condition TEXT, raw TEXT, pdf_page INTEGER NOT NULL
 );
 CREATE TABLE reference_tables (
-    id INTEGER PRIMARY KEY, kind TEXT NOT NULL, title TEXT, columns TEXT, rows TEXT, summary TEXT,
+    id INTEGER PRIMARY KEY, kind TEXT NOT NULL, family_ids TEXT NOT NULL, title TEXT, columns TEXT, rows TEXT, summary TEXT,
     pdf_page INTEGER NOT NULL
 );
 CREATE TABLE data_issues (
@@ -129,8 +129,8 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
                          json.dumps(as_list(fits.get("mpns"))), text(f["item"]) if f.get("item") not in (None, "") else None,
                          num(f.get("qty")), f.get("condition") or None, f.get("raw"), f["page"]))
         for r in d.get("references", []):
-            con.execute("INSERT INTO reference_tables (kind, title, columns, rows, summary, pdf_page) VALUES (?,?,?,?,?,?)",
-                        (r["kind"], r.get("title"), json.dumps(r.get("columns") or [], ensure_ascii=False),
+            con.execute("INSERT INTO reference_tables (kind, family_ids, title, columns, rows, summary, pdf_page) VALUES (?,?,?,?,?,?,?)",
+                        (r["kind"], json.dumps(as_list(r.get("family"))), r.get("title"), json.dumps(r.get("columns") or [], ensure_ascii=False),
                          json.dumps(r.get("rows") or [], ensure_ascii=False), r.get("summary") or None, r["page"]))
         for i in d.get("issues", []):
             con.execute("INSERT INTO data_issues VALUES (?,?,?,?)", (batch, i.get("page"), i.get("mpn") or None, i["question"]))

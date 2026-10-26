@@ -58,6 +58,9 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
   with `raw` like "logo: UL". Footnote digits are dropped from description/feature text.
 - Printed notes and footnotes about a family (installation, GFCI, compatibility, "sold
   individually") go word for word in the family's `notes` list, not in `description`.
+- A reference table or chart about a product line (sizing, dimensions, performance) names that
+  line in `family` (an id or list of ids), even when the SKUs are printed on another page. Specs go
+  on a SKU only when its own row is on a page of this batch.
 - Blank price cells: `"price_note": "blank"`.
 - **Family ids are shared across batches.** Before inventing one, list existing ids with
   `grep -ho '"id": "[^"]*"' data/work/pentair/d3/out/*.json | sort -u` and reuse the id when it is
@@ -75,7 +78,7 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
                "prices": {"us_list": 0.0, "can_list": 0.0} , "price_note": ""}],
  "fitment": [{"part", "page", "fits": {"family", "models": [], "mpns": []},
               "item": "", "qty": 0, "condition": "", "raw": ""}],
- "references": [{"page", "kind": "table|chart", "title", "columns": [], "rows": [[]], "summary": ""}],
+ "references": [{"page", "kind": "table|chart", "family": "id or list", "title", "columns": [], "rows": [[]], "summary": ""}],
  "issues": [{"page", "mpn": "", "question": ""}]
 }
 ```

@@ -46,7 +46,7 @@ endpoint. Get the connection string from the Neon console (never commit it).
       pdf_page integer NOT NULL);
     CREATE TABLE mfr_catalog.fitment (part_mpn text NOT NULL, family_ids jsonb NOT NULL, models jsonb NOT NULL,
       mpns jsonb NOT NULL, item text, qty double precision, condition text, raw text, pdf_page integer NOT NULL);
-    CREATE TABLE mfr_catalog.reference_tables (id integer PRIMARY KEY, kind text NOT NULL, title text,
+    CREATE TABLE mfr_catalog.reference_tables (id integer PRIMARY KEY, kind text NOT NULL, family_ids jsonb NOT NULL, title text,
       columns jsonb, rows jsonb, summary text, pdf_page integer NOT NULL);
     CREATE TABLE mfr_catalog.data_issues (batch text NOT NULL, pdf_page integer, mpn text, question text NOT NULL);
     CREATE INDEX specs_mpn_idx ON mfr_catalog.specs (mpn);
