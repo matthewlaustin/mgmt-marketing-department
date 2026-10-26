@@ -46,7 +46,7 @@ def sheets() -> int:
     chosen = json.loads(CHOSEN.read_text())
     reviewed = json.loads(REVIEWED.read_text()) if REVIEWED.exists() else {}
     titles = dict(sqlite3.connect(ROOT / "data/catalog.db").execute("SELECT mpn, title FROM products"))
-    todo = [(m, c) for m, c in sorted(chosen.items()) if c["tier"] != "manufacturer" and c.get("grade") == "ok" and c["image_url"] not in reviewed]
+    todo = [(m, c) for m, c in sorted(chosen.items()) if c["tier"] != "manufacturer" and c.get("grade") in ("ok", "long") and c["image_url"] not in reviewed]
     REVIEW.mkdir(parents=True, exist_ok=True)
     for old in REVIEW.glob("sheet_*.png"):
         old.unlink()

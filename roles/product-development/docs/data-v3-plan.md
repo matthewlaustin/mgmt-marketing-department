@@ -127,3 +127,6 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
 - Result: product_photos table, 3,048 of 4,725 SKUs (851 Pentair, 111 Pool Geek, 897 shared, 1,189 single
   site), every photo copied to R2 (product-photos/<sha>.ext) and loaded to Neon. 163 near-misses and 1,514
   without a photo. Questions on reports/product-photos.html (p1 single-site photos, p2 padding, p3 more search).
+- Matthew's answers (2026-10-26 20:57, product-photos page): p1 keep single-site photos; p2 pad near-misses onto
+  a white square (no enlarging); p3 keep searching the web. Search round 2: 1,630 SKUs still to search, whole
+  goods first, ~180 searches per turn.
