@@ -57,6 +57,13 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | turnover_hours | h | |
 | mount | — | top, side |
 | media_weight | oz/yd2 | cartridge fabric weight |
+| turnover_capacity | gal | pool gallons turned over in N hours; value is a list of {"hours": 6, "gallons": 21000} |
+| flow_per_sqft | gpm/sq ft | rated filtration rate |
+| de_required | lb | D.E. charge (text if printed in scoops) |
+| backwash_valve_size | in | |
+| max_water_temp | °F | |
+| operating_weight | lb | |
+| tank_count | — | |
 
 ## Heating
 | key | unit | meaning |
