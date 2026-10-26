@@ -39,12 +39,30 @@ Read first: `docs/data-v3-plan.md`, `docs/data-v3-attributes.md`, and this batch
   list). Whole goods get their full ordering-table row. Parts get size, material, colour, thread,
   etc. when printed.
 
+## Lessons from the pilot (follow these)
+- **issues are questions only**: something unreadable, contradictory or ambiguous that a person must
+  settle. Don't file notes like "no prices on this page" or "stored as printed".
+- **No guessing what an unlabelled number means.** A number in a column with no header, or a
+  footnote digit that could be a qty or a mark: keep it in `raw`, add one issue.
+- **Parts lists**: what a column or cell says about *which pump* (1.5 HP, 3.0 HP, build date,
+  model) is a fitment `condition`, not a spec of the part. A `color` spec only when the part sits
+  in a single colour column (Almond, Black); a number spanning both colour columns gets no colour.
+- A parts list covering several pumps: `fits.family` may be a list of family ids.
+- **Family links**: when a page prints "SEE PAGE N FOR REPLACEMENT PARTS" (or similar), add
+  `"links": [{"kind": "replacement_parts", "printed_page": N}]` to the family.
+- Whole goods: option text that sets a SKU apart (relay board, touchscreen) → `options`. Don't copy
+  the description as a spec; the band text goes in `band` on the product, not a spec.
+- Dimension drawings whose numbers aren't labelled: one `chart` reference with a summary, no table.
+- Blank price cells: `"price_note": "blank"`.
+- Check `docs/data-v3-attributes.md` before inventing an x_ key (hhp, case_pack, media_weight,
+  upgrade, options, min/max_speed exist).
+
 ## Output shape
 ```json
 {
  "batch": "d063",
- "families": [{"id", "name", "brand", "parent", "category", "page", "description", "features": []}],
- "products": [{"mpn", "page", "family", "role": "model|part|kit|accessory|replacement",
+ "families": [{"id", "name", "brand", "parent", "category", "page", "description", "features": [], "links": []}],
+ "products": [{"mpn", "page", "family", "band", "role": "model|part|kit|accessory|replacement",
                "specs": [{"attr", "value", "unit", "raw"}],
                "prices": {"us_list": 0.0, "can_list": 0.0} , "price_note": ""}],
  "fitment": [{"part", "page", "fits": {"family", "models": [], "mpns": []},

@@ -65,6 +65,8 @@ def check(batch: str, out_dir: str = "out") -> list[str]:
         if f.get("part") not in skus:
             errs.append(f"{where}: part is not a listed SKU")
         fits = f.get("fits") or {}
+        if isinstance(fits.get("family"), list) and not all(isinstance(x, str) for x in fits["family"]):
+            errs.append(f"{where}: fits.family is an id or a list of ids")
         if not (fits.get("family") or fits.get("models") or fits.get("mpns")):
             errs.append(f"{where}: says nothing about what it fits")
     for r in out.get("references", []):

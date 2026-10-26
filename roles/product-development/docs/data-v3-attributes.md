@@ -17,6 +17,10 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | amps | A | full-load amps (text if several) |
 | watts | W | input power |
 | wef | — | weighted energy factor |
+| hhp | hp | hydraulic horsepower (HHP column) |
+| min_speed | rpm | |
+| max_speed | rpm | |
+| conductors | — | wire count of a cable |
 | speed_type | — | single, two, variable, variable speed and flow |
 | motor_enclosure | — | TEFC, ODP |
 | efficiency_class | — | Standard, High Efficiency, Premium |
@@ -52,6 +56,7 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | pool_volume_max | gal | largest pool the item is rated for |
 | turnover_hours | h | |
 | mount | — | top, side |
+| media_weight | oz/yd2 | cartridge fabric weight |
 
 ## Heating
 | key | unit | meaning |
@@ -91,14 +96,17 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | diameter | in | |
 | weight | lb | shipping or unit weight as printed |
 | size | — | nominal size text that doesn't fit the above |
-| pool_type | — | inground, aboveground, spa, commercial |
+| pool_type | — | inground, aboveground, pool, spa, commercial (also an "Application" column) |
 | surface | — | vinyl, gunite, fiberglass |
-| pack_qty | — | items in the pack sold |
+| pack_qty | — | items in the pack sold ("Set of 2", "2/pk") |
+| case_pack | — | a "Pack #" / carton count column, not the sales unit |
+| options | — | factory options that set this SKU apart from its siblings (relay board, touchscreen) |
 | contents | — | what a kit includes (text) |
 | certification | — | UL, NSF, ETL, CSA… as printed |
 | warranty | — | as printed |
 | replaces | — | older number this SKU replaces |
 | replaced_by | — | newer number that replaces this SKU |
+| upgrade | — | newer/better SKU the catalog offers as an upgrade (Pleatco ULTRA) |
 | compatible_brands | — | competitor makes listed (Pleatco cross-refs) |
 | cross_reference | — | competitor part numbers (Unicel, Filbur, Mfr #) |
 | model_code | — | Pentair model code printed for the SKU |
