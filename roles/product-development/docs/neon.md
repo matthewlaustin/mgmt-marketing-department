@@ -60,3 +60,21 @@ endpoint. Get the connection string from the Neon console (never commit it).
     CREATE INDEX product_families_idx ON mfr_catalog.product_families (family_id);
 
 Load order: `consolidate.py`, then `d3_load.py`, then `load_neon.py`.
+
+## Query tables added by the data review (2026-10-26)
+
+    CREATE TABLE mfr_catalog.cross_references (mpn text NOT NULL, brand text, number text NOT NULL, pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.replacements (old_mpn text NOT NULL, mpn text NOT NULL, raw text, pdf_page integer NOT NULL);
+    CREATE TABLE mfr_catalog.family_links (family_id text NOT NULL, linked_to text NOT NULL, source text NOT NULL);
+    CREATE TABLE mfr_catalog.model_parts (model_mpn text NOT NULL, part_mpn text NOT NULL, family_id text NOT NULL,
+      item text, qty double precision, condition text, pdf_page integer NOT NULL);
+    CREATE INDEX cross_references_number_idx ON mfr_catalog.cross_references (number);
+    CREATE INDEX replacements_old_idx ON mfr_catalog.replacements (old_mpn);
+    CREATE INDEX model_parts_model_idx ON mfr_catalog.model_parts (model_mpn);
+    CREATE INDEX model_parts_part_idx ON mfr_catalog.model_parts (part_mpn);
+
+- `model_parts`: every (whole-goods SKU, part SKU) pair the catalog's parts lists support, found by walking
+  `family_links` (family parent and parts-page links). `condition` carries "1.5 HP", "made before 10/2020" etc.
+- `cross_references`: competitor numbers (Unicel, Filbur, OEM "Mfr #") -> Pentair/Pleatco SKU.
+- `replacements`: discontinued number -> the current SKU.
+- Spec values are normalized by `scripts/d3_normalize.py` (`raw` keeps the printed text).

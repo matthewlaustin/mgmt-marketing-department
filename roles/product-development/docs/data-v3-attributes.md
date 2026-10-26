@@ -124,3 +124,59 @@ is reviewed. Ranges are written `{"min": a, "max": b}`. Several printed options 
 | cross_reference | — | competitor part numbers (Unicel, Filbur, Mfr #) |
 | model_code | — | Pentair model code printed for the SKU |
 | mfg_date_condition | — | "made after 6/17/19" etc. |
+
+## Added after the data review (2026-10-26)
+Keys the extraction used often enough to make controlled. Values are normalized by `scripts/d3_normalize.py`
+(lower-case categoricals with synonym tables; lists split into one row per value; sizes get a number).
+| key | unit | meaning |
+|---|---|---|
+| rated_flow | gpm | filter flow at a filtration rate: value is {"gpm_per_sqft": 12, "gpm": 1080} |
+| uv_rated_flow | gpm | UV system flow at a dose: {"mj_per_cm2": 40, "gpm": 113} |
+| curve_key | — | pump-curve letter on the performance chart |
+| enclosure_rating | — | NEMA/IP rating of a drive enclosure |
+| motor_class | — | motor insulation/efficiency class as printed |
+| tank_length | in | |
+| total_media | lb | total media charge |
+| open_area | sq in | drain/grate open area |
+| max_salinity | ppm | |
+| lid_color | — | |
+| body_color | — | |
+| item_type | — | what the part is, when the description is only a type word |
+| shape | — | |
+| packaging | — | bulk, display box, clamshell… |
+| epa_number | — | EPA registration number |
+| sign_text | — | wording printed on a sign |
+| doe_dedicated_purpose_pool_pump | — | DOE regulation mark |
+| heat_exchanger_efficiency | % | |
+| strainer | — | with / without |
+| pump_system | — | |
+| refrigerant | — | |
+| light_count | — | |
+| dim_a … dim_e | in | lettered dimensions from a drawing whose key the page prints |
+| fitting_type | — | |
+| valve_type | — | |
+| installation | — | concrete / vinyl / fiberglass installation style |
+| variant_of | — | the plain SKU this lug/variant SKU is a version of |
+| variant_with_lug | — | the with-lug SKU of a plain skimmer SKU |
+| upgrade_for | — | Pleatco ULTRA quick-reference rows (old numbers this upgrade replaces) |
+| fits_filter_models | — | filter models a cartridge/grid fits, as printed |
+| protecta | — | Protecta lid option |
+| ref_no | — | reference number column |
+| brightness_levels | — | |
+| hole_pattern | — | |
+| flange_size | in | |
+| vessel_dimensions | — | as printed |
+| enclosure_dimensions | — | as printed |
+| lens_diameter | in | |
+| style | — | |
+| top_style | — | |
+| depth | in | |
+| function | — | |
+| resistance | — | ohms as printed |
+| ports | — | |
+| tank_style | — | |
+| flow_rate_floor | gpm | drain flow as floor drain |
+| flow_rate_wall | gpm | drain flow as wall drain |
+| x_use | — | descriptive use text that was printed in a type column |
+
+Remaining `x_` keys are long-tail attributes kept as printed (see the `attributes` table for the list).

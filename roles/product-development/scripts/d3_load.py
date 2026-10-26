@@ -12,7 +12,11 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import d3_normalize  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / "data/catalog.db"
@@ -28,6 +32,17 @@ DROP TABLE IF EXISTS fitment;
 DROP TABLE IF EXISTS reference_tables;
 DROP TABLE IF EXISTS data_issues;
 DROP TABLE IF EXISTS attributes;
+DROP TABLE IF EXISTS cross_references;
+DROP TABLE IF EXISTS replacements;
+DROP TABLE IF EXISTS family_links;
+DROP TABLE IF EXISTS model_parts;
+CREATE TABLE cross_references (mpn TEXT NOT NULL, brand TEXT, number TEXT NOT NULL, pdf_page INTEGER NOT NULL);
+CREATE TABLE replacements (old_mpn TEXT NOT NULL, mpn TEXT NOT NULL, raw TEXT, pdf_page INTEGER NOT NULL);
+CREATE TABLE family_links (family_id TEXT NOT NULL, linked_to TEXT NOT NULL, source TEXT NOT NULL);
+CREATE TABLE model_parts (
+    model_mpn TEXT NOT NULL, part_mpn TEXT NOT NULL, family_id TEXT NOT NULL, item TEXT, qty REAL,
+    condition TEXT, pdf_page INTEGER NOT NULL
+);
 DROP TABLE IF EXISTS product_prices;
 CREATE TABLE product_prices (
     mpn TEXT PRIMARY KEY, us_list REAL, can_list REAL, price_note TEXT, basis TEXT NOT NULL, pages TEXT NOT NULL
@@ -181,8 +196,76 @@ def merge_family(fams: dict, f: dict) -> None:
         cur["pages"].append(f["page"])
 
 
+def attr_units() -> dict[str, str]:
+    out = {}
+    for line in (ROOT / "docs/data-v3-attributes.md").read_text().splitlines():
+        m = re.match(r"\| ([a-z_0-9 …]+) \| ([^|]*) \|", line)
+        if m and m.group(1) != "key" and m.group(2).strip() not in ("", "—"):
+            for k in re.split(r"\s*…\s*", m.group(1)):  # "dim_a … dim_e"
+                out[k.strip()] = m.group(2).strip()
+    for k in ("dim_b", "dim_c", "dim_d"):
+        out.setdefault(k, "in")
+    return out
+
+
+def build_structured(con: sqlite3.Connection, active: set[str]) -> None:
+    """Tables a shop app queries directly: competitor numbers, old numbers, family links, model -> parts."""
+    for m, v, pg in con.execute("SELECT mpn, value, pdf_page FROM specs WHERE attr = 'cross_reference'").fetchall():
+        for item in (json.loads(v) if v.startswith("[") else [v]):
+            brand, _, number = str(item).partition(":")
+            if not number:
+                brand, number = None, str(item)
+            con.execute("INSERT INTO cross_references VALUES (?,?,?,?)", (m, brand.strip() if brand else None, number.strip(), pg))
+    for m, v, raw, pg in con.execute("SELECT mpn, value, raw, pdf_page FROM specs WHERE attr = 'replaces'").fetchall():
+        for old in (json.loads(v) if v.startswith("[") else [v]):
+            con.execute("INSERT INTO replacements VALUES (?,?,?,?)", (str(old).strip(), m, raw, pg))
+    fam_ids = {f for (f,) in con.execute("SELECT id FROM families")}
+    for f, parent in con.execute("SELECT id, parent FROM families WHERE parent IS NOT NULL").fetchall():
+        if parent in fam_ids:
+            con.execute("INSERT INTO family_links VALUES (?,?,'parent')", (f, parent))
+    links = ROOT / "data/work/pentair/d3/family_links.json"
+    if links.exists():  # parts-list families linked to their whole-goods line (reviewed with page evidence)
+        for l in json.loads(links.read_text()):
+            for target in as_list(l.get("link_to")):
+                if target in fam_ids:
+                    con.execute("INSERT INTO family_links VALUES (?,?,'parts-page heading')", (l["family"], target))
+    up, down = {}, {}
+    for f, t in con.execute("SELECT DISTINCT family_id, linked_to FROM family_links").fetchall():
+        up.setdefault(f, set()).add(t)
+        down.setdefault(t, set()).add(f)
+    def closure(start: str, edges: dict) -> set[str]:
+        seen, todo = set(), [start]
+        while todo:
+            x = todo.pop()
+            for y in edges.get(x, ()):
+                if y not in seen:
+                    seen.add(y)
+                    todo.append(y)
+        return seen
+    models_in = {}
+    for m, f in con.execute("SELECT DISTINCT mpn, family_id FROM product_families WHERE role = 'model' AND family_id IS NOT NULL"):
+        models_in.setdefault(f, set()).add(m)
+    rows, seen = [], set()
+    for part, fids, mpns, item, qty, cond, pg in con.execute(
+            "SELECT part_mpn, family_ids, mpns, item, qty, condition, pdf_page FROM fitment").fetchall():
+        targets = set()
+        for f in json.loads(fids):
+            targets |= {f} | closure(f, up) | closure(f, down)
+        for f in targets:
+            for m in models_in.get(f, ()):
+                if (m, part, f, pg) not in seen and m != part:
+                    seen.add((m, part, f, pg))
+                    rows.append((m, part, f, item, qty, cond, pg))
+        for m in json.loads(mpns):  # a parts list headed by pump part numbers
+            if m in active and (m, part, "", pg) not in seen and m != part:
+                seen.add((m, part, "", pg))
+                rows.append((m, part, "", item, qty, cond, pg))
+    con.executemany("INSERT INTO model_parts VALUES (?,?,?,?,?,?,?)", rows)
+
+
 def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
     active = {m for (m,) in con.execute("SELECT mpn FROM products WHERE status = 'active'")}
+    units = attr_units()
     con.executescript(SCHEMA)
     fams: dict[str, dict] = {}
     dropped = 0
@@ -207,13 +290,15 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
                     specs += [dict(s, value=v) for v in s["value"]]
                 else:
                     specs.append(s)
-            for s in specs:
-                key = (s["attr"], text(s["value"]))
+            for s in (n for s0 in specs for n in d3_normalize.normalize(s0)):
+                key = d3_normalize.canonical_key(m, s)
                 if key in seen:
                     continue
                 seen.add(key)
+                vnum = s.get("value_num", num(s["value"]))
+                unit = s.get("unit") or (units.get(s["attr"]) if vnum is not None else None)
                 con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)",
-                            (m, s["attr"], text(s["value"]), num(s["value"]), s.get("unit"), s.get("raw"), pg))
+                            (m, s["attr"], text(s["value"]), vnum, unit, s.get("raw"), pg))
             pr = p.get("prices") or {}
             if pr or p.get("price_note"):
                 con.execute("INSERT INTO prices VALUES (?,?,?,?,?)",
@@ -239,6 +324,12 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
                      json.dumps(f["features"], ensure_ascii=False), json.dumps(f["notes"], ensure_ascii=False), json.dumps(f["parts_pages"]), json.dumps(sorted(f["pages"]))))
     for row in load_replacements(active):
         con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)", row)
+    # "Set of N" in a title is Matthew's pack rule from phase 2: the printed count becomes pack_qty
+    have_pack = {m for (m,) in con.execute("SELECT DISTINCT mpn FROM specs WHERE attr = 'pack_qty'")}
+    for m, title, page in con.execute("SELECT mpn, title, title_pdf_page FROM products WHERE status = 'active'").fetchall():
+        mt = re.search(r"\bSet of (\d+)\b", title or "")
+        if mt and m not in have_pack:
+            con.execute("INSERT INTO specs VALUES (?,?,?,?,?,?,?)", (m, "pack_qty", mt.group(1), float(mt.group(1)), None, title, page))
     certs = ROOT / "data/work/pentair/d3/cert_marks.json"
     if certs.exists():  # Matthew 2026-10-26: lone digits under Certifications are the page's footnote marks
         for c in json.loads(certs.read_text()):
@@ -261,6 +352,7 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
                                    HAVING count(DISTINCT us_list) > 1""").fetchall():
         con.execute("INSERT INTO data_issues VALUES ('price_check', NULL, ?, ?)",
                     (m, f"Different list prices printed on different pages (page: US / Can): {pages}. Which is current?"))
+    build_structured(con, active)
     controlled = {}
     for line in (ROOT / "docs/data-v3-attributes.md").read_text().splitlines():
         m = re.match(r"\| ([a-z_0-9]+) \| ([^|]*) \|([^|]*)\|", line)
@@ -272,7 +364,7 @@ def load(con: sqlite3.Connection, out_dir: Path = OUT) -> dict[str, int]:
         con.execute("INSERT INTO attributes VALUES (?,?,?,?,?)", (k, unit, meaning, int(k in controlled), used.get(k, 0)))
     con.commit()
     counts = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0]
-              for t in ("attributes", "product_prices", "families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}
+              for t in ("attributes", "product_prices", "cross_references", "replacements", "family_links", "model_parts", "families", "product_families", "specs", "prices", "fitment", "reference_tables", "data_issues")}
     counts["dropped_not_active"] = dropped
     return counts
 
