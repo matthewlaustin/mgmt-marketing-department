@@ -93,3 +93,9 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   `scripts/r2_upload.py` is ready (dry run: 1,193 files, 1.65 GB). Follow-up, not yet: "can you search the web
   for images and download them for all these skus?" — assessed in chat; needs an amendment to the
   manufacturer-only rule before any retailer image is taken.
+- R2 set up by Matthew (bucket pool-geek-data-specialist, public r2.dev URL). `scripts/r2_upload.py` uploaded
+  1,193 files (1.65 GB); images.object_key/public_url and documents.object_key/public_url filled locally from
+  data/work/pentair/r2_objects.json (web_media_load.py apply_r2). Columns added in Neon mfr_catalog.
+- Matthew (2026-10-26): "Pool Geek Products is a separate instance with pretty close to production data in it."
+  Neon writes paused. Checked: mfr_catalog (22 tables, 31 MB) has no foreign keys or views shared with public
+  (19 app tables, 90 MB). Recommended moving the catalog to its own Neon project; asked on the review page (d4).

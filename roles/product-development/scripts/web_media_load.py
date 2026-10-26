@@ -27,10 +27,10 @@ DROP TABLE IF EXISTS document_links;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS image_links;
 CREATE TABLE documents (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, title TEXT NOT NULL, kind TEXT NOT NULL, lang TEXT NOT NULL,
-    local_file TEXT, bytes INTEGER);
+    local_file TEXT, bytes INTEGER, object_key TEXT, public_url TEXT);
 CREATE TABLE document_links (document_id INTEGER NOT NULL, family_id TEXT, mpn TEXT, page_url TEXT NOT NULL, via TEXT NOT NULL);
 CREATE TABLE images (id INTEGER PRIMARY KEY, url TEXT NOT NULL UNIQUE, alt TEXT, role TEXT NOT NULL, local_file TEXT,
-    width INTEGER, height INTEGER, bytes INTEGER, label TEXT, people INTEGER, background TEXT);
+    width INTEGER, height INTEGER, bytes INTEGER, label TEXT, people INTEGER, background TEXT, object_key TEXT, public_url TEXT);
 CREATE TABLE image_links (image_id INTEGER NOT NULL, family_id TEXT, mpn TEXT, page_url TEXT NOT NULL, via TEXT NOT NULL);
 """
 
@@ -62,6 +62,19 @@ def load_charts(con: sqlite3.Connection) -> int:
         for f in (json.loads(fids[0]) if fids and fids[0] else []):
             con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (cur.lastrowid, f, None, f"catalog p{m['page']}", "chart printed for the line"))
             n += 1
+    return n
+
+
+def apply_r2(con: sqlite3.Connection) -> int:
+    """Object keys and public URLs from scripts/r2_upload.py (data/work/pentair/r2_objects.json): our own copy
+    of each file in the Cloudflare R2 bucket (Matthew 2026-10-26)."""
+    f = ROOT / "data/work/pentair/r2_objects.json"
+    if not f.exists():
+        return 0
+    n = 0
+    for local, o in json.loads(f.read_text()).items():
+        for t in ("images", "documents"):
+            n += con.execute(f"UPDATE {t} SET object_key = ?, public_url = ? WHERE local_file = ?", (o["key"], o.get("url"), local)).rowcount
     return n
 
 
@@ -184,6 +197,7 @@ def load(con: sqlite3.Connection) -> dict[str, int]:
                 con.execute("INSERT INTO document_links VALUES (?,?,?,?,?)", (doc_id[url], f, None, url, "the document's text names the line"))
     load_charts(con)
     load_diagrams(con, active)
+    apply_r2(con)
     con.commit()
     out = {t: con.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in ("documents", "document_links", "images", "image_links")}
     out["families_with_docs"] = con.execute("SELECT count(DISTINCT family_id) FROM document_links WHERE family_id IS NOT NULL").fetchone()[0]
