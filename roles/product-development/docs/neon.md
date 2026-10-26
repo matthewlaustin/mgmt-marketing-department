@@ -1,8 +1,9 @@
 # Neon copy of the catalog
 
-The catalog database (`data/catalog.db`) is mirrored to Neon, project **Pool Geek® Products**
-(`nameless-heart-80832994`), database `neondb`, in its own schema **`mfr_catalog`**. Nothing
-outside that schema is touched, and drizzle (which manages `public`) doesn't know about it.
+The catalog database (`data/catalog.db`) is mirrored to Neon, project **Pool Geek® Manufacturer Catalog**
+(`still-union-48288873`, aws-us-east-2), database `neondb`, schema **`mfr_catalog`**. It moved there on
+2026-10-26 from Pool Geek® Products (`nameless-heart-80832994`), which holds near-production app data:
+never load into that project.
 
 | table | rows | what |
 |---|---|---|
@@ -20,6 +21,9 @@ outside that schema is touched, and drizzle (which manages `public`) doesn't kno
 endpoint. Get the connection string from the Neon console (never commit it).
 
 ## Schema (created once)
+
+The full current schema, every table and index, is `docs/neon_schema.sql`. The statements below are the
+original notes, kept for the column meanings.
 
     CREATE SCHEMA mfr_catalog;
     CREATE TABLE mfr_catalog.products (mpn text PRIMARY KEY, brand text NOT NULL, title text NOT NULL,

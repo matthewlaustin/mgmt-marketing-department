@@ -1,4 +1,4 @@
-"""Load data/catalog.db into the Neon schema mfr_catalog (Pool Geek® Products project).
+"""Load data/catalog.db into the Neon schema mfr_catalog (Pool Geek® Manufacturer Catalog project; never Pool Geek® Products).
 
   NEON_URL=postgresql://... python3 scripts/load_neon.py
 
@@ -28,7 +28,9 @@ BATCH = 1000
 D3_TABLES = {"attributes": (), "product_prices": (), "families": ("features", "notes", "parts_pages", "pages"), "product_families": (), "specs": (),
              "prices": (), "fitment": ("family_ids", "models", "mpns"),
              "reference_tables": ("family_ids", "columns", "rows"), "data_issues": (),
-             "documents": (), "document_links": (), "images": (), "image_links": (), "derived_specs": ()}
+             "documents": (), "document_links": (), "images": (), "image_links": (), "derived_specs": (),
+             # query tables from the data review; missing here until 2026-10-26, so they were empty in Neon
+             "cross_references": (), "replacements": (), "family_links": (), "model_parts": ()}
 
 
 def post(url: str, body: dict) -> dict:
@@ -58,7 +60,7 @@ def rows(con: sqlite3.Connection, table: str) -> list[dict]:
 def main() -> int:
     url = os.environ.get("NEON_URL")
     if not url:
-        print("set NEON_URL to the Pool Geek® Products connection string", file=sys.stderr)
+        print("set NEON_URL to the Pool Geek® Manufacturer Catalog connection string (never Pool Geek® Products)", file=sys.stderr)
         return 1
     con = sqlite3.connect(DB)
     products = rows(con, "products")

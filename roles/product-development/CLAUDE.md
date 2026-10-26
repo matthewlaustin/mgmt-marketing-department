@@ -16,6 +16,8 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
   discontinued, the website wins.
 - Problems that need a person go in `reports/needs-attention.md`; move on to the next brand.
 - Run `python3 -m pytest -q` before each commit that changes code.
+- Neon: load only into the project Pool Geek® Manufacturer Catalog. Never write to Pool Geek® Products; it
+  holds near-production app data (Matthew, 2026-10-26).
 
 ## Matthew's preferences (added with his permission)
 - Send reports, results and questions for Matthew as an Artifact page he can review in the Claude desktop or iOS app, with places to answer questions and leave follow-ups in the page (read answers back with ArtifactData). Keep the chat reply short and link the page.

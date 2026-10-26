@@ -99,3 +99,9 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
 - Matthew (2026-10-26): "Pool Geek Products is a separate instance with pretty close to production data in it."
   Neon writes paused. Checked: mfr_catalog (22 tables, 31 MB) has no foreign keys or views shared with public
   (19 app tables, 90 MB). Recommended moving the catalog to its own Neon project; asked on the review page (d4).
+- Matthew (2026-10-26 18:50, d4): move the catalog to its own Neon project. Created Pool Geek® Manufacturer
+  Catalog (still-union-48288873, aws-us-east-2, Postgres 18); schema copied from the live tables
+  (docs/neon_schema.sql); loaded and verified (22 tables, every count equals data/catalog.db). Fixed a gap:
+  cross_references, replacements, family_links and model_parts were never in load_neon.py, so they were empty
+  in Neon until now. CLAUDE.md now says never load into Pool Geek® Products. Removing the stale copy there
+  (DROP SCHEMA mfr_catalog CASCADE) waits for Matthew's answer on the review page (d5).
