@@ -66,21 +66,31 @@ def load_charts(con: sqlite3.Connection) -> int:
 
 
 def load_diagrams(con: sqlite3.Connection, active: set[str]) -> int:
-    """Matthew 2026-10-26: for now a part's picture is the exploded diagram of the parts list it is on."""
+    """Matthew 2026-10-26: for now a part's picture is the exploded diagram of the parts list it is on.
+    diagrams.json: page -> {heading, diagrams: [{file, width, height, bytes, box}], from_page?}; a continuation page
+    reuses the drawing of the page it continues (from_page), so one image row serves both pages."""
     meta_file = ROOT / "data/work/pentair/d3/diagrams.json"
     if not meta_file.exists():
         return 0
     meta = {int(k): v for k, v in json.loads(meta_file.read_text()).items()}
     n = 0
+    ids: dict[int, list[int]] = {}
     for page, m in sorted(meta.items()):
-        cur = con.execute("INSERT INTO images (url, alt, role, local_file, width, height, bytes) VALUES (?,?,?,?,?,?,?)",
-                          (f"catalog://pentair-2025-2026/p{page:03d}/diagram", f"Exploded parts diagram, catalog page {page - 2}", "diagram",
-                           m["file"], m["width"], m["height"], m["bytes"]))
-        iid = cur.lastrowid
+        src = m.get("from_page", page)
+        if src not in ids:
+            ids[src] = []
+            for k, d in enumerate(m["diagrams"], 1):
+                cur = con.execute("INSERT INTO images (url, alt, role, local_file, width, height, bytes) VALUES (?,?,?,?,?,?,?)",
+                                  (f"catalog://pentair-2025-2026/p{src:03d}/diagram/{k}",
+                                   f"Exploded parts diagram{' ' + str(k) if len(m['diagrams']) > 1 else ''}, catalog page {src - 2}", "diagram",
+                                   d["file"], d["width"], d["height"], d["bytes"]))
+                ids[src].append(cur.lastrowid)
         for (part,) in con.execute("SELECT DISTINCT part_mpn FROM fitment WHERE pdf_page = ?", (page,)).fetchall():
             if part in active:
-                con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (iid, None, part, f"catalog p{page}", "catalog exploded diagram of the part's list"))
-                n += 1
+                for iid in ids[src]:
+                    con.execute("INSERT INTO image_links VALUES (?,?,?,?,?)", (iid, None, part, f"catalog p{page}",
+                                "catalog exploded diagram of the part's list" + (f" (drawing on p{src})" if src != page else "")))
+                    n += 1
     return n
 
 

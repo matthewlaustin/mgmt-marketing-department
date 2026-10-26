@@ -70,3 +70,18 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   pentair.com pages marked Discontinued are discontinued (owner_decisions.json).
 - Next: add the SKUs that current pentair.com pages list but the catalog never printed (88), then the
   discontinued-with-parts lines, with titles under docs/title-rules-v2.md.
+
+## 2026-10-26 (later): parts diagrams re-done, brochures from FlippingBook
+- Matthew: "The parts diagram still doesn't look right. Review them all as rendered and figure out what is wrong."
+  Found: 124 of the 299 "diagram" pages were accessory tables with no exploded view; crops followed the text
+  layout (side tab, Prop 65 frame, table bars, blank right third kept); drawings beside/below tables missed.
+  Now `scripts/diagram_crops.py` finds each drawing from the PDF's curve objects and embedded artwork, masks
+  table cells, headings and the Prop 65 box, renders at 300 dpi and trims: 166 images from 146 pages, 14
+  "(CONT'D)" pages reuse their drawing, 15 table-only pages and 124 accessory pages get none.
+- Brochures, sell sheets: pentair.com embeds them as FlippingBook flipbooks (`a.fbo-embed`), not PDF links.
+  `web_media.py` records them (kinds brochure / sell sheet, host flippingbook); `scripts/fbo_fetch.js` drives
+  the viewer's Download button for Pentair's original PDF (40 publications). Kept pending Matthew's answer on
+  the review page (reports/diagram-review.html, question d3). Owner's manuals were already captured as the
+  page's "User's Guide".
+- Storage: all downloaded media lives in the container's gitignored data/raw/; an R2 bucket (or similar) is
+  needed. Asked on the review page (d2) with the secret names I would read.

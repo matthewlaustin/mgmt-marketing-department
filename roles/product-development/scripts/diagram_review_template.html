@@ -1,0 +1,160 @@
+<title>Pentair Diagrams and Brochures</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column. Figures, what changed with a before/after, questions answered in place, the brochures found, then every diagram as rendered. */
+:root {
+  --bg: #f3f7f8; --surface: #ffffff; --ink: #0f2a33; --muted: #557079; --line: #d4e1e4;
+  --accent: #0b8a8f; --accent-soft: #dff1f1; --warn: #a5560b; --warn-soft: #fbeedd; --ok: #1d7a46;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 820px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--display); font-size: 30px; line-height: 1.15; margin: 4px 0 6px; text-wrap: balance; }
+h2.sec { font-family: var(--display); font-size: 21px; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-size: 16px; margin: 0; }
+.lede, .note { color: var(--muted); margin: 0; max-width: 66ch; }
+.note { font-size: 14px; }
+section.block { display: grid; gap: 14px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--muted); }
+ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; } ul.plain li { max-width: 70ch; }
+.ba { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .ba { grid-template-columns: 1fr 1fr; } }
+.ba figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px; display: grid; gap: 6px; }
+.ba img { width: 100%; height: auto; display: block; }
+.ba figcaption { font-size: 13px; color: var(--muted); }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; }
+.q .qh { font-weight: 600; } .q .ctx { font-size: 14px; color: var(--muted); margin: 0; } .q.done { border-color: var(--accent); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+button.act { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); text-align: left; }
+button.act[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+button.act:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { font: inherit; font-size: 14px; width: 100%; min-height: 56px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical; }
+.saved { font-size: 13px; color: var(--muted); margin: 0; min-height: 1.2em; } .saved.ok { color: var(--ok); } .saved.err { color: var(--warn); }
+.docs { display: grid; gap: 4px; font-size: 14px; }
+.docs a { color: var(--accent); text-decoration: none; } .docs a:hover { text-decoration: underline; }
+.docs .k { font-size: 12px; color: var(--muted); }
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.gal figure { margin: 0; display: grid; gap: 3px; }
+.gal img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 6px; cursor: zoom-in; }
+.gal figcaption { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+dialog { border: none; border-radius: 10px; padding: 8px; max-width: min(96vw, 1200px); background: #fff; }
+dialog img { max-width: 100%; max-height: 86vh; display: block; }
+dialog::backdrop { background: rgba(0,0,0,.6); }
+.list { display: grid; gap: 8px; }
+footer { font-size: 12px; color: var(--muted); }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pool Geek · Pentair · diagrams, brochures, storage</div>
+    <h1>Parts diagrams, brochures and where to keep the files</h1>
+    <p class="lede">What was wrong with the parts diagrams and how they are rendered now, the brochures and sell sheets found on pentair.com, and the storage question. Three answers to give; every diagram is at the bottom to check.</p>
+  </header>
+
+  <section class="block"><h2 class="sec">Figures</h2><div class="stats" id="stats"></div></section>
+
+  <section class="block"><h2 class="sec">What was wrong with the diagrams</h2>
+    <ul class="plain">
+      <li><b>Most "diagrams" were not diagrams.</b> Any catalog page with a parts row got a render, and 124 of the 299 pages were accessory tables on whole-goods pages (filters, heaters, automation) with no exploded view at all. Those parts now carry no diagram.</li>
+      <li><b>The crop followed the page text, not the drawing.</b> It kept the coloured side tab, the Proposition 65 box frame with its warning triangles, the black table-header bars and a blank right third, so the drawing came out small and framed by junk.</li>
+      <li><b>Drawings beside or below a table were missed</b> (the lighting pages, the vacuums, the heat pumps) and 22 table-only continuation pages got whole-page renders.</li>
+    </ul>
+    <h3>What changed</h3>
+    <ul class="plain">
+      <li>Each drawing is found from the PDF's own vector lines and embedded artwork, so the crop is the drawing plus its callout numbers and captions. Tables, headings, side tabs and the Prop 65 box are painted out where a scanned drawing runs under them.</li>
+      <li>Rendered at 300 dpi from the vectors and trimmed to the ink, so it is sharp at any size. Pages with several drawings give several images; a "(CONT'D)" page reuses the drawing of the page it continues.</li>
+    </ul>
+    <div class="ba">
+      <figure><img id="before" alt="The IntelliPro3 parts diagram as it was rendered before: small drawing, empty Prop 65 frame at right, table bars at the bottom"><figcaption>Before: IntelliFlo3 / IntelliPro3 VSF page, catalog page 429.</figcaption></figure>
+      <figure><img id="after" alt="The same diagram now: the exploded view alone, trimmed and sharp"><figcaption>After: the same page.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="block"><h2 class="sec">Questions</h2>
+    <p class="note">Tap an answer; add a note if it needs one. <span id="qcount"></span></p>
+    <div id="questions" class="list" style="gap:12px"></div>
+  </section>
+
+  <section class="block"><h2 class="sec">Brochures and sell sheets found</h2>
+    <p class="note" id="docnote"></p><div id="docs" class="docs"></div></section>
+
+  <section class="block"><h2 class="sec">Every diagram as rendered</h2>
+    <p class="note" id="galnote"></p><div id="gal" class="gal"></div></section>
+
+  <section class="block q"><div class="qh">Anything else?</div><textarea id="followup" placeholder="Follow-ups, or pages whose diagram still looks wrong"></textarea><p class="saved" id="fu-st"></p></section>
+  <footer>Diagrams are rendered from the Pentair 2025-2026 Pool Product Catalog PDF; page numbers are the printed ones. Brochures and sell sheets are Pentair's own publications, embedded on pentair.com product pages through FlippingBook.</footer>
+</div>
+<dialog id="dlg"><img id="dlgimg" alt=""></dialog>
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id), S = DATA.S, n = (x) => Number(x).toLocaleString();
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+[[S.images, "diagram images from " + n(S.pages_drawn) + " catalog pages (was 299 page renders)"],
+ [S.parts_with_diagram, "of " + n(S.parts) + " parts show their exploded view"],
+ [S.pages_no_table, "pages were accessory tables, not parts pages"],
+ [S.fbo_docs, "brochures and sell sheets found on pentair.com (" + n(S.fbo_disk) + " downloaded)"],
+ [S.docs_total, "documents in all, " + n(S.docs_disk) + " on disk"]]
+ .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
+$("before").src = DATA.before; $("after").src = DATA.after;
+
+const QUESTIONS = [
+  { id: "d1", h: "Do the parts diagrams look right now?", c: "Every one of the " + n(S.images) + " renders is in the gallery below (tap to enlarge). If some still look wrong, name the page numbers in the note.", o: ["Yes, use these", "Some are wrong (see note)"] },
+  { id: "d2", h: "Set up a Cloudflare R2 bucket for the photos, PDFs and diagrams?", c: "Yes, we need one. Everything downloaded so far (" + S.disk + " of product photos, manuals, brochures, diagram and chart renders) sits in this session's container, which is wiped when idle; the Git repo holds only the data and the links. R2 is the right fit: S3-compatible, no egress fees when your site serves the files, about 2 GB today so storage costs cents a month. To use it I need, as environment secrets (not pasted in chat): R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET and, if you set one, R2_PUBLIC_URL. I would then upload every file under a key like pentair/images/<sha>.jpg and store that key and URL on each images and documents row in Neon.", o: ["Yes, R2 (recommended)", "Use Vercel Blob instead", "Hold off for now"] },
+  { id: "d3", h: "Keep the brochure and sell-sheet PDFs taken from the FlippingBook viewer?", c: "pentair.com embeds brochures and sell sheets as FlippingBook flipbooks rather than PDF links, which is why the parser missed them. The viewer's own Download button hands out Pentair's original PDF (for example STARITE_INTELLIPRO3_BROCHURE_FEB2023.pdf), so the files are the manufacturer's, served by a third party. " + n(S.fbo_disk) + " of " + n(S.fbo_docs) + " are on disk and linked to their product lines.", o: ["Yes, keep them", "Link to the flipbook only, no copies"] },
+];
+const answers = {}; let db = null;
+function qCount() { $("qcount").textContent = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length + " of " + QUESTIONS.length + " answered."; }
+QUESTIONS.forEach((q) => {
+  const box = el("div", "q"); box.id = "box-" + q.id; box.append(el("div", "qh", q.h), el("p", "ctx", q.c));
+  const opts = el("div", "opts"); const btns = [];
+  q.o.forEach((o) => { const b = el("button", "act", o); b.type = "button"; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => saveAns(q.id, { choice: o })); btns.push(b); opts.append(b); });
+  const ta = el("textarea"); ta.id = "note-" + q.id; ta.placeholder = "Note (optional)"; ta.setAttribute("aria-label", "Note for: " + q.h);
+  let t; ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => saveAns(q.id, { note: ta.value }), 800); });
+  const st = el("p", "saved"); st.id = "st-" + q.id; box.append(opts, ta, st); $("questions").append(box);
+  box.paint = () => { const a = answers[q.id] || {}; btns.forEach((b) => b.setAttribute("aria-pressed", String(a.choice === b.textContent))); box.classList.toggle("done", !!a.choice); if (document.activeElement !== ta) ta.value = a.note || ""; };
+});
+qCount();
+const writing = {};
+async function put(path, data, st) {
+  if (!db) { st.textContent = "Answers can't be saved from this view."; st.className = "saved err"; return; }
+  if (writing[path]) { writing[path].pending = true; return; }
+  writing[path] = { pending: false }; st.textContent = "Saving…"; st.className = "saved";
+  try { do { writing[path].pending = false; await db.doc(path).set(data()); } while (writing[path].pending); st.textContent = "Saved"; st.className = "saved ok"; }
+  catch (e) { st.textContent = e && e.code === "not_granted" ? "You can read this page but not save here." : "Couldn't save. Try again in a moment."; st.className = "saved err"; }
+  finally { delete writing[path]; }
+}
+function saveAns(id, patch) { const q = QUESTIONS.find((x) => x.id === id); answers[id] = Object.assign({}, answers[id], patch, { question: q.h, updatedAt: new Date().toISOString() }); $("box-" + id).paint(); qCount(); put("diagram_answers/" + id, () => answers[id], $("st-" + id)); }
+let fuT; $("followup").addEventListener("input", () => { clearTimeout(fuT); fuT = setTimeout(() => put("diagram_followups/general", () => ({ text: $("followup").value, updatedAt: new Date().toISOString() }), $("fu-st")), 800); });
+
+// brochures
+$("docnote").textContent = DATA.D.length + " publications on " + S.fbo_pages + " product pages: " + S.fbo_kinds + ". Each is linked to the product line of the page it sits on and to any line its text names.";
+DATA.D.forEach(([title, kind, lang, url, lines]) => { const r = el("div"); const a = el("a", null, title); a.href = url; a.target = "_blank"; a.rel = "noopener"; r.append(a, el("span", "k", " · " + kind + " · " + lang + (lines ? " · " + lines : ""))); $("docs").append(r); });
+
+// gallery
+$("galnote").textContent = DATA.G.length + " images, by printed catalog page. Tap one to see it full size.";
+const dlg = $("dlg"), dlgimg = $("dlgimg");
+DATA.G.forEach(([label, thumb, full]) => { const f = el("figure"); const im = el("img"); im.src = thumb; im.alt = "Parts diagram, catalog page " + label; im.loading = "lazy";
+  im.addEventListener("click", () => { dlgimg.src = full || thumb; dlgimg.alt = im.alt; dlg.showModal(); }); f.append(im, el("figcaption", null, "p. " + label)); $("gal").append(f); });
+dlg.addEventListener("click", () => dlg.close());
+
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { document.querySelectorAll(".saved").forEach((s) => { s.textContent = "Answers can't be saved from this view."; s.className = "saved err"; }); return; }
+  db.collection("diagram_answers").onSnapshot((snap) => { snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); }); QUESTIONS.forEach((q) => $("box-" + q.id).paint()); qCount(); }, () => {});
+  db.doc("diagram_followups/general").onSnapshot((d) => { const v = d && d.exists ? d.data() : null; if (v && document.activeElement !== $("followup")) $("followup").value = v.text || ""; }, () => {});
+})();
+</script>

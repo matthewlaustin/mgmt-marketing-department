@@ -80,7 +80,7 @@ def main(mpn: str) -> None:
                       WHERE il.family_id = ? AND i.role = 'chart' AND i.local_file IS NOT NULL GROUP BY i.id ORDER BY i.id""", fam_id)
     docs = q("""SELECT d.title, d.kind, d.lang, d.url FROM document_links dl JOIN documents d ON d.id = dl.document_id
                 WHERE dl.family_id = ? AND d.kind <> 'form' GROUP BY d.id ORDER BY d.kind, d.lang, d.title""", fam_id)
-    diagram_file = next((f for (f,) in q("SELECT local_file FROM images WHERE role='diagram' AND url LIKE ?", f"%/p{431:03d}/%")), None)
+    diagram_files = [f for (f,) in q("SELECT local_file FROM images WHERE role='diagram' AND url LIKE ? ORDER BY url", f"%/p{431:03d}/%")]
     thp = S["thp"][0][0]
     hp_tag = f"{float(thp):g} HP"  # the parts list splits rows by HP ("1.5 HP" / "3.0 HP")
     this_hp = {f"{float(thp):.1f} HP", f"{float(thp):g} HP"}
@@ -295,7 +295,7 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
 {header('Replacement parts')}
 <div><a class="back" href="index.html">← Back to the pump</a></div>
 <div><div class="sku">Replacement parts for {e(brand)} {e(mpn)}</div><h1>{e(short)}: parts diagram and parts list</h1></div>
-<figure class="diagram"><div class="sheet"><img src="{data_uri(ROOT / diagram_file) if diagram_file else data_uri(SCRATCH / 'p431_diagram.png')}" alt="Exploded parts diagram of the IntelliFlo3 and IntelliPro3 VSF pump with numbered items 1 to 36"></div><figcaption class="note">Pentair's exploded view, catalog page {PRINTED(431)}. Item numbers match the list below; on a phone, scroll the drawing sideways.</figcaption></figure>
+<figure class="diagram">{''.join(f'<div class="sheet"><img src="{data_uri(ROOT / f)}" alt="Exploded parts diagram of the IntelliFlo3 and IntelliPro3 VSF pump with numbered items 1 to 36"></div>' for f in diagram_files)}<figcaption class="note">Pentair's exploded view, catalog page {PRINTED(431)}. Item numbers match the list below; on a phone, scroll the drawing sideways.</figcaption></figure>
 <div class="controls">
   <label><input type="checkbox" id="only-this" checked> Only parts for this {e(hp_tag)} pump</label>
   <label>Colour <select id="colour"><option value="">both (almond and black)</option><option value="almond">almond</option><option value="black">black</option></select></label>

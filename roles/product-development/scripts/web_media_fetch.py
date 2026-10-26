@@ -32,7 +32,8 @@ DOCS = ROOT / "data/raw/pentair/docs"
 
 
 def doc_path(url: str) -> Path:
-    name = re.sub(r"[^A-Za-z0-9._-]+", "-", url.rsplit("/", 1)[-1])[:80]
+    m = re.match(r"https://online\.flippingbook\.com/view/(\d+)", url)
+    name = f"fbo-{m.group(1)}.pdf" if m else re.sub(r"[^A-Za-z0-9._-]+", "-", url.rsplit("/", 1)[-1])[:80]
     return DOCS / f"{hashlib.sha1(url.encode()).hexdigest()[:10]}-{name}"
 
 

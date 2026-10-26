@@ -28,7 +28,8 @@ KINDS = [  # first match wins
     (r"install", "installation guide"),
     (r"user'?s? guide|user manual|owner'?s? manual|operation|operating", "user guide"),
     (r"quick (start|reference|guide)", "quick start"),
-    (r"brochure|flyer|sell sheet|catalog|portfolio|lookbook", "brochure"),
+    (r"sell sheet|hoja de venta|fiche de vente", "sell sheet"),
+    (r"brochure|flyer|folleto|catalog|portfolio|lookbook", "brochure"),
     (r"data ?sheet|spec(ification)? sheet|tech(nical)? (sheet|data|bulletin)|cut sheet|submittal", "data sheet"),
     (r"warranty", "warranty"),
     (r"wiring|diagram|drawing|dimension", "drawing"),
@@ -48,6 +49,10 @@ def classify(title: str, url: str) -> tuple[str, str]:
     m = re.search(r"[-–(]\s*(english|spanish|french canadian|french|portuguese)\s*\)?$", t)
     if m:
         lang = LANG[m.group(1)]
+    elif re.search(r"folleto|hoja de venta|español", t):
+        lang = "es"
+    elif re.search(r"fiche de vente|français", t):
+        lang = "fr"
     elif re.search(r"[-_](sp|es|spanish)\.pdf$", url, re.I):
         lang = "es"
     elif re.search(r"[-_](fr|fc|french)\.pdf$", url, re.I):
@@ -102,6 +107,19 @@ def parse(path: Path) -> dict:
             title = re.sub(r"[-_]+", " ", re.sub(r"\.pdf$", "", href.rsplit("/", 1)[-1], flags=re.I)).strip().title()  # from the file name
         kind, lang = classify(title, href)
         docs.append({"title": title, "url": href, "kind": kind, "lang": lang})
+    # brochures and sell sheets are FlippingBook publications embedded on the page, not PDF links (Matthew 2026-10-26)
+    for a in soup.select("a.fbo-embed[href]"):
+        href = a["href"].strip()
+        title = clean(a.get_text(" "))
+        if href in seen or not re.match(r"https://online\.flippingbook\.com/view/\d+/?$", href):
+            continue
+        seen.add(href)
+        if re.search(r"product catalog", title, re.I):  # the catalog itself
+            continue
+        kind, lang = classify(title, href)
+        if kind == "document" and re.search(r"sell[- ]sheet", title, re.I):
+            kind = "sell sheet"
+        docs.append({"title": re.sub(r"^(Brochure|Sell Sheet)\s*\|\s*", "", title), "url": href, "kind": kind, "lang": lang, "host": "flippingbook"})
     images, iseen = [], set()
     for im in soup.find_all("img"):
         src = im.get("src") or im.get("data-src") or ""

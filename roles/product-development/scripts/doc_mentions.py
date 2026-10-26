@@ -54,7 +54,8 @@ def main() -> int:
     keys = {f: k for f, n in con.execute("SELECT id, name FROM families") if (k := key_of(n))}
     pages = json.loads((ROOT / "data/work/pentair/web/media.json").read_text())
     docs = {d["url"]: d for p in pages for d in p["documents"]
-            if d["kind"] in ("brochure", "data sheet", "quick start") and d["url"].startswith("https://www.pentair.com/")}
+            if d["kind"] in ("brochure", "sell sheet", "data sheet", "quick start")
+            and (d["url"].startswith("https://www.pentair.com/") or d.get("host") == "flippingbook")}
     out, n = {}, 0
     for url in docs:
         f = doc_path(url)
