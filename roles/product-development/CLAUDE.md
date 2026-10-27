@@ -21,6 +21,9 @@ This repo builds a database of manufacturer SKUs with usable titles for Pool Gee
   item whose parts are still sold DOES get a product page when the manufacturer still publishes its data,
   manuals or parts sheets; attach those to its parts list. When the catalog and pentair.com disagree on
   discontinued, the website wins.
+- Target (Matthew, 2026-10-27): a Shopify development store on the Ignite theme. The data shape is designed from the
+  catalog itself (category, product line, model, part), not from how poolgeek.com is laid out today, and the theme may be
+  reshaped to fit that data. Moving to the live store is a later step with its own questions.
 - Problems that need a person go in `reports/needs-attention.md`; move on to the next brand.
 - Run `python3 -m pytest -q` before each commit that changes code.
 - Neon: load only into the project Pool Geek® Manufacturer Catalog. Never write to Pool Geek® Products; it

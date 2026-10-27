@@ -140,3 +140,23 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   tier marked "(500-999 px)". Search batches r2_006-011 run (~180 searches). Reviewed 581 + replacements: 116
   rejected (mostly a "(c) APC" mark carried by an image supplier across many stores; rulers in O-ring photos pass).
   Result: 3,540 SKUs with a photo (336 at 500-999 px, 330 padded), 1,185 without; 43 search batches remain.
+
+## 2026-10-27: plan for the Shopify import
+- Matthew: next step is readying the data for Shopify; the Neon database is full of internal notes, so how is
+  the data prepared for production? Plan published as reports/shopify-plan.html (scripts/shopify_plan_page.py +
+  template; Artifact https://claude.ai/artifact/S9eW5ytxv9b2y9k1a5UYa9; answers in ArtifactData collections
+  shopify_answers / shopify_followups). Core of the plan: mfr_catalog stays untouched as the audit trail; a
+  separate `shop` layer (SQLite + Neon schema `shop` + CSV exports) is built by whitelist from it, with a test
+  that fails the build if any internal marker (evidence, basis, source, via, raw, pages, catalog://, CALL, tiers)
+  reaches an exported value; Shopify fields mapped from manufacturer data only; specs and facts as typed
+  metafields; fitment and parts lists as product references; manuals as Shopify Files; the 259 SKUs already on
+  poolgeek.com enriched, not replaced; Admin API push with dry run, 25-SKU pilot as drafts, then batches.
+  Fourteen questions wait on the page (home for the shop layer, import route, matched-SKU policy, pricing,
+  dual-brand vendor, trademark marks, template copy, type/tag mapping, document hosting, status, SKUs without
+  photos, variants, pilot location, inventory).
+- Matthew (2026-10-27): the data goes into a development store first, on the Ignite theme, and the theme may be
+  modified to fit the new data shape; do not build on the current store's layout. Plan page rewritten: store-matching
+  questions dropped (deferred to the live-store migration), data shape set as category > product line (metaobject) >
+  model > part, proposed 14-category tree, theme page types (line page with model table, model page with clickable
+  diagram, part page with fits list, part-number lookup, document library). Twelve questions on the page. CLAUDE.md
+  records the target.
