@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "product-namer"
+name = "pool-geek-data-specialist"
 version = "0.1.0"
-description = "Collect every SKU and product title a brand publishes on its website."
+description = "Manufacturer product data for Pool Geek: SKUs, titles, specs, parts, manuals and photos."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
