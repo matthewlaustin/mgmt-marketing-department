@@ -154,3 +154,9 @@ Extraction was accurate but values were not comparable. `scripts/d3_normalize.py
   Fourteen questions wait on the page (home for the shop layer, import route, matched-SKU policy, pricing,
   dual-brand vendor, trademark marks, template copy, type/tag mapping, document hosting, status, SKUs without
   photos, variants, pilot location, inventory).
+- Matthew (2026-10-27): the data goes into a development store first, on the Ignite theme, and the theme may be
+  modified to fit the new data shape; do not build on the current store's layout. Plan page rewritten: store-matching
+  questions dropped (deferred to the live-store migration), data shape set as category > product line (metaobject) >
+  model > part, proposed 14-category tree, theme page types (line page with model table, model page with clickable
+  diagram, part page with fits list, part-number lookup, document library). Twelve questions on the page. CLAUDE.md
+  records the target.

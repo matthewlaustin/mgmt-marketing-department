@@ -1,8 +1,7 @@
 """Plan page for Matthew: how the catalog becomes Shopify-ready data (reports/shopify-plan.html, an Artifact;
 answers come back through ArtifactData collections shopify_answers / shopify_followups).
 
-Reads data/catalog.db and the poolgeek.com Shopify crawl (data/raw/shops/www.poolgeek.com) for the counts and
-the proposed product-type mapping. The plan text itself lives in scripts/shopify_plan_template.html.
+Reads data/catalog.db for the counts and the proposed category tree; the poolgeek.com crawl only for the SKU overlap figure. The plan text itself lives in scripts/shopify_plan_template.html.
 """
 from __future__ import annotations
 
@@ -15,52 +14,25 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "scripts/shopify_plan_template.html"
 OUT = ROOT / "reports/shopify-plan.html"
 
-# our derived product_type -> (poolgeek Product Type, tag family, tag value, confidence note)
-TYPE_MAP = {
-    "Pump Part": ("Replacement Parts", "Parts Type", "Pump Parts", ""),
-    "Pool Pump Part": ("Replacement Parts", "Parts Type", "Pump Parts", ""),
-    "Pool Heater Part": ("Replacement Parts", "Parts Type", "Heater Parts", ""),
-    "Heater Part": ("Replacement Parts", "Parts Type", "Heater Parts", ""),
-    "Filter Part": ("Replacement Parts", "Parts Type", "Filter Parts", ""),
-    "Pool Filter Part": ("Replacement Parts", "Parts Type", "Filter Parts", ""),
-    "Cartridge Filter Part": ("Replacement Parts", "Parts Type", "Filter Parts", ""),
-    "Sand Filter Part": ("Replacement Parts", "Parts Type", "Filter Parts", ""),
-    "D.E. Filter Part": ("Replacement Parts", "Parts Type", "Filter Parts", ""),
-    "Commercial Filter Part": ("Replacement Parts", "Parts Type", "Filter Parts", ""),
-    "Filter Cartridge / Grid Part": ("Filter Cartridges", "Product Type", "Filter Cartridges", "cartridges and grids sold as cartridges, as the store does for Pleatco"),
-    "Cleaner Part": ("Replacement Parts", "Parts Type", "Pool Cleaner Parts", ""),
-    "Automatic Pool Cleaner Part": ("Replacement Parts", "Parts Type", "Pool Cleaner Parts", ""),
-    "Automation Part": ("Replacement Parts", "Parts Type", "Controller Parts", ""),
-    "Pool Automation Part": ("Replacement Parts", "Parts Type", "Controller Parts", ""),
-    "Valve Part": ("Replacement Parts", "Parts Type", "Plumbing Parts", "the store has no valve-parts tag; new tag Valve Parts is the alternative"),
-    "Skimmer / Fitting Part": ("Replacement Parts", "Parts Type", "Plumbing Parts", "skimmer parts could go under Skimmers instead"),
-    "Light Part": ("Replacement Parts", "Parts Type", "Light Parts", "new tag"),
-    "Pool Light Part": ("Replacement Parts", "Parts Type", "Light Parts", "new tag"),
-    "Sanitizer Part": ("Replacement Parts", "Parts Type", "Salt Cell Parts", "IntelliChlor and iChlor parts; Rainbow feeder parts go to Chemical Feeder Parts by family"),
-    "Sanitizer / Water Chemistry Part": ("Replacement Parts", "Parts Type", "Chemical Feeder Parts", "split by family as above"),
-    "In-Floor Cleaning Part": ("Replacement Parts", "Parts Type", "In-Floor Cleaning Parts", "new tag"),
-    "Water Feature Part": ("Replacement Parts", "Parts Type", "Water Feature Parts", "new tag"),
-    "Maintenance Part": ("Replacement Parts", "Parts Type", "Maintenance Equipment Parts", "new tag"),
-    "Pool Pump": ("Pool Equipment", "Equipment Type", "Pool Pumps", ""),
-    "Pool Heater": ("Pool Equipment", "Equipment Type", "Pool Heaters", ""),
-    "Cartridge Filter": ("Pool Equipment", "Equipment Type", "Pool Filters", ""),
-    "Sand Filter": ("Pool Equipment", "Equipment Type", "Pool Filters", ""),
-    "D.E. Filter": ("Pool Equipment", "Equipment Type", "Pool Filters", ""),
-    "Commercial Filter": ("Pool Equipment", "Equipment Type", "Pool Filters", "commercial lines get a second tag, Commercial"),
-    "Pool Light": ("Pool Equipment", "Equipment Type", "Pool Lights", ""),
-    "Pool Automation": ("Pool Equipment", "Equipment Type", "Controllers", ""),
-    "Sanitizer / Water Chemistry": ("Pool Equipment", "Equipment Type", "Salt Chlorine Generators", "Rainbow feeders go to Chemical Feeders by family"),
-    "Automatic Pool Cleaner": ("Pool Equipment", "Equipment Type", "Automatic Pool Cleaners", ""),
-    "Valve": ("Pool Equipment", "Equipment Type", "Valves", ""),
-    "In-Floor Cleaning": ("Pool Equipment", "Equipment Type", "In-Floor Cleaning Systems", "new tag"),
-    "Water Feature": ("Pool Equipment", "Equipment Type", "Water Features", "new tag"),
-    "Maintenance / Safety Equipment": ("Maintenance Equipment", "Maintenance Equipment Type", "by family", "Vacuum Heads, Skimmers, Safety Products, Ladders, Extension Poles... chosen per family"),
-    "Pool Fitting / Skimmer": ("Replacement Parts", "Parts Type", "Skimmers or Plumbing Parts", "skimmers to Skimmers, fittings and drains to Plumbing Parts, by family"),
-    "Filter Cartridge / Grid": ("Filter Cartridges", "Product Type", "Filter Cartridges", ""),
-    "Pool Accessory Part": ("Replacement Parts", "Parts Type", "by family", "decided per family"),
-    "Pool Filter": ("Pool Equipment", "Equipment Type", "Pool Filters", ""),
-    "Pool Accessory": ("Pool Equipment", "Equipment Type", "by family", "mixed bag; decided per family"),
+# our derived product_type -> proposed storefront category (designed from the catalog, not from the current store)
+CATEGORY = {
+    "Pumps": ["Pool Pump", "Pump Part", "Pool Pump Part"],
+    "Filters": ["Cartridge Filter", "Sand Filter", "D.E. Filter", "Pool Filter", "Filter Part", "Pool Filter Part",
+                "Cartridge Filter Part", "Sand Filter Part", "D.E. Filter Part"],
+    "Filter cartridges and grids": ["Filter Cartridge / Grid", "Filter Cartridge / Grid Part"],
+    "Heaters and heat pumps": ["Pool Heater", "Pool Heater Part", "Heater Part"],
+    "Lighting": ["Pool Light", "Light Part", "Pool Light Part"],
+    "Automation and controls": ["Pool Automation", "Automation Part", "Pool Automation Part"],
+    "Sanitizers and chemical feeders": ["Sanitizer / Water Chemistry", "Sanitizer Part", "Sanitizer / Water Chemistry Part"],
+    "Pool cleaners": ["Automatic Pool Cleaner", "Cleaner Part", "Automatic Pool Cleaner Part"],
+    "In-floor cleaning": ["In-Floor Cleaning", "In-Floor Cleaning Part"],
+    "Water features": ["Water Feature", "Water Feature Part"],
+    "Valves and plumbing": ["Valve", "Valve Part"],
+    "Skimmers, drains and fittings": ["Pool Fitting / Skimmer", "Skimmer / Fitting Part"],
+    "Maintenance and safety": ["Maintenance / Safety Equipment", "Maintenance Part", "Pool Accessory", "Pool Accessory Part"],
+    "Commercial": ["Commercial Filter", "Commercial Filter Part"],
 }
+TYPE_TO_CAT = {t: c for c, ts in CATEGORY.items() for t in ts}
 
 
 def stats(con: sqlite3.Connection) -> dict:
@@ -93,10 +65,25 @@ def stats(con: sqlite3.Connection) -> dict:
         "service": q("select count(*) from products where status='active' and kind='service'")[0][0],
         "trademark_titles": q("select count(*) from products where status='active' and (title like '%®%' or title like '%™%')")[0][0],
     }
-    types = q("select d.value, count(*) from derived_specs d join products p on p.mpn=d.mpn where d.attr='product_type' and p.status='active' group by 1")
-    s["types"] = [[v, c] + list(TYPE_MAP.get(v, ("?", "?", "?", "no mapping yet"))) for v, c in types]
-    s["types"].sort(key=lambda r: (-r[1], r[0]))
-    s["unmapped"] = sorted({v for v, _ in types} - set(TYPE_MAP))
+    rows = q("select d.value, p.kind, count(*) from derived_specs d join products p on p.mpn=d.mpn where d.attr='product_type' and p.status='active' group by 1,2")
+    cats = {c: {"wg": 0, "parts": 0, "types": set()} for c in CATEGORY}
+    s["unmapped"] = sorted({v for v, _, _ in rows} - set(TYPE_TO_CAT))
+    for v, kind, c in rows:
+        cat = cats.get(TYPE_TO_CAT.get(v))
+        if cat is None:
+            continue
+        cat["wg" if kind == "whole_good" else "parts"] += c
+        cat["types"].add(v)
+    fam = q("select d.value, count(distinct pf.family_id) from derived_specs d join product_families pf on pf.mpn=d.mpn where d.attr='product_type' group by 1")
+    famc = {c: set() for c in CATEGORY}
+    for v, k in q("select d.value, pf.family_id from derived_specs d join product_families pf on pf.mpn=d.mpn join families f on f.id=pf.family_id where d.attr='product_type' and (f.parent is null or f.parent='')"):
+        if TYPE_TO_CAT.get(v) in famc:
+            famc[TYPE_TO_CAT[v]].add(k)
+    s["cats"] = [[c, d["wg"], d["parts"], len(famc[c]), sorted(d["types"])] for c, d in cats.items()]
+    s["fam_images"] = q("select count(distinct family_id) from image_links il join images i on i.id=il.image_id where i.role in ('main','gallery','marketing') and family_id is not null")[0][0]
+    s["charts"] = q("select count(*) from reference_tables where kind='chart'")[0][0]
+    s["tables"] = q("select count(*) from reference_tables where kind='table'")[0][0]
+    s["top_families"] = q("select count(*) from families where parent is null or parent=''")[0][0]
     return s
 
 

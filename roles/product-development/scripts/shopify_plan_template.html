@@ -67,17 +67,17 @@ footer { font-size: 12px; color: var(--muted); }
   <header>
     <div class="eyebrow">Pool Geek · manufacturer catalog · next step</div>
     <h1>Readying the catalog for Shopify</h1>
-    <p class="lede">How the working database becomes clean production data, what goes into each Shopify field, and the decisions that are yours. Answers save in place.</p>
+    <p class="lede">The data goes into a development store on the Ignite theme, and the theme is reshaped around the data. This page says how the working database becomes clean production data, what shape that data takes so the storefront can show it well, and which decisions are yours. Answers save in place.</p>
   </header>
 
   <section class="block">
     <h2 class="sec">The short version</h2>
     <ul>
-      <li><b class="k">The working tables stay as the audit trail; nothing in them is edited.</b> A new, separate <span class="mono">shop</span> layer is built from them by a script, and only that layer ever goes to Shopify. It carries no notes, sources, page numbers, review flags or raw text.</li>
-      <li><b class="k">The shop layer is built from a whitelist, not by deleting columns.</b> Every field that ships is named in the build script with the rule that fills it. A test fails the build if any internal marker leaks into any exported value.</li>
-      <li><b class="k">Shopify's own shapes are the target:</b> one product per SKU, Pool Geek's existing title, handle and tag conventions, typed metafields for specs and facts, product references for what fits what, Shopify Files for manuals.</li>
-      <li><b class="k">SKUs already on poolgeek.com are enriched, not replaced:</b> <span id="matched"></span> of our SKUs are already in the store. They keep their title, text, price and URL unless you say otherwise.</li>
-      <li><b class="k">A pilot of 25 SKUs as drafts first</b>, reviewed on a page like this one, then the full run in batches with a log you can check.</li>
+      <li><b class="k">The working tables stay as the audit trail; nothing in them is edited.</b> A separate <span class="mono">shop</span> layer is built from them by a script and only that layer goes to Shopify. It carries no notes, sources, page numbers, review flags or raw text.</li>
+      <li><b class="k">Built from a whitelist, not by deleting columns.</b> Every field that ships is named in the build script with the rule that fills it. A test fails the build if any internal marker leaks into any exported value.</li>
+      <li><b class="k">The data shape follows how Pentair organises its products, not how the current store does:</b> category, product line, model, then the parts and accessories for that model. Product lines become metaobjects with their own pages; specs, facts, fitment and documents become typed metafields the theme can filter and render.</li>
+      <li><b class="k">Ignite is the base, reshaped around that data:</b> a product-line page with a model comparison table, a model page with its exploded parts diagram, a part page that lists every model it fits, a part-number lookup, and a document library.</li>
+      <li><b class="k">One complete product line first</b>, end to end in the development store, reviewed on a page like this one, then the rest in batches with a log.</li>
     </ul>
   </section>
 
@@ -89,16 +89,16 @@ footer { font-size: 12px; color: var(--muted); }
 
   <section class="block">
     <h2 class="sec">Two layers: working data stays, a clean layer ships</h2>
-    <p>You saw internal notes in Neon because <span class="mono">mfr_catalog</span> is the working database: it records where every value came from (URL or PDF page and the raw text), the conflicts between catalog and website, review flags and data issues. That is what makes the data defensible, so it stays, untouched. Production is a second layer built from it.</p>
+    <p>You saw internal notes in Neon because <span class="mono">mfr_catalog</span> is the working database: it records where every value came from (URL or PDF page and the raw text), the conflicts between catalog and website, review flags and data issues. That is what makes the data defensible, so it stays, untouched. Production is a second layer built from it, and rebuilt whenever the catalog changes.</p>
     <div class="two">
       <div class="card">
         <h3>Ships <span>schema <span class="mono">shop</span></span></h3>
         <ul>
-          <li><span class="mono">products</span>: one row per SKU with exactly the Shopify product fields (handle, title, body, vendor, type, tags, price, weight, status, SEO).</li>
+          <li><span class="mono">products</span>: one row per SKU with exactly the Shopify product fields (handle, title, body, vendor, category, tags, price, weight, status, SEO).</li>
+          <li><span class="mono">product_lines</span>: one row per product line, the metaobject: name, brand, category, description, features, hero images, documents, diagrams, models.</li>
           <li><span class="mono">metafields</span>: SKU, namespace, key, Shopify type, value. Specs, facts, cross references, replaced numbers.</li>
           <li><span class="mono">images</span>, <span class="mono">files</span>: public URLs with alt text and kind, in display order.</li>
-          <li><span class="mono">fits</span>: part SKU to model SKU with item number and quantity, both directions.</li>
-          <li><span class="mono">store_match</span>: our SKU against the store's product id and handle, with the update policy applied.</li>
+          <li><span class="mono">fits</span>: part SKU to model SKU with diagram item number and quantity, both directions.</li>
         </ul>
       </div>
       <div class="card never">
@@ -112,119 +112,123 @@ footer { font-size: 12px; color: var(--muted); }
         <p class="note">Guarantee: the build names every column it copies; a test scans every exported value for these markers and for any text that is not from a manufacturer field.</p>
       </div>
     </div>
-    <p class="note">The shop layer lives in SQLite beside the catalog (committed), is loaded into the Manufacturer Catalog project in Neon under its own schema, and is exported as CSV files for your eyes. The Neon role the app or Shopify tooling uses sees only <span class="mono">shop</span>. Question 1 asks where you want it.</p>
+    <p class="note">The shop layer lives in SQLite beside the catalog (committed), is loaded into the Manufacturer Catalog project in Neon under its own schema, and is exported as CSV files for your eyes. Question 1 asks where you want it.</p>
   </section>
 
   <section class="block">
-    <h2 class="sec">What goes into each Shopify field</h2>
+    <h2 class="sec">The data shape: category, product line, model, part</h2>
+    <p>Pentair's catalog is already organised this way, and it is how people look for pool equipment: by what the thing is, then which line, then which model, then what fits it. The storefront gets one page type per level, each fed by its own data.</p>
     <div class="tw"><table class="t">
-      <thead><tr><th>Shopify field</th><th>From</th><th>Rule</th></tr></thead>
+      <thead><tr><th>Level</th><th>In Shopify</th><th>What the page shows</th></tr></thead>
       <tbody>
-        <tr><td>Handle</td><td>brand, MPN, title</td><td>Pool Geek's existing pattern, <code>pentair-r171070-rainbow-300-29x-feeder</code>: ASCII slug, trademark marks dropped, unique. A SKU already in the store keeps its live handle.</td></tr>
-        <tr><td>Title</td><td>products.title</td><td>Already in the store's form, "Pentair R171070 - Rainbow 300-29X Feeder". ® and ™ handled per question 6. All under 255 characters, no duplicates.</td></tr>
-        <tr><td>Vendor</td><td>products.brand</td><td>Pentair, Sta-Rite or Pleatco. The <span id="dual"></span> SKUs Pentair lists under both Pentair and Sta-Rite need question 5.</td></tr>
-        <tr><td>Product type, Tags</td><td>derived product_type, family, brand</td><td>Mapped onto the store's existing vocabulary (Product Type, Parts Type, Equipment Type, Maintenance Equipment Type, Brand). Mapping table below; a Line tag adds the product line (IntelliFlo, Clean &amp; Clear).</td></tr>
-        <tr><td>Product category</td><td>product type</td><td>Shopify's standard taxonomy (Home &amp; Garden &gt; Pool &amp; Spa &gt; ...), one entry per mapped type, for Shop and Google feeds.</td></tr>
-        <tr><td>Body (HTML)</td><td>family description, features, fitment</td><td>Manufacturer text only: the product line's description paragraph, its feature bullets, then a "Fits" list of model names in the store's existing "Compatible With" style. Specs are not repeated in the body; they are metafields the theme renders. Question 7 covers template sentences.</td></tr>
-        <tr><td>SKU, Barcode</td><td>MPN</td><td>SKU = MPN. No UPCs in the manufacturer data, so barcode stays empty rather than guessed.</td></tr>
-        <tr><td>Price, Compare-at</td><td>product_prices.us_list</td><td>Pentair US list where published (<span id="withlist"></span> SKUs). No list price for <span id="noprice"></span> SKUs, including every whole good. Question 4.</td></tr>
-        <tr><td>Weight</td><td>specs.weight</td><td>Pounds as published, for <span id="weight"></span> SKUs; others blank. Requires shipping: yes.</td></tr>
-        <tr><td>Inventory</td><td>none</td><td>Not in manufacturer data. Question 14.</td></tr>
-        <tr><td>Image Src, Image Alt</td><td>product_photos, Pentair gallery images</td><td>Approved photo first, then Pentair's own gallery and marketing images for whole goods. Alt text = title. Shopify copies each image into its CDN during import, so the R2 link only has to work on import day.</td></tr>
-        <tr><td>SEO title, description</td><td>title, family description</td><td>Title as is; description = first sentence of the manufacturer description, else blank (or a template line, question 7).</td></tr>
-        <tr><td>Status</td><td>rule</td><td>Draft or Active per question 10.</td></tr>
+        <tr><td>Category</td><td>Collections, one tree, plus Shopify's standard product category on every product</td><td>Product lines in the category with a hero image each, filters from the facts (pool type, voltage, horsepower, filter media, automation compatible...). Proposed tree below.</td></tr>
+        <tr><td>Product line</td><td>Metaobject <code>product_line</code> with its own page template (<span id="topfam"></span> lines, <span id="famimg"></span> with Pentair gallery images)</td><td>Description and features as Pentair writes them, gallery, a comparison table of the models with their differing specs, accessories, the brochure, manuals and parts sheets, the exploded diagram.</td></tr>
+        <tr><td>Model</td><td>Product, one per SKU</td><td>Photo, price, specs grouped (electrical, hydraulic, dimensions, certifications), facts as badges, the parts diagram with every item linked to its part, accessories, documents, sibling models.</td></tr>
+        <tr><td>Part or accessory</td><td>Product, one per SKU</td><td>Photo, price, every model it fits with its item number and quantity, the part numbers it replaces and the Unicel or Filbur equivalents, kit contents, the sheet it comes from.</td></tr>
+        <tr><td>Lookup</td><td>Search tuned on metafields</td><td>Any number finds the product: current MPN, an old number it replaced, a competitor cross reference, a model name.</td></tr>
+        <tr><td>Documents</td><td>Shopify Files plus a library page</td><td><span id="docs"></span> manuals, parts sheets, brochures and sell sheets, browsable by product line and kind, and attached to every product they cover.</td></tr>
       </tbody>
     </table></div>
+    <p class="note">Charts and tables from the catalog (<span id="charts"></span> charts such as pump curves, <span id="tables"></span> tables such as filter sizing) attach to the product line as images and JSON, so the theme can show them where Pentair does.</p>
   </section>
 
   <section class="block">
-    <h2 class="sec">Metafields</h2>
-    <p>Typed metafields with definitions created once in the store, pinned so they show in the admin and can be used by the theme and by Search &amp; Discovery filters.</p>
-    <div class="tw"><table class="t">
-      <thead><tr><th>Namespace</th><th>What</th><th>Shape</th></tr></thead>
-      <tbody>
-        <tr><td><code>specs</code></td><td><span id="specrows"></span> published spec values on <span id="specskus"></span> SKUs: voltage, horsepower, filter area, pipe size, flow, dimensions, cord length, contents, certifications...</td><td>One key per attribute, Shopify's dimension, weight, number and text types with units. Multi-value attributes become lists. Every key gets a definition with a display name.</td></tr>
-        <tr><td><code>facts</code></td><td>The derived facts: product type, sold as, installation, pump speed, pool type, surface, salt compatible, DOE rated, app controlled, voltage class, filter media, pack quantity...</td><td>Short enumerated text, filterable. These are the collection filters.</td></tr>
-        <tr><td><code>fits</code></td><td>Part to model: <span id="partsfit"></span> parts fit <span id="modelsfit"></span> models.</td><td><code>fits.models</code> as a list of product references (set in a second pass once every model has a Shopify id) plus <code>fits.model_names</code> as text for search and the body list.</td></tr>
-        <tr><td><code>parts</code></td><td>Model to parts, with the exploded diagram: <span id="diagram"></span> SKUs appear on a diagram.</td><td><code>parts.list</code> product references, <code>parts.diagram</code> JSON of image plus item numbers, part SKUs and quantities for the theme to render.</td></tr>
-        <tr><td><code>docs</code></td><td><span id="docs"></span> manuals, parts sheets, brochures and sell sheets, linked to <span id="docskus"></span> SKUs and <span id="docfams"></span> product lines.</td><td>Shopify Files uploaded once, then <code>docs.manuals</code> and <code>docs.sheets</code> as file-reference lists. Question 9.</td></tr>
-        <tr><td><code>numbers</code></td><td>Cross references (Unicel, Filbur, manufacturer numbers) on <span id="xref"></span> SKUs; <span id="repl"></span> replaced part numbers.</td><td>Text lists, also copied into tags prefixed Replaces_ and Xref_ so a search for an old number finds the current part.</td></tr>
-        <tr><td><code>line</code></td><td>Product line and family</td><td>Handle of the family and its name, so the theme can group a pump with its parts and accessories and build automated collections.</td></tr>
-      </tbody>
-    </table></div>
-  </section>
-
-  <section class="block">
-    <h2 class="sec">Product types and tags: proposed mapping</h2>
-    <p class="note">Our derived product type (from the catalog's section headings) onto Pool Geek's existing Product Type and tag vocabulary. Rows marked check are judgment calls; "new tag" means the store has no tag for it yet. Question 8 asks whether to adopt this.</p>
-    <div class="tw"><table class="t" id="types">
-      <thead><tr><th>Our type</th><th class="n">SKUs</th><th>Product Type</th><th>Tag</th><th></th></tr></thead>
+    <h2 class="sec">Proposed category tree</h2>
+    <p class="note">Built from the catalog's own section headings. Whole goods and their parts share a category; whether a page lists equipment or parts is a filter (sold as: complete product, kit, replacement part, accessory), not a separate tree. Question 7.</p>
+    <div class="tw"><table class="t" id="cats">
+      <thead><tr><th>Category</th><th class="n">Whole goods</th><th class="n">Parts and accessories</th><th class="n">Product lines</th><th>Catalog types inside</th></tr></thead>
       <tbody></tbody>
     </table></div>
   </section>
 
   <section class="block">
-    <h2 class="sec">Matching poolgeek.com</h2>
-    <p id="matchnote"></p>
-    <ul>
-      <li><b class="k">Matched SKUs</b> get specs, facts, fitment, documents and photos added. Title, body, price, handle and status are left as they are. A diff report lists where the store's title or text disagrees with the manufacturer's, for you to decide one by one.</li>
-      <li><b class="k">Store products with a Pentair, Sta-Rite or Pleatco vendor whose SKU is not in the catalog</b> (<span id="storeonly"></span> variants) go on a report: likely discontinued or a number Pentair now writes differently. Nothing is changed or removed in the store.</li>
-      <li><b class="k">New SKUs</b> are created with everything above.</li>
-    </ul>
+    <h2 class="sec">What goes into each Shopify product field</h2>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Shopify field</th><th>From</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td>Handle</td><td>brand, MPN, title</td><td>ASCII slug of brand, MPN and title, trademark marks dropped, unique. Every MPN gets its own URL.</td></tr>
+        <tr><td>Title</td><td>products.title</td><td>Brand, MPN, manufacturer title: "Pentair 011065 - IntelliFlo3 VSF 1.5 THP Variable Speed and Flow Pool Pump". ® and ™ per question 6. All under 255 characters, no duplicates.</td></tr>
+        <tr><td>Vendor</td><td>products.brand</td><td>Pentair, Sta-Rite or Pleatco. The <span id="dual"></span> SKUs Pentair lists under both Pentair and Sta-Rite need question 5.</td></tr>
+        <tr><td>Product category</td><td>category tree</td><td>Shopify's standard taxonomy entry for the category (Home &amp; Garden &gt; Pool &amp; Spa &gt; ...), which feeds Shop, Google and the theme's filters.</td></tr>
+        <tr><td>Product type, Tags</td><td>facts</td><td>Product type = the category. Tags only where the theme or search needs them (sold as, product line, replaced numbers); everything else is a metafield, which filters better and does not clutter the admin.</td></tr>
+        <tr><td>Body (HTML)</td><td>product line description, features</td><td>Manufacturer text only. Lists, specs, fitment and documents are rendered by the theme from metafields, not pasted into the body. Question 4 covers fixed template sentences for parts with no description.</td></tr>
+        <tr><td>SKU, Barcode</td><td>MPN</td><td>SKU = MPN. No UPCs in the manufacturer data, so barcode stays empty rather than guessed.</td></tr>
+        <tr><td>Price, Compare-at</td><td>product_prices.us_list</td><td>Pentair US list where published (<span id="withlist"></span> SKUs). No list price for <span id="noprice"></span> SKUs, including every whole good. Question 3.</td></tr>
+        <tr><td>Weight</td><td>specs.weight</td><td>Pounds as published, for <span id="weight"></span> SKUs; others blank. Requires shipping: yes. Inventory untracked in the development store.</td></tr>
+        <tr><td>Images</td><td>product_photos, Pentair gallery images</td><td>Approved photo first, then Pentair's own gallery and marketing images for whole goods. Alt text = title. Shopify copies each image into its CDN at import, so the R2 link only has to work on import day.</td></tr>
+        <tr><td>SEO title, description</td><td>title, description</td><td>Title as is; description = the first sentence of the manufacturer description, else blank (or a template line, question 4).</td></tr>
+        <tr><td>Status</td><td>rule</td><td>Active in the development store so every page can be browsed; nobody but us sees it.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h2 class="sec">Metafields and metaobjects</h2>
+    <p>Typed, with definitions created once by script, pinned in the admin, and marked filterable where Search &amp; Discovery should use them. The theme reads them by name.</p>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Namespace</th><th>What</th><th>Shape</th></tr></thead>
+      <tbody>
+        <tr><td><code>specs</code></td><td><span id="specrows"></span> published spec values on <span id="specskus"></span> SKUs: voltage, horsepower, filter area, pipe size, flow, dimensions, cord length, contents, certifications...</td><td>One key per attribute using Shopify's dimension, weight, number and text types with units; multi-value attributes as lists. A <code>specs.groups</code> JSON says which keys belong to which group and in what order, so the theme renders the spec table the same way everywhere.</td></tr>
+        <tr><td><code>facts</code></td><td>The derived facts: product type, sold as, installation, pump speed, pool type, surface, salt compatible, DOE rated, app controlled, voltage class, filter media, pack quantity...</td><td>Short enumerated text, filterable. These drive the collection filters and the badges on product cards.</td></tr>
+        <tr><td><code>line</code></td><td>Product line and family</td><td><code>line.product_line</code>: reference to the product-line metaobject. The metaobject holds name, brand, category, description, features, images, documents, diagrams, charts, and the list of model and accessory products.</td></tr>
+        <tr><td><code>fits</code></td><td>Part to model: <span id="partsfit"></span> parts fit <span id="modelsfit"></span> models.</td><td><code>fits.models</code> as a list of product references (set in a second pass once every model has an id) and <code>fits.detail</code> JSON with item number, quantity and condition per model.</td></tr>
+        <tr><td><code>parts</code></td><td>Model to parts, with the exploded diagram: <span id="diagram"></span> SKUs appear on a diagram.</td><td><code>parts.list</code> product references and <code>parts.diagram</code> JSON of the image plus item numbers, part SKUs and quantities, so the theme can draw a clickable diagram.</td></tr>
+        <tr><td><code>docs</code></td><td><span id="docs2"></span> documents linked to <span id="docskus"></span> SKUs and <span id="docfams"></span> product lines.</td><td>Shopify Files uploaded once, then file-reference lists per kind (manuals, parts sheets, brochures, sell sheets). Question 8.</td></tr>
+        <tr><td><code>numbers</code></td><td>Cross references (Unicel, Filbur, manufacturer numbers) on <span id="xref"></span> SKUs; <span id="repl"></span> replaced part numbers.</td><td>Text lists, also copied into tags so the store's own search finds a product by any of its numbers.</td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="block">
     <h2 class="sec">Order of work</h2>
     <ol class="steps">
-      <li><div><b>Build the shop layer</b><span>scripts/shop_build.py and tests. Normalizes titles, handles, brands, types, tags, specs and units; writes shop tables in SQLite, loads them to Neon under schema shop, writes CSV files under exports/shopify. Re-runnable whenever the catalog changes.</span></div></li>
-      <li><div><b>Review page for the mapping and the exceptions</b><span>Type and tag mapping, the 25 pilot SKUs rendered as they would appear, and the lists of SKUs lacking a price or photo.</span></div></li>
-      <li><div><b>Shopify access</b><span>A custom app on poolgeek.myshopify.com with write access to products, files and metafield definitions. Its token goes into the environment as SHOPIFY_SHOP and SHOPIFY_ADMIN_TOKEN, like the R2 keys; never in chat or in the repo.</span></div></li>
-      <li><div><b>Metafield definitions, then the pilot</b><span>Definitions created by script; 25 SKUs (a pump, its parts, a filter, cartridges, a light, a heater part) pushed as drafts through the Admin API with a dry run first. You check them in the admin.</span></div></li>
-      <li><div><b>Full run in batches</b><span>Products and images first, then the second pass that sets product references for fitment and parts lists, then file uploads and document links. Each batch logs created, updated and skipped SKUs with the reason.</span></div></li>
-      <li><div><b>Reconcile and report</b><span>Store state read back and compared with the shop layer; differences, the unmatched store products and the SKUs still without a price or photo on one page.</span></div></li>
+      <li><div><b>Development store access</b><span>You create the development store with the Ignite theme installed, and a custom app on it with write access to products, files, metaobjects, metafield definitions and themes. Its token goes into the environment as SHOPIFY_SHOP and SHOPIFY_ADMIN_TOKEN, like the R2 keys; never in chat or in the repo. The theme code is pulled into the repo under theme/ so every change is versioned.</span></div></li>
+      <li><div><b>Build the shop layer</b><span>scripts/shop_build.py and tests. Normalises titles, handles, brands, categories, specs and units; writes the shop tables in SQLite, loads them to Neon under schema shop, writes CSV files under exports/shopify. Re-runnable whenever the catalog changes.</span></div></li>
+      <li><div><b>Definitions, then one product line end to end</b><span>Metaobject and metafield definitions created by script. One line (IntelliFlo3, with its models, parts, accessories, diagram and manuals) pushed through the Admin API with a dry run first.</span></div></li>
+      <li><div><b>Reshape the theme around it</b><span>Ignite sections and templates for the product-line page, the model page with the parts diagram, the part page with its fits list, the collection filters, the part-number lookup and the document library. Built on the one line until it reads well, with a review page for you.</span></div></li>
+      <li><div><b>Full run in batches</b><span>Product lines, products and images first, then the second pass that sets product references for fitment and parts lists, then file uploads and document links. Each batch logs created, updated and skipped SKUs with the reason.</span></div></li>
+      <li><div><b>Reconcile and report</b><span>Store state read back and compared with the shop layer; differences and the SKUs still without a price or photo on one page. Moving to the live store later is the same push pointed at a different store, with the migration questions (the <span id="matched"></span> SKUs already on poolgeek.com, prices) asked then, not now.</span></div></li>
     </ol>
-    <p class="note">The Admin API is the primary route because CSV import cannot attach PDF files, cannot set product references, and silently creates duplicates when a handle differs. CSV files are still produced at step 1 so you can open the data in a spreadsheet.</p>
+    <p class="note">The Admin API is the only route that can create metaobjects, attach files and set product references; CSV import cannot. CSV files are still produced at step 2 so you can open the data in a spreadsheet.</p>
   </section>
 
   <section class="block" id="qsec">
     <h2 class="sec">Decisions that are yours</h2>
     <p class="note">Tap an answer; add a note if it needs one. <span id="qcount"></span></p>
     <div id="questions" style="display:grid;gap:14px"></div>
-    <div class="q"><div class="qh">Anything else?</div><textarea id="followup" placeholder="Follow-ups, rules I should know, things the store does that I have not seen"></textarea><p class="saved" id="fu-st"></p></div>
+    <div class="q"><div class="qh">Anything else?</div><textarea id="followup" placeholder="Follow-ups, rules I should know, what you want the storefront to do that is not here"></textarea><p class="saved" id="fu-st"></p></div>
   </section>
 
-  <footer>Pool Geek manufacturer catalog · plan for the Shopify import · 2026-10-27. Counts come from data/catalog.db and the poolgeek.com crawl of 2026-10-26.</footer>
+  <footer>Pool Geek manufacturer catalog · plan for the Shopify development store · 2026-10-27. Counts come from data/catalog.db.</footer>
 </div>
 <script>
 const DATA = /*DATA*/;
 const $ = (id) => document.getElementById(id), S = DATA.S, P = DATA.P, n = (x) => Number(x).toLocaleString();
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-[[S.skus, "active SKUs"], [S.with_specs, "with published specs"], [S.with_photo, "with an approved photo"], [S.with_list, "with a Pentair list price"],
+[[S.skus, "active SKUs"], [S.top_families, "product lines"], [S.with_specs, "SKUs with published specs"], [S.with_photo, "with an approved photo"],
  [S.parts_with_models, "parts linked to the models they fit"], [S.with_docs, "SKUs with a manual or sheet"]]
  .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
 $("readynote").textContent = S.kinds.map(([k, c]) => n(c) + " " + ({ whole_good: "whole goods", part: "parts", accessory: "accessories", service: "service items" }[k] || k)).join(", ") + ". " +
-  n(S.no_price) + " SKUs have no manufacturer price and " + n(S.no_photo) + " have no photo yet; both are import decisions below, not blockers.";
+  n(S.with_list) + " SKUs have a Pentair list price and " + n(S.no_photo) + " have no photo yet; both are import decisions below, not blockers.";
 const fill = { matched: P.matched, dual: S.dual_brand, withlist: S.with_list, noprice: S.no_price, weight: S.weight, specrows: S.spec_rows, specskus: S.with_specs,
-  partsfit: S.parts_with_models, modelsfit: S.models_with_parts, diagram: S.with_diagram, docs: S.docs, docskus: S.with_docs, docfams: S.fam_docs, xref: S.xref, repl: S.replacements, storeonly: P.store_only };
+  partsfit: S.parts_with_models, modelsfit: S.models_with_parts, diagram: S.with_diagram, docs: S.docs, docs2: S.docs, docskus: S.with_docs, docfams: S.fam_docs, xref: S.xref, repl: S.replacements,
+  topfam: S.top_families, famimg: S.fam_images, charts: S.charts, tables: S.tables };
 Object.entries(fill).forEach(([k, v]) => { $(k).textContent = n(v); });
-$("matchnote").textContent = "poolgeek.com has " + n(P.store_products) + " products, " + n(P.store_brand_products) + " of them under the Pentair, Sta-Rite or Pleatco vendor. Matching by SKU, " + n(P.matched) + " of our " + n(S.skus) + " SKUs are already in the store; " + n(P.multi_variant) + " store products use size variants, which the catalog does not (question 12).";
-S.types.forEach(([t, c, pt, fam, tag, note]) => { const tr = el("tr"); tr.append(el("td", null, t), el("td", "n", n(c)), el("td", null, pt), el("td", null, fam + "_" + tag), el("td", "chk", note ? "check: " + note : "")); $("types").tBodies[0].append(tr); });
+S.cats.forEach(([c, wg, parts, fams, types]) => { const tr = el("tr"); tr.append(el("td", null, c), el("td", "n", n(wg)), el("td", "n", n(parts)), el("td", "n", n(fams)), el("td", "chk", types.join(", "))); $("cats").tBodies[0].append(tr); });
 
 const QUESTIONS = [
-  { id: "s1", g: "Where it lives", h: "Where should the production copy live?", c: "The working tables are the audit trail and stay as they are. The clean shop layer needs a home the app and Shopify tooling can read without seeing the working data.", o: ["Schema shop in the Manufacturer Catalog project, read-only role for the app (recommended)", "Its own Neon project", "Files in the repo and Shopify only, nothing new in Neon"] },
-  { id: "s2", g: "Where it lives", h: "How should the data get into Shopify?", c: "The Admin API can attach files, set product references and update by SKU; a CSV cannot do those, and a CSV re-import creates duplicates whenever a handle differs.", o: ["Script through the Admin API, dry run and pilot first (recommended)", "CSV files that you import yourself", "Both: CSV for your review, API for the push"] },
-  { id: "s3", g: "Matching the store", h: "SKUs already on poolgeek.com: how much do we change?", c: n(P.matched) + " SKUs are already in the store with their own titles, descriptions, prices and URLs, and some sales history.", o: ["Add specs, fitment, docs and photos where missing; keep title, text, price, handle (recommended)", "Also replace title and description with the manufacturer versions", "Show me the differences first, I decide per SKU"] },
-  { id: "s4", g: "Commerce fields", h: "What price do new SKUs get?", c: n(S.with_list) + " SKUs have a Pentair US list price. " + n(S.no_price) + " have none, including every whole good; Pentair publishes no list for them. Shopify requires a price on every product.", o: ["List price as Price and Compare-at; no list price means 0.00 and Draft until you price it", "A percentage off list that you give in the note; no list means Draft", "0.00 on everything, you price in the admin"] },
-  { id: "s5", g: "Matching the store", h: "Vendor for the SKUs Pentair lists under both Pentair and Sta-Rite?", c: n(S.dual_brand) + " SKUs carry both names in the catalog. Shopify allows one vendor; a Brand tag can carry the second.", o: ["Vendor Pentair, tags Brand_Pentair and Brand_Sta-Rite (recommended)", "Vendor Sta-Rite, both brand tags", "Vendor Pentair only"] },
-  { id: "s6", g: "Matching the store", h: "Trademark marks (® and ™) in titles?", c: n(S.trademark_titles) + " titles carry a mark as Pentair writes them (IntelliFlo®). The store's existing titles do not.", o: ["Drop them from titles, handles and tags; keep them in descriptions (recommended)", "Drop them everywhere", "Keep them everywhere"] },
-  { id: "s7", g: "Copy", h: "Fixed sentences beyond the manufacturer's text?", c: "Parts without a family description would have a body of only the Fits list. A fixed line such as 'Genuine Pentair replacement part. Fits the models listed below.' is a template, not a fact we invented, but it is not manufacturer text either.", o: ["Allow a few fixed template lines (I will show them on the pilot page)", "No: body and SEO text hold only manufacturer text and the structured lists"] },
-  { id: "s8", g: "Types and tags", h: "Adopt the store's existing type and tag scheme with the mapping above?", c: "The store uses Product Type plus tag families (Parts Type, Equipment Type, Maintenance Equipment Type, Brand). The table proposes where each of our types lands and which tags are new.", o: ["Yes, use the mapping; fix the rows I note (recommended)", "Use Shopify's standard product taxonomy only, no custom tags", "I have a different scheme, see note"] },
-  { id: "s9", g: "Media", h: "Where should manuals and parts sheets be served from?", c: n(S.docs) + " PDFs are in R2 now, on a test URL that Cloudflare rate-limits. Shopify Files puts them on Shopify's CDN with the product; an R2 custom domain keeps them with the rest of the media.", o: ["Upload to Shopify Files (recommended)", "Link to R2 under a custom domain you set up", "Both"] },
-  { id: "s10", g: "Commerce fields", h: "Status of new products after import?", c: "Draft products are invisible to shoppers until you publish them.", o: ["All Draft; you publish (recommended)", "Active when the SKU has a price and a photo, otherwise Draft", "All Active"] },
-  { id: "s11", g: "Media", h: "The " + n(S.no_photo) + " SKUs with no photo?", c: "Mostly small parts whose only pictures online are small. The photo search can continue in the background (43 batches remain).", o: ["Import them now without an image, as Draft", "Import them with the same status as the rest", "Hold them back until a photo exists"] },
-  { id: "s12", g: "Commerce fields", h: "One product per SKU, no variants, for this run?", c: "The catalog is one SKU per model, which matches Pentair's own site. The store groups some products by size as variants (" + n(P.multi_variant) + " products). Merging into variants is manual work per family and can follow later.", o: ["One product per SKU (recommended)", "Group family models as size variants where the family has one size axis, see note"] },
-  { id: "s13", g: "Rollout", h: "Where should the pilot run?", c: "25 SKUs as drafts on the live store are invisible to shoppers and show exactly how the theme will render them. A development store is cleaner but does not have your theme and apps.", o: ["25 drafts on poolgeek.com (recommended)", "A development store first", "Skip the pilot, go straight to the full run in batches"] },
-  { id: "s14", g: "Commerce fields", h: "Inventory setting for new products?", c: "The manufacturer data has no stock. Shopify can leave inventory untracked, or track it at zero and still allow orders.", o: ["Don't track inventory", "Track, start at 0, continue selling when out of stock", "Track, start at 0, stop selling at 0 (nothing sellable until you count)", "You set it later; leave untracked for now"] },
+  { id: "s1", g: "Where it lives", h: "Where should the production copy live?", c: "The working tables are the audit trail and stay as they are. The clean shop layer needs a home that tooling can read without seeing the working data.", o: ["Schema shop in the Manufacturer Catalog project, read-only role for tooling (recommended)", "Its own Neon project", "Files in the repo and Shopify only, nothing new in Neon"] },
+  { id: "s2", g: "Data shape", h: "One product per SKU, with the product line as a metaobject page?", c: "Every model keeps its manufacturer title and its own URL, and the product-line page gives the family view with a model comparison table. The alternative is one product per line with the models as variants: fewer products, but one title per line and specs per variant, and parts stay separate either way.", o: ["One product per SKU, product line as a metaobject (recommended)", "One product per line, models as variants", "Decide per category, see note"] },
+  { id: "s3", g: "Commerce fields", h: "What price goes on products in the development store?", c: n(S.with_list) + " SKUs have a Pentair US list price. " + n(S.no_price) + " have none, including every whole good; Pentair publishes no list for them. Shopify requires a price on every product. Real pricing is a live-store question for later.", o: ["List price where published, 0.00 elsewhere (recommended for a development store)", "List price as Compare-at too, so the theme's sale display can be judged", "0.00 on everything"] },
+  { id: "s4", g: "Copy", h: "Fixed sentences beyond the manufacturer's text?", c: "Parts without a line description would have no body text; the theme would show the fits list and specs only. A fixed line such as 'Genuine Pentair replacement part. Fits the models listed below.' is a template, not a fact we invented, but it is not manufacturer text either.", o: ["Allow a few fixed template lines (I will show them on the review page)", "No: body and SEO text hold only manufacturer text; the theme does the rest"] },
+  { id: "s5", g: "Data shape", h: "Vendor for the SKUs Pentair lists under both Pentair and Sta-Rite?", c: n(S.dual_brand) + " SKUs carry both names in the catalog. Shopify allows one vendor; a brand fact can carry the second so filters still find it.", o: ["Vendor Pentair, brand fact lists both (recommended)", "Vendor Sta-Rite, brand fact lists both", "Vendor Pentair only"] },
+  { id: "s6", g: "Data shape", h: "Trademark marks (® and ™) in titles?", c: n(S.trademark_titles) + " titles carry a mark as Pentair writes them (IntelliFlo®).", o: ["Drop them from titles, handles and tags; keep them in descriptions (recommended)", "Drop them everywhere", "Keep them everywhere"] },
+  { id: "s7", g: "Data shape", h: "Use the proposed category tree?", c: "Fourteen categories from the catalog's own headings, with whole goods and their parts together and 'sold as' as the filter. Commercial is its own category because Pentair sells it that way.", o: ["Yes, use it; fix the rows I note (recommended)", "Split equipment and parts into two trees", "I have a different tree, see note"] },
+  { id: "s8", g: "Media", h: "Where should manuals and parts sheets be served from?", c: n(S.docs) + " PDFs are in R2 now, on a test URL that Cloudflare rate-limits. Shopify Files puts them on Shopify's CDN with the product; an R2 custom domain keeps them with the rest of the media.", o: ["Upload to Shopify Files (recommended)", "Link to R2 under a custom domain you set up", "Both"] },
+  { id: "s9", g: "Storefront", h: "Which storefront pieces first?", c: "All of them are in the plan. The order decides what you can review first on the one product line.", o: ["Model page with the parts diagram, then product-line page, then part page, lookup and library (recommended)", "Product-line page first", "Part page and part-number lookup first (the parts business)", "Another order, see note"] },
+  { id: "s10", g: "Storefront", h: "How far may the theme be changed?", c: "Ignite's sections can be reused with new data, or the product, collection and line pages can be rebuilt as new sections and templates while the rest of the theme stays.", o: ["Rebuild the product, collection and line pages as needed; keep Ignite's header, cart and checkout (recommended)", "Only configure Ignite's existing sections with the new data", "Change anything, whole theme is open"] },
+  { id: "s11", g: "Media", h: "The " + n(S.no_photo) + " SKUs with no photo?", c: "Mostly small parts whose only pictures online are small. The photo search can continue in the background (43 batches remain).", o: ["Import them now without an image; the theme shows a placeholder", "Hold them back until a photo exists"] },
+  { id: "s12", g: "Rollout", h: "Which product line for the end-to-end pilot?", c: "It should have models, parts with a diagram, accessories, a brochure and manuals. IntelliFlo3 has all of them.", o: ["IntelliFlo3 VSF pumps (recommended)", "Clean & Clear Plus cartridge filters", "MasterTemp heaters", "Another line, see note"] },
 ];
 const answers = {}; let db = null;
 function qCount() { $("qcount").textContent = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length + " of " + QUESTIONS.length + " answered."; }
