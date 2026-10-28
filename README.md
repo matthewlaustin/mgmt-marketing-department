@@ -48,6 +48,10 @@ Targets, the starting split by role, and the counting rules are in
 
 New roles start from [`roles/_TEMPLATE.md`](roles/_TEMPLATE.md).
 
+The Product Development specialist's code lives in [`roles/product-development/`](roles/product-development/)
+(merged from `pool-geek-data-specialist` with its history; working data stays in Neon and R2).
+Run its tests from inside that folder: `python3 -m pytest -q`.
+
 ## Design principles
 
 1. **Every role owns a gross profit number, or measures one.** Agents are steered on GP, never on
