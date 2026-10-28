@@ -1,0 +1,310 @@
+<title>Pentair Product Data</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow column. Summary figures, then the questions (answer in place), then a sticky part-number lookup. */
+:root {
+  --bg: #f3f7f8; --surface: #ffffff; --ink: #0f2a33; --muted: #557079; --line: #d4e1e4;
+  --accent: #0b8a8f; --accent-soft: #dff1f1; --warn: #a5560b; --warn-soft: #fbeedd; --ok: #1d7a46;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+    --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 780px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 28px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--display); font-size: 30px; line-height: 1.15; margin: 4px 0 6px; text-wrap: balance; }
+h2.sec { font-family: var(--display); font-size: 21px; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; max-width: 64ch; }
+section.block { display: grid; gap: 14px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.stat b { font-family: var(--display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--muted); }
+.note { font-size: 14px; color: var(--muted); margin: 0; max-width: 66ch; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; }
+.q .qh { font-weight: 600; }
+.q .ctx { font-size: 14px; color: var(--muted); margin: 0; }
+.q.done { border-color: var(--accent); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+button.act { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--surface); color: var(--accent); text-align: left; }
+button.act[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+button.act.bad[aria-pressed="true"] { background: var(--warn); border-color: var(--warn); }
+button.act:focus-visible, .hit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { font: inherit; font-size: 14px; width: 100%; min-height: 56px; padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical; }
+textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.saved { font-size: 13px; color: var(--muted); margin: 0; min-height: 1.2em; }
+.saved.ok { color: var(--ok); } .saved.err { color: var(--warn); }
+.search { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+label { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+#q { width: 100%; font-family: var(--mono); font-size: 20px; padding: 12px 14px; border: 2px solid var(--line);
+  border-radius: 10px; background: var(--surface); color: var(--ink); text-transform: uppercase; }
+#q:focus-visible { outline: none; border-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.mpn { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.title { font-family: var(--display); font-size: 22px; line-height: 1.25; text-wrap: balance; overflow-wrap: anywhere; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+h3 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 6px 0 0; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+td { border-top: 1px solid var(--line); padding: 6px 8px 6px 0; vertical-align: top; overflow-wrap: anywhere; }
+td.k { color: var(--muted); width: 38%; }
+td.pg { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; width: 1%; text-align: right; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--mono); }
+.list { display: grid; gap: 6px; }
+.hit { text-align: left; font: inherit; background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 12px; cursor: pointer; display: grid; gap: 2px; }
+.hit:hover { border-color: var(--accent); }
+.hit .m { font-family: var(--mono); font-weight: 500; }
+.hit .t { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.empty { color: var(--muted); margin: 0; }
+.pr { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 8px; }
+.pr .top { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.pr .m { font-family: var(--mono); font-weight: 500; }
+.pr .t { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.pr .pages { font-size: 13px; color: var(--muted); }
+.iss { font-size: 13px; color: var(--warn); }
+footer { font-size: 12px; color: var(--muted); }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pool Geek · Pentair · Phase 3</div>
+    <h1>Pentair product data</h1>
+    <p class="lede">Everything the 2025-2026 catalog prints about each SKU is now attached to it: specs, list prices, product line, and which pumps, filters and heaters each part fits. It's loaded into Neon next to the titles. Answer the questions below, then try a few part numbers.</p>
+  </header>
+
+  <section class="block" aria-labelledby="h-sum">
+    <h2 class="sec" id="h-sum">What's in the database</h2>
+    <div class="stats" id="stats"></div>
+    <p class="note" id="sumnote"></p>
+  </section>
+
+  <section class="block" aria-labelledby="h-q">
+    <h2 class="sec" id="h-q">Seven questions</h2>
+    <p class="note">Tap an answer; add a note if it needs one. Your answers save for me to read. <span id="qcount"></span></p>
+    <div id="questions" class="list" style="gap:12px"></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-pr">
+    <h2 class="sec" id="h-pr">Parts printed at two prices</h2>
+    <p class="note">You chose the most common price. These <span id="prn"></span> parts are the ones affected. Where two prices tie (one page each), I used the price from the later page; tap the other price if it's the right one. <span id="prcount"></span></p>
+    <div id="prices" class="list"></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-look">
+    <h2 class="sec" id="h-look">Look up a part number</h2>
+    <div class="search">
+      <label for="q">Part number</label>
+      <input id="q" type="search" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. 013075 or 071131Z">
+      <div class="hint">Try a pump (013075), a part (356174Z), a filter (160340) or a cartridge (ULTRA-S5). <span id="checked"></span></div>
+    </div>
+    <div id="out" aria-live="polite"></div>
+  </section>
+
+  <section class="block q" aria-labelledby="h-fu">
+    <div class="qh" id="h-fu">Anything else?</div>
+    <textarea id="followup" placeholder="Follow-ups, things you'd like changed, or what to work on next"></textarea>
+    <p class="saved" id="fu-st"></p>
+  </section>
+  <footer>Source: Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition). Page numbers are PDF pages. Data in Neon, schema mfr_catalog.</footer>
+</div>
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id);
+const S = DATA.S, F = DATA.F, P = DATA.P;
+const KEYS = Object.keys(P);
+const norm = (s) => s.toUpperCase().replace(/[\s_]+/g, " ").trim();
+const INDEX = new Map(KEYS.map((k) => [norm(k), k]));
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+const n = (x) => Number(x).toLocaleString();
+
+// parts by family index, from each part's fitment rows
+const FP = {};
+KEYS.forEach((m) => P[m].x.forEach(([fl]) => fl.forEach((fi) => { (FP[fi] = FP[fi] || new Set()).add(m); })));
+
+[[S.with_data, "of " + n(S.active) + " SKUs have data"], [S.specs, "specs, values normalized"], [S.priced, "SKUs with list prices"],
+ [S.models_with_parts, "of " + n(S.models) + " products link to their parts (" + n(S.model_parts) + " product–part pairs)"],
+ [S.cross_refs, "competitor numbers (Unicel, Filbur, OEM)"], [S.replacements, "old numbers that find their replacement"],
+ [S.families, "product lines"], [S.tables, "reference tables and charts"]]
+  .forEach(([v, l]) => { const d = el("div", "stat"); d.append(el("b", null, n(v)), el("span", null, l)); $("stats").append(d); });
+$("sumnote").textContent = "The " + n(S.web_only) + " SKUs that only pentair.com lists now have data from their Pentair product pages (page \"web\" below). "
+  + (S.no_data ? n(S.no_data) + " SKU still has none: Pentair prints no description for it anywhere. " : "")
+  + "Agents also logged " + n(S.issues) + " small catalog problems (misprints, footnotes with no mark, " + S.price_conflicts + " parts printed at two different prices). They're stored with the data; you don't need to read them.";
+
+const QUESTIONS = [
+  { id: "q1", h: "Old discontinued numbers on their replacements?",
+    c: "Pleatco pages 43-48 map discontinued cartridge numbers to the current replacement. We left those tables out under the discontinued rule. Storing the old number on the active replacement would let a customer search their old cartridge number and find what to buy.",
+    o: ["Yes, store old numbers on the replacement", "No, leave them out"] },
+  { id: "q2", h: "Pleatco \"Pack #\" column",
+    c: "The cartridge-by-measurement tables have a Pack # column (PH6 = 28, PRB25SF = 12, most = 6). We read it as a carton/case count, not how many cartridges you get when you buy one SKU.",
+    o: ["Case count (as stored)", "Number sold in the SKU"] },
+  { id: "q3", h: "A lone 1 or 2 under Certifications on pump accessories",
+    c: "Pump pages (e.g. p214: cable 350122Z \"2\", seal kit 356196 \"1\", union 11201-0154 \"2\") print a single digit in the Certifications column of accessory rows. It could be the UL (1) / NSF (2) footnote, or a quantity. We stored neither.",
+    o: ["Certification marks (1 = UL, 2 = NSF)", "Quantity", "Leave it out"] },
+  { id: "q4", h: "Weights printed without a unit",
+    c: "Pump and filter tables print weights like \"53\" with no unit. We stored them as pounds.",
+    o: ["Pounds is right", "Leave unit-less weights out"] },
+  { id: "q5", h: "Logos printed once per page",
+    c: "UL, NSF, ETL and TradeGrade logos often appear once on a page with no part number. We attached them to the main products on the page, not to the parts and accessories listed with them.",
+    o: ["Main products only (as stored)", "Every SKU on the page"] },
+  { id: "q6", h: "Parts printed at two different prices",
+    c: "The catalog prints " + S.price_conflicts + " parts at different prices on different pages (e.g. LL23PM: $53.69 on one page, $15.72 on three others). We kept every price with its page.",
+    o: ["Keep all, flag them (as stored)", "Use the most common price", "Use the highest price"] },
+  { id: "q7", h: "The " + n(S.web_only) + " web-only SKUs",
+    c: "These titles came from pentair.com, not the catalog, so they have no specs or fit data. Their product pages and spec-sheet PDFs on pentair.com could fill them in next (manufacturer data only, same rules).",
+    o: ["Yes, gather them next", "Not now"] },
+];
+const answers = {}; let db = null;
+function qCount() { const d = QUESTIONS.filter((q) => answers[q.id] && answers[q.id].choice).length; $("qcount").textContent = d + " of " + QUESTIONS.length + " answered."; }
+QUESTIONS.forEach((q) => {
+  const box = el("div", "q"); box.id = "box-" + q.id;
+  box.append(el("div", "qh", q.h), el("p", "ctx", q.c));
+  const opts = el("div", "opts"); const btns = [];
+  q.o.forEach((o) => { const b = el("button", "act", o); b.type = "button"; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => saveAns(q.id, { choice: o })); btns.push(b); opts.append(b); });
+  const ta = el("textarea"); ta.id = "note-" + q.id; ta.placeholder = "Note (optional)"; ta.setAttribute("aria-label", "Note for: " + q.h);
+  let t; ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => saveAns(q.id, { note: ta.value }), 800); });
+  const st = el("p", "saved"); st.id = "st-" + q.id;
+  box.append(opts, ta, st); $("questions").append(box);
+  box.paint = () => { const a = answers[q.id] || {}; btns.forEach((b) => b.setAttribute("aria-pressed", String(a.choice === b.textContent)));
+    box.classList.toggle("done", !!a.choice); if (document.activeElement !== ta) ta.value = a.note || ""; };
+});
+qCount();
+
+const writing = {};
+async function put(path, data, st) {
+  if (!db) { st.textContent = "Answers can't be saved from this view."; st.className = "saved err"; return; }
+  if (writing[path]) { writing[path].pending = true; return; }
+  writing[path] = { pending: false }; st.textContent = "Saving…"; st.className = "saved";
+  try { do { writing[path].pending = false; await db.doc(path).set(data()); } while (writing[path].pending);
+    st.textContent = "Saved"; st.className = "saved ok"; }
+  catch (e) { st.textContent = e && e.code === "not_granted" ? "You can read this page but not save here." : "Couldn't save. Try again in a moment."; st.className = "saved err"; }
+  finally { delete writing[path]; }
+}
+function saveAns(id, patch) {
+  const q = QUESTIONS.find((x) => x.id === id);
+  answers[id] = Object.assign({}, answers[id], patch, { question: q.h, updatedAt: new Date().toISOString() });
+  $("box-" + id).paint(); qCount(); put("answers/" + id, () => answers[id], $("st-" + id));
+}
+let fuT; $("followup").addEventListener("input", () => { clearTimeout(fuT); fuT = setTimeout(() =>
+  put("followups/general", () => ({ text: $("followup").value, updatedAt: new Date().toISOString() }), $("fu-st")), 800); });
+
+// ---- price picks
+const picks = {};
+const PC = DATA.PC;
+$("prn").textContent = PC.length;
+function prCount() { const n2 = Object.keys(picks).length; $("prcount").textContent = n2 ? n2 + " changed by you." : ""; }
+PC.forEach((r) => {
+  const box = el("div", "pr"); const id = r.m.replace(/[^A-Za-z0-9_\-.]/g, "_");
+  const top = el("div", "top"); top.append(el("span", "m", r.m), el("span", "t", P[r.m] ? P[r.m].t : ""));
+  if (r.tie) top.append(el("span", "chip warn", "tie"));
+  const opts = el("div", "opts"); const btns = [];
+  r.opts.forEach(([u, c, pgs]) => { const b = el("button", "act", money(u) + " US / " + money(c) + " CAN · p" + pgs.join(", p"));
+    b.type = "button"; b.dataset.k = u + "|" + c; btns.push(b); opts.append(b);
+    b.addEventListener("click", () => { picks[id] = { mpn: r.m, us_list: u, can_list: c, updatedAt: new Date().toISOString() };
+      paint(); prCount(); put("price_picks/" + id, () => picks[id], st); }); });
+  const st = el("p", "saved");
+  const paint = () => { const k = picks[id] ? picks[id].us_list + "|" + picks[id].can_list : r.pick[0] + "|" + r.pick[1];
+    btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === k))); };
+  box.paint = paint; paint(); box.append(top, opts, st); $("prices").append(box);
+});
+
+// ---- lookup
+const checks = {};
+const docId = (m) => m.replace(/[^A-Za-z0-9_\-.]/g, "_");
+const label = (a) => a.replace(/^x_/, "").replace(/_/g, " ");
+function fmtVal(v, unit) {
+  let x = v; try { const j = JSON.parse(v); if (j && typeof j === "object") {
+    if (Array.isArray(j)) x = j.join(", ");
+    else if ("hours" in j) x = (typeof j.gallons === "object" ? n(j.gallons.min) + "–" + n(j.gallons.max) : n(j.gallons)) + " gal in " + j.hours + " h";
+    else if ("min" in j) x = j.min + "–" + j.max; else x = Object.entries(j).map(([k, w]) => k + " " + w).join(", "); } } catch (e) {}
+  return unit && !/gal in/.test(x) ? x + " " + unit : x;
+}
+function table(rows) { const w = el("div", "tbl"), t = el("table"); rows.forEach((r) => t.append(r)); w.append(t); return w; }
+function tr(cells) { const r = el("tr"); cells.forEach(([c, t]) => r.append(el("td", c, t))); return r; }
+const pgl = (pg) => pg ? "p" + pg : "web";
+function money(v) { return v == null ? "" : "$" + Number(v).toFixed(2); }
+
+function showSku(mpn) {
+  const d = P[mpn]; const out = $("out"); out.replaceChildren();
+  const c = el("section", "card");
+  c.append(el("div", "mpn", mpn), el("div", "title", d.t));
+  const meta = el("div", "meta"); meta.append(el("span", "chip", d.b)); if (d.r) meta.append(el("span", "chip", d.r));
+  d.f.forEach((fi) => meta.append(el("span", "chip", F[fi][1]))); c.append(meta);
+  if (!d.s.length && !d.p.length && !d.x.length) c.append(el("p", "empty", "Pentair prints no data for this SKU."));
+  if (d.p.length) { c.append(el("h3", null, "List price"));
+    c.append(table(d.p.map(([u, ca, note, pg]) => tr([["num", u != null ? money(u) + " US" : ""], ["num", ca != null ? money(ca) + " CAN" : ""], ["", note], ["pg", pgl(pg)]])))); }
+  if (d.s.length) { c.append(el("h3", null, "Specs"));
+    c.append(table(d.s.map(([a, v, u, pg]) => tr([["k", label(a)], ["", fmtVal(v, u)], ["pg", pgl(pg)]])))); }
+  if (d.x.length) { c.append(el("h3", null, "Fits"));
+    c.append(table(d.x.map(([fl, models, item, qty, cond, pg]) => {
+      const what = fl.map((fi) => F[fi][1]).concat(models).filter((v, i, a) => v && a.indexOf(v) === i).join("; ");
+      const extra = [item && "item " + item, qty && "qty " + qty, cond].filter(Boolean).join(" · ");
+      return tr([["k", what], ["", extra], ["pg", pgl(pg)]]); }))); }
+  if (d.mp && d.mp.length) { c.append(el("h3", null, "Parts for this product (" + d.mp.length + ")"));
+    c.append(table(d.mp.map(([part, item, qty, cond, pg]) => { const r = tr([["k", ""], ["", [item && "item " + item, qty && "qty " + qty, cond].filter(Boolean).join(" · ")], ["pg", pgl(pg)]]);
+      r.firstChild.replaceChildren(hit(part)); return r; }))); }
+  if (d.i) { c.append(el("h3", null, "Catalog problems noted")); d.i.forEach(([pg, q]) => c.append(el("div", "iss", (pg ? "p" + pg + ": " : "") + q))); }
+  const f = el("div", "q"); f.style.padding = "0"; f.style.border = "0";
+  f.append(el("h3", null, "Spot check"));
+  const btns = el("div", "opts"); const ok = el("button", "act", "Looks right"), bad = el("button", "act bad", "Something's wrong");
+  ok.type = bad.type = "button"; btns.append(ok, bad);
+  const note = el("textarea"); note.id = "cnote"; note.placeholder = "What's wrong? (optional)"; note.setAttribute("aria-label", "Note for " + mpn);
+  const st = el("p", "saved"); st.id = "cst"; f.append(btns, note, st); c.append(f); out.append(c);
+  const paint = () => { const a = checks[docId(mpn)] || {}; ok.setAttribute("aria-pressed", String(a.verdict === "ok"));
+    bad.setAttribute("aria-pressed", String(a.verdict === "wrong")); if (document.activeElement !== note) note.value = a.note || ""; };
+  paint(); c.paint = paint;
+  const sv = (patch) => { const id = docId(mpn); checks[id] = Object.assign({}, checks[id], patch, { mpn, updatedAt: new Date().toISOString() });
+    paint(); ckCount(); put("data_checks/" + id, () => checks[id], st); };
+  ok.addEventListener("click", () => sv({ verdict: "ok" })); bad.addEventListener("click", () => sv({ verdict: "wrong" }));
+  let t; note.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => sv({ note: note.value }), 800); });
+}
+function hit(k) { const b = el("button", "hit"); b.type = "button"; b.append(el("span", "m", k), el("span", "t", P[k].t));
+  b.addEventListener("click", () => { $("q").value = k; showSku(k); $("q").scrollIntoView({ block: "start" }); }); return b; }
+function run() {
+  const q = norm($("q").value); const out = $("out");
+  if (!q) { out.replaceChildren(el("p", "empty", "Type a part number above.")); return; }
+  const exact = INDEX.get(q); if (exact) { showSku(exact); return; }
+  const hits = KEYS.filter((k) => norm(k).includes(q)).sort((a, b) => (norm(b).startsWith(q) - norm(a).startsWith(q)) || a.localeCompare(b)).slice(0, 30);
+  out.replaceChildren(); if (!hits.length) { out.append(el("p", "empty", "No active Pentair SKU contains “" + q + "”.")); return; }
+  const lst = el("div", "list"); hits.forEach((k) => lst.append(hit(k))); out.append(lst);
+}
+function ckCount() { const v = Object.values(checks); const w = v.filter((a) => a.verdict === "wrong").length;
+  $("checked").textContent = v.length ? v.length + " checked" + (w ? ", " + w + " marked wrong." : ".") : ""; }
+$("q").addEventListener("input", run);
+$("q").value = "013075"; run();
+
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { document.querySelectorAll(".saved").forEach((s) => { s.textContent = "Answers can't be saved from this view."; s.className = "saved err"; }); return; }
+  db.collection("answers").onSnapshot((snap) => { snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); });
+    QUESTIONS.forEach((q) => $("box-" + q.id).paint()); qCount(); }, () => {});
+  db.collection("price_picks").onSnapshot((snap) => { snap.docs.forEach((d) => { picks[d.id] = Object.assign({}, d.data()); });
+    document.querySelectorAll(".pr").forEach((b) => b.paint()); prCount(); }, () => {});
+  db.collection("data_checks").onSnapshot((snap) => { snap.docs.forEach((d) => { checks[d.id] = Object.assign({}, d.data()); }); ckCount();
+    const card = document.querySelector(".card"); if (card && card.paint) card.paint(); }, () => {});
+  db.doc("followups/general").onSnapshot((d) => { const v = d && d.exists ? d.data() : null;
+    if (v && document.activeElement !== $("followup")) $("followup").value = v.text || ""; }, () => {});
+})();
+</script>

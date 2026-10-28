@@ -1,0 +1,204 @@
+<title>Pentair Title Lookup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one search box pinned at the top; the matching SKU's title, then the printed rows it came from. */
+:root {
+  --bg: #f3f7f8; --surface: #ffffff; --ink: #0f2a33; --muted: #557079; --line: #d4e1e4;
+  --accent: #0b8a8f; --accent-soft: #dff1f1; --warn: #a5560b; --warn-soft: #fbeedd; --ok: #1d7a46;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+    --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1a1f; --surface: #112730; --ink: #e3f0f2; --muted: #93adb4; --line: #23414b;
+  --accent: #3fc3c7; --accent-soft: #143a40; --warn: #f0a85c; --warn-soft: #3a2a17; --ok: #5fcf8d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 20px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--display); font-size: 30px; line-height: 1.15; margin: 4px 0 6px; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; max-width: 62ch; }
+.search { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+label { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+#q { width: 100%; font-family: var(--mono); font-size: 20px; padding: 12px 14px; border: 2px solid var(--line);
+  border-radius: 10px; background: var(--surface); color: var(--ink); text-transform: uppercase; }
+#q:focus-visible { outline: none; border-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 12px; }
+.mpn { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.title { font-family: var(--display); font-size: 22px; line-height: 1.25; text-wrap: balance; overflow-wrap: anywhere; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+h2 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 4px 0 0; }
+.rows { display: grid; gap: 8px; }
+.row { border-top: 1px solid var(--line); padding-top: 8px; display: grid; gap: 2px; }
+.row .where { font-size: 12px; font-weight: 600; color: var(--accent); }
+.row .printed { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.row .ctx { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.list { display: grid; gap: 6px; }
+.hit { text-align: left; font: inherit; background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 12px; cursor: pointer; display: grid; gap: 2px; }
+.hit:hover, .hit:focus-visible { border-color: var(--accent); outline: none; }
+.hit .m { font-family: var(--mono); font-weight: 500; }
+.hit .t { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.empty { color: var(--muted); }
+.flag { display: grid; gap: 8px; }
+textarea { font: inherit; font-size: 14px; width: 100%; min-height: 64px; padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical; }
+textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button.act { font: inherit; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--surface); color: var(--accent); }
+button.act[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+button.act.bad[aria-pressed="true"] { background: var(--warn); border-color: var(--warn); }
+button.act:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.saved { font-size: 13px; color: var(--muted); margin: 0; }
+.saved.ok { color: var(--ok); } .saved.err { color: var(--warn); }
+.count { font-size: 13px; color: var(--muted); }
+footer { font-size: 12px; color: var(--muted); }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pool Geek · Pentair titles</div>
+    <h1>Look up a Pentair title</h1>
+    <p class="lede">Type a part number to see its title and the rows Pentair printed for it. Mark it right or wrong as you spot-check; your marks save for me to read.</p>
+  </header>
+  <div class="search">
+    <label for="q">Part number</label>
+    <input id="q" type="search" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. 071131Z" aria-describedby="hint">
+    <div class="hint" id="hint"><span id="total"></span> Partial numbers list matches. <span id="checked"></span></div>
+  </div>
+  <main id="out" aria-live="polite"></main>
+  <footer>Titles from the Pentair Pool Product Catalog 2025-2026 (Dec 2025 digital edition) and pentair.com, as loaded into Neon (mfr_catalog).</footer>
+</div>
+<script>
+const DATA = /*DATA*/;
+const $ = (id) => document.getElementById(id);
+const KEYS = Object.keys(DATA.p);
+const norm = (s) => s.toUpperCase().replace(/[\s_]+/g, " ").trim();
+const INDEX = new Map(KEYS.map((k) => [norm(k), k]));
+const checks = {};
+let db = null;
+$("total").textContent = KEYS.length.toLocaleString() + " active SKUs.";
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function docId(mpn) { return mpn.replace(/[^A-Za-z0-9_\-.]/g, "_"); }
+
+function showSku(mpn) {
+  const d = DATA.p[mpn]; const out = $("out"); out.replaceChildren();
+  const c = el("section", "card");
+  c.append(el("div", "mpn", mpn));
+  c.append(el("div", "title", d.t || "(no title)"));
+  const meta = el("div", "meta");
+  meta.append(el("span", "chip", d.b));
+  if (d.k) meta.append(el("span", "chip", d.k.replace(/_/g, " ")));
+  if (d.l) meta.append(el("span", "chip", d.l));
+  c.append(meta);
+  c.append(el("h2", null, "Printed by Pentair"));
+  const rows = el("div", "rows");
+  if (!d.e.length) rows.append(el("p", "empty", "No printed rows recorded."));
+  d.e.forEach(([where, row, ctx]) => {
+    const r = el("div", "row"); r.append(el("div", "where", where), el("div", "printed", row));
+    if (ctx) r.append(el("div", "ctx", ctx));
+    rows.append(r);
+  });
+  c.append(rows);
+  const f = el("div", "flag");
+  f.append(el("h2", null, "Spot check"));
+  const btns = el("div", "btns");
+  const ok = el("button", "act", "Looks right"); ok.type = "button";
+  const bad = el("button", "act bad", "Wrong"); bad.type = "button";
+  btns.append(ok, bad);
+  const note = el("textarea"); note.id = "note"; note.placeholder = "What should it be? (optional)"; note.setAttribute("aria-label", "Note for " + mpn);
+  const st = el("p", "saved"); st.id = "st";
+  f.append(btns, note, st); c.append(f);
+  out.append(c);
+  const paint = () => {
+    const a = checks[docId(mpn)] || {};
+    ok.setAttribute("aria-pressed", String(a.verdict === "ok"));
+    bad.setAttribute("aria-pressed", String(a.verdict === "wrong"));
+    if (document.activeElement !== note) note.value = a.note || "";
+  };
+  paint(); c.paint = paint;
+  ok.addEventListener("click", () => save(mpn, { verdict: "ok" }, paint));
+  bad.addEventListener("click", () => save(mpn, { verdict: "wrong" }, paint));
+  let t; note.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => save(mpn, { note: note.value }, paint), 800); });
+  if (!db) { st.textContent = "Checks can't be saved from this view."; st.className = "saved err"; }
+}
+
+function showList(q) {
+  const out = $("out"); out.replaceChildren();
+  if (DATA.x[q] || DATA.x[q.replace(/ /g, "_")]) {
+    const c = el("section", "card"); c.append(el("div", "mpn", q));
+    c.append(el("div", "title", "Left out of the catalog"));
+    const m = el("div", "meta"); m.append(el("span", "chip warn", DATA.x[q] || DATA.x[q.replace(/ /g, "_")])); c.append(m);
+    out.append(c); return;
+  }
+  const hits = KEYS.filter((k) => norm(k).includes(q))
+    .sort((a, b) => (norm(b).startsWith(q) - norm(a).startsWith(q)) || a.localeCompare(b)).slice(0, 40);
+  if (!hits.length) { out.append(el("p", "empty", "No active Pentair SKU contains “" + q + "”.")); return; }
+  const list = el("div", "list");
+  hits.forEach((k) => {
+    const b = el("button", "hit"); b.type = "button";
+    b.append(el("span", "m", k), el("span", "t", DATA.p[k].t));
+    b.addEventListener("click", () => { $("q").value = k; showSku(k); });
+    list.append(b);
+  });
+  out.append(list);
+}
+
+function run() {
+  const q = norm($("q").value);
+  if (!q) { $("out").replaceChildren(el("p", "empty", "Start typing a part number.")); return; }
+  const exact = INDEX.get(q);
+  exact ? showSku(exact) : showList(q);
+}
+$("q").addEventListener("input", run);
+run();
+
+const writing = {};
+async function save(mpn, patch, paint) {
+  const id = docId(mpn); const st = $("st");
+  checks[id] = Object.assign({}, checks[id], patch, { mpn, title: DATA.p[mpn].t, updatedAt: new Date().toISOString() });
+  paint(); updateCount();
+  if (!db) return;
+  if (writing[id]) { writing[id].pending = true; return; }
+  writing[id] = { pending: false };
+  st.textContent = "Saving…"; st.className = "saved";
+  try {
+    do { writing[id].pending = false; await db.doc("checks/" + id).set(checks[id]); } while (writing[id].pending);
+    st.textContent = "Saved"; st.className = "saved ok";
+  } catch (e) {
+    st.textContent = e && e.code === "not_granted" ? "You can look up titles but not save checks here." : "Couldn't save. Try again in a moment.";
+    st.className = "saved err";
+  } finally { delete writing[id]; }
+}
+function updateCount() {
+  const v = Object.values(checks); const wrong = v.filter((a) => a.verdict === "wrong").length;
+  $("checked").textContent = v.length ? v.length + " checked" + (wrong ? ", " + wrong + " marked wrong." : ".") : "";
+}
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { const st = $("st"); if (st) { st.textContent = "Checks can't be saved from this view."; st.className = "saved err"; } return; }
+  const st = $("st"); if (st && st.className.includes("err")) { st.textContent = ""; st.className = "saved"; }
+  db.collection("checks").onSnapshot((snap) => {
+    snap.docs.forEach((d) => { checks[d.id] = Object.assign({}, d.data()); });
+    updateCount();
+    const card = document.querySelector(".card"); if (card && card.paint) card.paint();
+  }, () => {});
+})();
+</script>

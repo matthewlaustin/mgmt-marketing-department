@@ -1,0 +1,212 @@
+<title>Pentair Title Training</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+/*CSS*/
+<style>
+.evidence { display: grid; gap: 6px; }
+.evidence .scan { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+.evidence img { display: block; max-width: none; width: 100%; min-width: 760px; height: auto; }
+.weblink { font-size: 13px; color: var(--accent); }
+.pagebtn { font: inherit; font-size: 13px; font-weight: 600; justify-self: start; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); cursor: pointer; }
+.pagebtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.evidence .fullpage img { min-width: 820px; }
+.webrow { font-family: var(--mono); font-size: 13px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; overflow-wrap: anywhere; }
+.titles { display: grid; gap: 8px; }
+.trow { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.trow .lab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.trow .val { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.trow.draft .val { background: var(--accent-soft); border-radius: 6px; padding: 4px 8px; }
+.trow .fields { font-family: var(--body); font-size: 13px; color: var(--muted); }
+.ask { color: var(--ink) !important; background: var(--warn-soft); border-radius: 8px; padding: 8px 12px; }
+.group { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
+.mpnh { font-family: var(--mono); font-size: 20px; font-weight: 500; }
+input[type=text] { font: inherit; font-family: var(--mono); font-size: 14px; width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+input[type=text]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 8px; }
+.rule ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--muted); }
+</style>
+
+<div class="wrap">
+/*HEADER*/
+  <section aria-labelledby="qs-h" id="qs-section">
+    <header>
+      <h2 id="qs-h">Questions</h2>
+      <p class="progress" id="qprogress">Answers save when you pick them.</p>
+    </header>
+    <div class="pairs" id="questions"></div>
+  </section>
+
+  <section aria-labelledby="items-h" id="items-section">
+    <header>
+      <h2 id="items-h">/*ITEMS_HEADING*/</h2>
+      <p class="progress" id="progress">Answers save as you go.</p>
+    </header>
+    <div id="db-notice" class="notice" hidden>Your answers can't be saved from this view (you may be signed out). Reply in chat instead.</div>
+    <div class="pairs" id="items"></div>
+  </section>
+
+  <footer>/*FOOTER*/</footer>
+</div>
+
+<script>
+const ITEMS = /*ITEMS*/;
+const QUESTIONS = /*QUESTIONS*/;
+const LABELS = /*LABELS*/;
+const $ = (id) => document.getElementById(id);
+const answers = {};
+let db = null;
+
+function row(cls, label, text, fields) {
+  const r = document.createElement("div"); r.className = "trow " + cls;
+  const l = document.createElement("div"); l.className = "lab"; l.textContent = label;
+  const v = document.createElement("div"); v.className = "val"; v.textContent = text;
+  r.append(l, v);
+  if (fields) { const f = document.createElement("div"); f.className = "fields"; f.textContent = fields; v.append(document.createElement("br"), f); }
+  return r;
+}
+
+function card(d) {
+  const el = document.createElement("div"); el.className = "q"; el.id = "q-" + d.id;
+  const g = document.createElement("div"); g.className = "group"; g.textContent = d.group;
+  const h = document.createElement("div"); h.className = "mpnh"; h.textContent = d.mpn;
+  el.append(g, h);
+  if (d.ask) { const q = document.createElement("p"); q.className = "detail ask"; q.textContent = d.ask; el.append(q); }
+  const ev = document.createElement("div"); ev.className = "evidence";
+  if (d.crop) {
+    const sc = document.createElement("div"); sc.className = "scan";
+    const i = document.createElement("img"); i.src = d.crop; i.alt = "Catalog row for " + d.mpn + " on page " + d.pno; i.loading = "lazy";
+    sc.append(i);
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "pagebtn"; btn.id = "pb-" + d.id;
+    btn.textContent = "Show full PDF page " + d.pno; btn.setAttribute("aria-expanded", "false");
+    const full = document.createElement("div"); full.className = "scan fullpage"; full.hidden = true;
+    btn.addEventListener("click", () => {
+      if (!full.firstChild) { const fi = document.createElement("img"); fi.src = d.page; fi.alt = "Catalog page " + d.pno; full.append(fi); }
+      full.hidden = !full.hidden;
+      btn.setAttribute("aria-expanded", String(!full.hidden));
+      btn.textContent = (full.hidden ? "Show" : "Hide") + " full PDF page " + d.pno;
+    });
+    ev.append(sc, btn, full);
+  } else {
+    const w = document.createElement("div"); w.className = "webrow"; w.textContent = d.web;
+    const a = document.createElement("a"); a.className = "weblink"; a.href = d.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "pentair.com page";
+    ev.append(w, a);
+  }
+  el.append(ev);
+  const t = document.createElement("div"); t.className = "titles";
+  t.append(row("now", LABELS[0], d.brand + " " + d.mpn + " - " + d.now), row("draft", LABELS[1], d.brand + " " + d.mpn + " - " + d.draft, d.fields));
+  el.append(t);
+  const choices = document.createElement("div"); choices.className = "choices";
+  const ok = document.createElement("button"); ok.type = "button"; ok.className = "choice"; ok.textContent = LABELS[2]; ok.setAttribute("aria-pressed", "false");
+  ok.addEventListener("click", () => save(d.id, { verdict: "draft", title: "" }));
+  choices.append(ok);
+  const inp = document.createElement("input"); inp.type = "text"; inp.id = "title-" + d.id; inp.placeholder = "Your title (without the " + d.brand + " " + d.mpn + " - prefix)"; inp.setAttribute("aria-label", "Your title for " + d.mpn);
+  let t1; inp.addEventListener("input", () => { clearTimeout(t1); t1 = setTimeout(() => save(d.id, { verdict: inp.value.trim() ? "mine" : "", title: inp.value }), 900); });
+  const note = document.createElement("textarea"); note.id = "note-" + d.id; note.placeholder = "Notes"; note.setAttribute("aria-label", "Notes for " + d.mpn);
+  let t2; note.addEventListener("input", () => { clearTimeout(t2); t2 = setTimeout(() => save(d.id, { note: note.value }), 900); });
+  const st = document.createElement("p"); st.className = "saved"; st.id = "st-" + d.id;
+  el.append(choices, inp, note, st);
+  return el;
+}
+
+function paint(id) {
+  const a = answers[id] || {};
+  const c = $("q-" + id); if (!c) return;
+  c.classList.toggle("answered", !!(a.verdict || a.note));
+  c.querySelector(".choice").setAttribute("aria-pressed", String(a.verdict === "draft"));
+  const inp = $("title-" + id); if (inp && document.activeElement !== inp && typeof a.title === "string") inp.value = a.title;
+  const n = $("note-" + id); if (n && document.activeElement !== n && typeof a.note === "string") n.value = a.note;
+  const done = ITEMS.filter((x) => answers[x.id] && (answers[x.id].verdict || answers[x.id].note)).length;
+  $("progress").innerHTML = "<strong>" + done + "</strong> of " + ITEMS.length + " answered";
+}
+
+const writing = {};
+async function save(id, patch) {
+  const st = $("st-" + id);
+  answers[id] = Object.assign({}, answers[id], patch, { mpn: ITEMS.find((x) => x.id === id).mpn, updatedAt: new Date().toISOString() });
+  paint(id);
+  if (!db) { st.textContent = "Not saved: this view can't store answers."; st.className = "saved err"; return; }
+  if (writing[id]) { writing[id].pending = true; return; }
+  writing[id] = { pending: false };
+  st.textContent = "Saving…"; st.className = "saved";
+  try {
+    do { writing[id].pending = false; await db.doc("answers/" + id).set(answers[id]); } while (writing[id].pending);
+    st.textContent = "Saved"; st.className = "saved ok";
+  } catch (e) {
+    st.textContent = e && e.code === "not_granted" ? "You can view this page but not answer here." : "Couldn't save. Try again in a moment.";
+    st.className = "saved err";
+  } finally { delete writing[id]; }
+}
+
+
+const qanswers = {};
+function qcard(d) {
+  const el = document.createElement("div"); el.className = "q"; el.id = "qq-" + d.id;
+  const h = document.createElement("h3"); h.textContent = d.title; el.append(h);
+  if (d.detail) { const p = document.createElement("p"); p.className = "detail"; p.textContent = d.detail; el.append(p); }
+  if (d.examples) { const t = document.createElement("div"); t.className = "titles"; d.examples.forEach((e) => t.append(row("draft", e[0], e[1]))); el.append(t); }
+  if (d.crops) {
+    const ev = document.createElement("div"); ev.className = "evidence";
+    d.crops.forEach((c) => { const sc = document.createElement("div"); sc.className = "scan"; const i = document.createElement("img"); i.src = c; i.alt = "Catalog row"; i.loading = "lazy"; sc.append(i); ev.append(sc); });
+    el.append(ev);
+  }
+  const ch = document.createElement("div"); ch.className = "choices"; ch.setAttribute("role", "group"); ch.setAttribute("aria-label", d.title);
+  d.choices.forEach((c) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "choice"; b.textContent = c; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => {
+      const cur = qanswers[d.id] || {};
+      if (d.multi) { const set = new Set(cur.choices || []); set.has(c) ? set.delete(c) : set.add(c); qsave(d.id, { choices: [...set] }); }
+      else qsave(d.id, { choice: c });
+    });
+    ch.append(b);
+  });
+  const note = document.createElement("textarea"); note.id = "qn-" + d.id; note.placeholder = d.multi ? "Others, or anything to add" : "Optional note"; note.setAttribute("aria-label", "Note: " + d.title);
+  let tm; note.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(() => qsave(d.id, { note: note.value }), 900); });
+  const st = document.createElement("p"); st.className = "saved"; st.id = "qs-" + d.id;
+  el.append(ch, note, st);
+  return el;
+}
+function qpaint(id) {
+  const a = qanswers[id] || {}; const c = $("qq-" + id); if (!c) return;
+  const picked = new Set(a.choices || (a.choice ? [a.choice] : []));
+  c.classList.toggle("answered", picked.size > 0 || !!a.note);
+  c.querySelectorAll(".choice").forEach((b) => b.setAttribute("aria-pressed", String(picked.has(b.textContent))));
+  const n = $("qn-" + id); if (n && document.activeElement !== n && typeof a.note === "string") n.value = a.note;
+  const done = QUESTIONS.filter((x) => { const v = qanswers[x.id] || {}; return v.choice || (v.choices && v.choices.length) || v.note; }).length;
+  $("qprogress").innerHTML = "<strong>" + done + "</strong> of " + QUESTIONS.length + " answered";
+}
+const qwriting = {};
+async function qsave(id, patch) {
+  const st = $("qs-" + id);
+  qanswers[id] = Object.assign({}, qanswers[id], patch, { updatedAt: new Date().toISOString() });
+  qpaint(id);
+  if (!db) { st.textContent = "Not saved: this view can't store answers."; st.className = "saved err"; return; }
+  if (qwriting[id]) { qwriting[id].pending = true; return; }
+  qwriting[id] = { pending: false };
+  st.textContent = "Saving…"; st.className = "saved";
+  try {
+    do { qwriting[id].pending = false; await db.doc("questions/" + id).set(qanswers[id]); } while (qwriting[id].pending);
+    st.textContent = "Saved"; st.className = "saved ok";
+  } catch (e) {
+    st.textContent = e && e.code === "not_granted" ? "You can view this page but not answer here." : "Couldn't save. Try again in a moment.";
+    st.className = "saved err";
+  } finally { delete qwriting[id]; }
+}
+QUESTIONS.forEach((d) => $("questions").append(qcard(d)));
+if (!QUESTIONS.length) $("qs-section").hidden = true;
+if (!ITEMS.length) $("items-section").hidden = true;
+ITEMS.forEach((d) => $("items").append(card(d)));
+(async () => {
+  try { db = window.claude ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { $("db-notice").hidden = false; return; }
+  db.collection("answers").onSnapshot((snap) => {
+    snap.docs.forEach((d) => { answers[d.id] = Object.assign({}, d.data()); });
+    ITEMS.forEach((x) => paint(x.id));
+  }, () => { $("db-notice").hidden = false; });
+  db.collection("questions").onSnapshot((snap) => {
+    snap.docs.forEach((d) => { qanswers[d.id] = Object.assign({}, d.data()); });
+    QUESTIONS.forEach((x) => qpaint(x.id));
+  }, () => {});
+})();
+</script>
